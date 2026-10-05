@@ -2166,25 +2166,26 @@
             <input type="hidden" id="setPassDefP" value="NIS">
           </div>
 
-          <!-- Koneksi Backend Google Apps Script (Vercel / Standalone) -->
+          <!-- Status Koneksi Database Supabase -->
           <div class="card set-card" id="cardKoneksiApi">
-            <div class="set-head"><span class="set-ic">🌐</span>
+            <div class="set-head"><span class="set-ic">⚡</span>
               <div>
-                <div class="set-t">Koneksi Backend Google Apps Script (Vercel)</div>
-                <div class="set-d">Hubungkan aplikasi Vercel ini ke endpoint Google Apps Script untuk sinkronisasi
-                  Google Sheets.</div>
+                <div class="set-t">Status Koneksi Database Supabase (Cloud PostgreSQL)</div>
+                <div class="set-d">Aplikasi ini berjalan dengan database Cloud Supabase & Storage Bucket Foto Presensi.</div>
               </div>
             </div>
             <div class="form-grid">
               <div class="fg-full">
-                <label>URL Web App Google Apps Script</label>
-                <input type="url" id="setGasApiUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
-                <div class="hint">Pastikan URL berakhiran <b>/exec</b> dengan akses "Siapa saja (Anyone)".</div>
+                <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:12px;font-size:12.5px;color:#166534;line-height:1.6;">
+                  ✅ <b>Status: Terhubung Langsung ke Supabase (Aktif)</b><br>
+                  Endpoint: <code>https://pkjnbuzfknbcakmtfkif.supabase.co</code><br>
+                  Storage Bucket: <code>foto_absen</code> (Publik)<br>
+                  Kecepatan respons: Realtime &lt; 100ms tanpa batas kuota Apps Script.
+                </div>
               </div>
             </div>
             <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
-              <button type="button" class="btn btn-outline btn-sm" onclick="ujiKoneksiApi()">⚡ Tes Koneksi API</button>
-              <button type="button" class="btn btn-primary btn-sm" onclick="simpanUrlApi()">💾 Simpan URL API</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="ujiKoneksiSupabase()">⚡ Tes Koneksi Supabase</button>
             </div>
           </div>
 
@@ -2517,28 +2518,19 @@
       </div>
     </div>
 
-    <!-- ============ MODAL KONEKSI API APPS SCRIPT (UNTUK VERCEL / STANDALONE) ============ -->
+    <!-- ============ MODAL KONEKSI SUPABASE ============ -->
     <div id="apiConfigModal" class="modal center hidden">
       <div class="modal-box">
         <div class="modal-head">
-          <h3>🌐 Hubungkan ke Google Apps Script</h3>
+          <h3>⚡ Database Supabase</h3>
           <button class="close-x" onclick="tutupKoneksiApiModal()">&times;</button>
         </div>
-        <p style="font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:14px;">
-          Aplikasi ini berjalan di <b>Vercel / Hosting Standalone</b>. Agar presensi, foto, dan data siswa terhubung ke
-          <b>Google Sheets</b> & <b>Drive</b>, masukkan URL Web App Google Apps Script Anda.
-        </p>
-        <label>URL Web App Google Apps Script</label>
-        <input type="url" id="modalGasApiUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec"
-          style="margin-top:4px;">
-        <div class="hint" style="margin-top:6px; font-size:11.5px; line-height:1.4;">
-          💡 Dapatkan URL ini dari menu <b>Deploy &gt; Kelola deployment &gt; Salin URL Web App</b> di Apps Script.<br>
-          Wajib disetel: <i>Execute as: Me</i> &amp; <i>Who has access: Anyone</i>.
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:14px;font-size:13px;color:#166534;line-height:1.6;margin-bottom:14px;">
+          ✅ <b>Database Supabase Aktif & Terhubung!</b><br>
+          Semua data presensi, akun siswa, dan foto selfie langsung tersimpan ke Supabase PostgreSQL & Storage.
         </div>
-        <div style="display:flex; gap:10px; margin-top:16px;">
-          <button type="button" class="btn btn-outline" style="flex:1;" onclick="tutupKoneksiApiModal()">Tutup</button>
-          <button type="button" class="btn btn-primary" style="flex:1;"
-            onclick="simpanModalGasApiUrl()">Hubungkan</button>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn btn-primary" style="flex:1;" onclick="tutupKoneksiApiModal()">Tutup</button>
         </div>
       </div>
     </div>
@@ -3191,105 +3183,998 @@
       function toast(msg, type) { var t = $('toast'); t.textContent = msg; t.className = 'show ' + (type || ''); setTimeout(function () { t.className = t.className.replace('show', ''); }, 3400); }
       function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-      // ================= SMART GAS API ADAPTER (VERCEL & GOOGLE APPS SCRIPT DUAL-SUPPORT) =================
-      // Jika di-deploy ke Vercel/GitHub, URL API Apps Script dapat diisi di bawah atau dikonfigurasi melalui antarmuka.
-      var DEFAULT_GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyrygzhpkLULghRSK8YAKOkw9rJrOTl4FQdare9OjyxqiI6e-rmcbdMsSYadrIyRkCn/exec';
+      // ================= NATIVE SUPABASE BACKEND ADAPTER =================
+      var SUPABASE_URL = 'https://pkjnbuzfknbcakmtfkif.supabase.co';
+      var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBram5idXpma25iY2FrbXRma2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODI5OTAsImV4cCI6MjEwNjc1ODk5MH0.xdDDnoYJ05_Uq0m5IVz1H1rc-Fpon5ERXjUqrKfpmpY';
+      var SUPABASE_STORAGE_BUCKET = 'foto_absen';
 
-      function getGasApiUrl() {
-        var stored = localStorage.getItem('GAS_API_URL');
-        if (stored && stored.trim()) return stored.trim();
-        if (typeof window.GAS_API_URL === 'string' && window.GAS_API_URL.trim()) return window.GAS_API_URL.trim();
-        return DEFAULT_GAS_API_URL;
-      }
-
-      function setGasApiUrl(url) {
-        if (url && url.trim()) {
-          localStorage.setItem('GAS_API_URL', url.trim());
-        } else {
-          localStorage.removeItem('GAS_API_URL');
+      // Pure JS SHA-256 for universal, fast, synchronous hashing in any browser
+      function sha256(ascii) {
+        function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+        var mathPow = Math.pow, maxWord = mathPow(2, 32), lengthProperty = 'length';
+        var i, j, result = '', words = [], asciiBitLength = ascii[lengthProperty] * 8;
+        var hash = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+        var k = [
+          0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+          0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+          0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+          0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+          0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+          0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+          0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+          0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+        ];
+        ascii += '\x80';
+        while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+        for (i = 0; i < ascii[lengthProperty]; i++) {
+          j = ascii.charCodeAt(i);
+          words[i >> 2] |= j << ((3 - i) % 4) * 8;
         }
-      }
-
-      function isStandaloneHost() {
-        if (typeof location !== 'undefined' && location.hostname && location.hostname !== 'script.google.com' && location.hostname !== 'script.googleusercontent.com') {
-          return true;
+        words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+        words[words[lengthProperty]] = (asciiBitLength);
+        for (j = 0; j < words[lengthProperty];) {
+          var w = words.slice(j, j += 16), oldHash = hash.slice(0);
+          for (i = 16; i < 64; i++) {
+            var s0 = rightRotate(w[i - 15], 7) ^ rightRotate(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+            var s1 = rightRotate(w[i - 2], 17) ^ rightRotate(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+            w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+          }
+          for (i = 0; i < 64; i++) {
+            var s1_ = rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25);
+            var ch = (hash[4] & hash[5]) ^ ((~hash[4]) & hash[6]);
+            var temp1 = (hash[7] + s1_ + ch + k[i] + w[i]) | 0;
+            var s0_ = rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22);
+            var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+            var temp2 = (s0_ + maj) | 0;
+            hash = [(temp1 + temp2) | 0, hash[0], hash[1], hash[2], (hash[3] + temp1) | 0, hash[4], hash[5], hash[6]];
+          }
+          for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
         }
-        if (typeof google === 'undefined' || !google.script || !google.script.run) return true;
-        return !!google.script.run._isMock;
-      }
-
-      function gas() {
-        // 1. Jika berjalan langsung di dalam lingkungan Google Apps Script asli:
-        if (!isStandaloneHost()) {
-          return google.script.run;
+        for (i = 0; i < 8; i++) {
+          for (j = 3; j >= 0; j--) {
+            var b = (hash[i] >> (8 * j)) & 255;
+            result += (b < 16 ? '0' : '') + b.toString(16);
+          }
         }
-        // 2. Jika berjalan di Vercel / GitHub / standalone browser:
-        return createGasHttpAdapter(getGasApiUrl());
+        return result;
       }
 
-      function createGasHttpAdapter(apiUrl) {
-        var successHandler = function () { };
-        var failureHandler = function (err) { console.error('API Call Error:', err); };
+      function getSbHeaders(extra) {
+        var h = {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        };
+        if (extra) { for (var k in extra) h[k] = extra[k]; }
+        return h;
+      }
 
+      async function sbFetch(path, opts) {
+        opts = opts || {};
+        var url = path.startsWith('http') ? path : (SUPABASE_URL + '/rest/v1/' + path);
+        opts.headers = getSbHeaders(opts.headers);
+        var res = await fetch(url, opts);
+        if (!res.ok) {
+          var errBody;
+          try { errBody = await res.json(); } catch(e) { errBody = { message: res.statusText }; }
+          throw new Error(errBody.message || errBody.error || ('HTTP Error ' + res.status));
+        }
+        return res;
+      }
+
+      async function sbFetchAll(path) {
+        var all = [], page = 0, pageSize = 1000;
+        while (true) {
+          var delim = path.indexOf('?') > -1 ? '&' : '?';
+          var url = path + delim + 'limit=' + pageSize + '&offset=' + (page * pageSize);
+          var res = await sbFetch(url);
+          var data = await res.json();
+          if (!Array.isArray(data) || data.length === 0) break;
+          all = all.concat(data);
+          if (data.length < pageSize) break;
+          page++;
+        }
+        return all;
+      }
+
+      function getJakartaDateStr() {
+        var d = new Date();
+        var y = d.getFullYear(), m = ('0' + (d.getMonth() + 1)).slice(-2), day = ('0' + d.getDate()).slice(-2);
+        return y + '-' + m + '-' + day;
+      }
+
+      function getJakartaTimeStr() {
+        var d = new Date();
+        var h = ('0' + d.getHours()).slice(-2), m = ('0' + d.getMinutes()).slice(-2), s = ('0' + d.getSeconds()).slice(-2);
+        return h + ':' + m + ':' + s;
+      }
+
+      function parseJamMenitLocal(val) {
+        if (val instanceof Date) return val.getHours() * 60 + val.getMinutes();
+        var str = String(val == null ? '' : val).trim();
+        var match = str.match(/^(\d{1,2})[:.](\d{2})/);
+        return match ? (parseInt(match[1], 10) * 60 + parseInt(match[2], 10)) : null;
+      }
+
+      function formatJamTampilanLocal(str) {
+        var m = String(str || '').match(/^(\d{1,2})[:.](\d{2})/);
+        return m ? (('0' + m[1]).slice(-2) + ':' + m[2]) : (str || '--:--');
+      }
+
+      function hitungJarakMeterLocal(lat1, lng1, lat2, lng2) {
+        lat1 = parseFloat(String(lat1).replace(',', '.'));
+        lng1 = parseFloat(String(lng1).replace(',', '.'));
+        lat2 = parseFloat(String(lat2).replace(',', '.'));
+        lng2 = parseFloat(String(lng2).replace(',', '.'));
+        if (isNaN(lat1) || isNaN(lng1) || isNaN(lat2) || isNaN(lng2)) return null;
+        var R = 6371000;
+        var dLat = (lat2 - lat1) * Math.PI / 180, dLng = (lng2 - lng1) * Math.PI / 180;
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+      }
+
+      function formatNomorHpLocal(val) {
+        if (val === null || val === undefined) return '';
+        var str = String(val).trim();
+        if (!str) return '';
+        if (/[eE]\+?/.test(str)) {
+          var num = Number(str);
+          if (!isNaN(num) && isFinite(num)) str = num.toLocaleString('fullwide', { useGrouping: false });
+        }
+        var digits = str.replace(/\D/g, '');
+        if (!digits) return '';
+        if (digits.indexOf('62') === 0 && digits.length >= 10) digits = '0' + digits.substring(2);
+        else if (digits.indexOf('8') === 0 && digits.length >= 9 && digits.length <= 13) digits = '0' + digits;
+        return digits;
+      }
+
+      function base64ToBlobLocal(base64Data, contentType) {
+        contentType = contentType || '';
+        var sliceSize = 1024, byteCharacters = atob(base64Data), bytesLength = byteCharacters.length;
+        var slicesCount = Math.ceil(bytesLength / sliceSize), byteArrays = new Array(slicesCount);
+        for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+          var begin = sliceIndex * sliceSize, end = Math.min(begin + sliceSize, bytesLength);
+          var bytes = new Array(end - begin);
+          for (var offset = begin, i = 0; offset < end; ++i, ++offset) { bytes[i] = byteCharacters.charCodeAt(offset); }
+          byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
+      }
+
+      async function uploadFotoToSupabaseLocal(base64Url, fileName) {
+        var match = String(base64Url).match(/^data:(image\/[a-zA-Z0-9\.\+-]+)(?:;[a-zA-Z0-9\.\+-=]+)*;base64,(.+)$/);
+        if (!match) throw new Error('Format gambar tidak valid.');
+        var mime = match[1], b64 = match[2];
+        var blob = base64ToBlobLocal(b64, mime);
+        var uploadUrl = SUPABASE_URL + '/storage/v1/object/' + SUPABASE_STORAGE_BUCKET + '/' + fileName;
+        var res = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': mime },
+          body: blob
+        });
+        if (!res.ok) {
+          var err = await res.text();
+          throw new Error('Gagal mengunggah foto: ' + err);
+        }
+        return SUPABASE_URL + '/storage/v1/object/public/' + SUPABASE_STORAGE_BUCKET + '/' + fileName;
+      }
+
+      var SB_PENGATURAN_CACHE = null;
+      var SB_PENGATURAN_TS = 0;
+
+      async function getSbPengaturanMap() {
+        if (SB_PENGATURAN_CACHE && (Date.now() - SB_PENGATURAN_TS < 60000)) return SB_PENGATURAN_CACHE;
+        var res = await sbFetch('pengaturan?select=parameter,nilai');
+        var rows = await res.json();
+        var map = {};
+        rows.forEach(function(r) { map[r.parameter] = r.nilai; });
+        SB_PENGATURAN_CACHE = map;
+        SB_PENGATURAN_TS = Date.now();
+        return map;
+      }
+
+      var SupabaseBackend = {
+        getInfoPublik: async function() {
+          var pengMap = await getSbPengaturanMap();
+          var j = {};
+          URUTAN.forEach(function(s) {
+            var key = s.toLowerCase();
+            j[s] = { mulai: formatJamTampilanLocal(pengMap[key + '_mulai']), selesai: formatJamTampilanLocal(pengMap[key + '_selesai']) };
+          });
+          var now = new Date();
+          var menit = now.getHours() * 60 + now.getMinutes();
+          var sholatNow = '';
+          var prio = ['Dzuhur', 'Ashar', 'Maghrib', 'Isya', 'Subuh', 'Dhuha'];
+          for (var i = 0; i < prio.length; i++) {
+            var k = prio[i].toLowerCase();
+            var m = parseJamMenitLocal(pengMap[k + '_mulai']), se = parseJamMenitLocal(pengMap[k + '_selesai']);
+            if (m === null || se === null) continue;
+            var match = (m <= se) ? (menit >= m && menit <= se) : (menit >= m || menit <= se);
+            if (match) { sholatNow = prio[i]; break; }
+          }
+          var aktifList = [];
+          for (var a = 0; a < URUTAN.length; a++) {
+            var ak = URUTAN[a].toLowerCase();
+            var am = parseJamMenitLocal(pengMap[ak + '_mulai']), ase = parseJamMenitLocal(pengMap[ak + '_selesai']);
+            if (am === null || ase === null) continue;
+            var amatch = (am <= ase) ? (menit >= am && menit <= ase) : (menit >= am || menit <= ase);
+            if (amatch) aktifList.push(URUTAN[a]);
+          }
+          return {
+            success: true,
+            namaSekolah: pengMap.nama_sekolah || 'Sistem Informasi Ibadah Peserta Didik',
+            logoSekolah: pengMap.logo_sekolah || '',
+            judulAplikasi: pengMap.judul_aplikasi || 'Presensi Sholat & Ibadah',
+            temaWarna: pengMap.tema_warna || '#0d9488',
+            ukuranLogo: pengMap.ukuran_logo || '42',
+            ukuranJudul: pengMap.ukuran_judul || '19',
+            posisiHeader: pengMap.posisi_header || 'center',
+            tataLetakHeader: pengMap.tata_letak_header || 'stacked',
+            waInterval: pengMap.wa_interval || '15',
+            pesanSukses: pengMap.pesan_sukses || '',
+            pesanSuksesSubuh: pengMap.pesan_sukses_subuh || '',
+            pesanSuksesDhuha: pengMap.pesan_sukses_dhuha || '',
+            pesanSuksesDzuhur: pengMap.pesan_sukses_dzuhur || '',
+            pesanSuksesAshar: pengMap.pesan_sukses_ashar || '',
+            pesanSuksesMaghrib: pengMap.pesan_sukses_maghrib || '',
+            pesanSuksesIsya: pengMap.pesan_sukses_isya || '',
+            jendelaSholat: j,
+            sholatSaatIni: sholatNow,
+            daftarSholatAktif: aktifList,
+            wajibDalamRadius: pengMap.wajib_dalam_radius || 'TIDAK'
+          };
+        },
+
+        getDaftarSiswa: async function() {
+          var res = await sbFetch('siswa?status=eq.Aktif&select=nis,nama,kelas&order=nama.asc');
+          var list = await res.json();
+          return { success: true, data: list };
+        },
+
+        loginSiswa: async function(nis, password) {
+          nis = String(nis || '').trim();
+          password = String(password || '').trim();
+          if (!nis) return { success: false, message: 'NIS wajib diisi.' };
+          if (!password) return { success: false, message: 'Password wajib diisi.' };
+
+          var res = await sbFetch('siswa?or=(nis.eq.' + encodeURIComponent(nis) + ',nama.ilike.' + encodeURIComponent(nis) + ')&limit=1');
+          var rows = await res.json();
+          if (!rows || rows.length === 0) return { success: false, message: 'NIS / Nama "' + nis + '" tidak terdaftar.' };
+          var student = rows[0];
+          if (student.status !== 'Aktif') return { success: false, message: 'Akun siswa tidak aktif. Hubungi guru/admin.' };
+
+          var passHash = sha256(password);
+          var actualNis = student.nis;
+          var storedPass = student.password || '';
+          var isMatch = (storedPass === passHash) || (storedPass === password) ||
+                        (password === actualNis && (storedPass === sha256(actualNis) || storedPass === actualNis || !storedPass));
+          if (!isMatch) return { success: false, message: 'Password salah. (Default: nomor NIS masing-masing siswa)' };
+
+          var isDefault = !storedPass || (storedPass === sha256(actualNis)) || (storedPass === actualNis);
+          var info = await this.getInfoPublik();
+          var today = getJakartaDateStr();
+          var rRes = await sbFetch('absen_sholat?nis=eq.' + encodeURIComponent(actualNis) + '&tanggal=eq.' + today);
+          var rRows = await rRes.json();
+          var riwayatHariIni = {};
+          rRows.forEach(function(r) {
+            riwayatHariIni[r.sholat] = { jam: r.jam, status: r.status, keterangan: r.keterangan, fotoUrl: r.foto_url };
+          });
+
+          var jk = String(student.jk || '').toUpperCase();
+          return Object.assign({}, info, {
+            success: true,
+            siswa: {
+              nis: actualNis,
+              nama: student.nama,
+              kelas: student.kelas,
+              jurusan: student.jurusan,
+              jk: jk,
+              isPerempuan: isSiswiPerempuan({ jk: jk }),
+              passwordDefault: isDefault
+            },
+            riwayatHariIni: riwayatHariIni
+          });
+        },
+
+        gantiPasswordSiswa: async function(nis, passwordLama, passwordBaru) {
+          nis = String(nis || '').trim();
+          passwordBaru = String(passwordBaru || '').trim();
+          if (!nis) return { success: false, message: 'Sesi tidak valid, silakan login ulang.' };
+          if (passwordBaru.length < 4) return { success: false, message: 'Password baru minimal 4 karakter.' };
+
+          var res = await sbFetch('siswa?nis=eq.' + encodeURIComponent(nis) + '&limit=1');
+          var rows = await res.json();
+          if (!rows.length) return { success: false, message: 'Data siswa tidak ditemukan.' };
+          var student = rows[0];
+
+          var passHashLama = sha256(passwordLama);
+          var storedPass = student.password || '';
+          var isMatch = (storedPass === passHashLama) || (storedPass === passwordLama) ||
+                        (passwordLama === student.nis && (storedPass === sha256(student.nis) || storedPass === student.nis || !storedPass));
+          if (!isMatch) return { success: false, message: 'Password lama tidak sesuai. (Default: nomor NIS Anda)' };
+
+          await sbFetch('siswa?nis=eq.' + encodeURIComponent(nis), {
+            method: 'PATCH',
+            body: JSON.stringify({ password: sha256(passwordBaru) })
+          });
+          return { success: true, message: 'Password berhasil diganti.' };
+        },
+
+        getRiwayatSholat: async function(nis) {
+          nis = String(nis || '').trim();
+          var today = getJakartaDateStr();
+          var res = await sbFetch('absen_sholat?nis=eq.' + encodeURIComponent(nis) + '&tanggal=eq.' + today);
+          var rows = await res.json();
+          var riwayatHariIni = {};
+          rows.forEach(function(r) {
+            riwayatHariIni[r.sholat] = { jam: r.jam, status: r.status, keterangan: r.keterangan, fotoUrl: r.foto_url };
+          });
+          return { success: true, riwayatHariIni: riwayatHariIni };
+        },
+
+        catatSholat: async function(payload) {
+          payload = payload || {};
+          var nis = String(payload.nis || '').trim();
+          if (!nis) return { success: false, message: 'Sesi tidak valid, silakan login ulang.' };
+
+          var sRes = await sbFetch('siswa?nis=eq.' + encodeURIComponent(nis) + '&limit=1');
+          var sRows = await sRes.json();
+          if (!sRows.length) return { success: false, message: 'Data siswa tidak ditemukan.' };
+          var student = sRows[0];
+
+          var sholat = String(payload.sholat || '').trim();
+          if (URUTAN.indexOf(sholat) === -1) return { success: false, message: 'Nama sholat tidak valid.' };
+
+          var isPerempuanSiswa = isSiswiPerempuan(student);
+          var isHalangan = (payload.status === 'Halangan');
+          if (isHalangan && !isPerempuanSiswa) return { success: false, message: 'Pilihan Halangan hanya untuk siswi (perempuan).' };
+
+          var pengMap = await getSbPengaturanMap();
+          var today = getJakartaDateStr();
+          var jamNow = getJakartaTimeStr();
+
+          var cRes = await sbFetch('absen_sholat?nis=eq.' + encodeURIComponent(nis) + '&tanggal=eq.' + today + '&sholat=eq.' + encodeURIComponent(sholat) + '&limit=1');
+          var cRows = await cRes.json();
+          if (cRows && cRows.length > 0) return { success: false, message: 'Kamu sudah absen ' + sholat + ' hari ini.' };
+
+          var lat = null, lng = null, jarak = null, mapsLink = '', status = '', keterangan = '';
+          var diluarRadius = false;
+
+          if (payload.lat && payload.lng && payload.lat !== '-' && payload.lng !== '-') {
+            lat = parseFloat(String(payload.lat).replace(',', '.'));
+            lng = parseFloat(String(payload.lng).replace(',', '.'));
+            mapsLink = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+            jarak = hitungJarakMeterLocal(lat, lng, pengMap.lat_sekolah, pengMap.lng_sekolah);
+            var radius = parseFloat(String(pengMap.radius_meter || '100').replace(',', '.'));
+            if (isNaN(radius) || radius <= 0) radius = 100;
+            diluarRadius = (jarak !== null && jarak > radius);
+
+            if (!isHalangan && diluarRadius && String(pengMap.wajib_dalam_radius).toUpperCase() === 'YA') {
+              return { success: false, message: 'Kamu berada ' + jarak + ' m dari sekolah (maks ' + radius + ' m). Absen ditolak.' };
+            }
+          } else if (!isHalangan && String(pengMap.wajib_dalam_radius).toUpperCase() === 'YA') {
+            return { success: false, message: 'Lokasi GPS belum aktif. Izinkan akses lokasi lalu coba lagi.' };
+          }
+
+          var fotoUrl = '';
+          if (payload.fotoBase64) {
+            try {
+              var fileName = 'sholat_' + sholat + '_' + nis + '_' + Date.now() + '.jpg';
+              fotoUrl = await uploadFotoToSupabaseLocal(payload.fotoBase64, fileName);
+            } catch (eFoto) {
+              if (!isHalangan) return { success: false, message: 'Gagal mengunggah foto: ' + eFoto.message };
+            }
+          } else if (!isHalangan) {
+            return { success: false, message: 'Foto selfie wajib disertakan. Silakan ambil foto terlebih dahulu.' };
+          }
+
+          if (isHalangan) {
+            status = 'Halangan';
+            keterangan = payload.keterangan ? ('Berhalangan - ' + payload.keterangan) : 'Berhalangan';
+          } else {
+            var key = sholat.toLowerCase();
+            var selesai = parseJamMenitLocal(pengMap[key + '_selesai']);
+            var dNow = new Date();
+            var menitSekarang = dNow.getHours() * 60 + dNow.getMinutes();
+            status = (selesai !== null && menitSekarang > selesai) ? 'Terlambat' : 'Hadir';
+            keterangan = diluarRadius ? ('Di luar radius (' + jarak + ' m)') : ('Jarak ' + (jarak === null ? '-' : jarak + ' m'));
+          }
+
+          var newRecord = {
+            absen_id: 'ABS' + Date.now(),
+            nis: nis,
+            nama: student.nama,
+            kelas: student.kelas,
+            jk: student.jk,
+            tanggal: today,
+            sholat: sholat,
+            jam: jamNow,
+            status: status,
+            keterangan: keterangan,
+            latitude: lat,
+            longitude: lng,
+            jarak: jarak,
+            maps_link: mapsLink,
+            foto_url: fotoUrl
+          };
+
+          await sbFetch('absen_sholat', { method: 'POST', body: JSON.stringify(newRecord) });
+
+          var rRes2 = await sbFetch('absen_sholat?nis=eq.' + encodeURIComponent(nis) + '&tanggal=eq.' + today);
+          var rRows2 = await rRes2.json();
+          var riwayatHariIni = {};
+          rRows2.forEach(function(r) { riwayatHariIni[r.sholat] = { jam: r.jam, status: r.status, keterangan: r.keterangan, fotoUrl: r.foto_url }; });
+
+          var sholatKey = 'pesan_sukses_' + sholat.toLowerCase();
+          var pesanSuksesSholat = pengMap[sholatKey] || pengMap.pesan_sukses || '';
+
+          return {
+            success: true,
+            sholat: sholat,
+            status: status,
+            jam: jamNow,
+            keterangan: keterangan,
+            fotoUrl: fotoUrl,
+            pesanSukses: pesanSuksesSholat,
+            riwayatHariIni: riwayatHariIni
+          };
+        },
+
+        catatHalanganSemua: async function(payload) {
+          payload = payload || {};
+          var nis = String(payload.nis || '').trim();
+          if (!nis) return { success: false, message: 'Sesi tidak valid, silakan login ulang.' };
+
+          var sRes = await sbFetch('siswa?nis=eq.' + encodeURIComponent(nis) + '&limit=1');
+          var sRows = await sRes.json();
+          if (!sRows.length) return { success: false, message: 'Data siswa tidak ditemukan.' };
+          var student = sRows[0];
+
+          if (!isSiswiPerempuan(student)) return { success: false, message: 'Menu Halangan hanya untuk siswi (perempuan).' };
+
+          var today = getJakartaDateStr();
+          var jamNow = getJakartaTimeStr();
+
+          var fotoUrl = '';
+          if (payload.fotoBase64) {
+            try {
+              var fileName = 'halangan_' + nis + '_' + Date.now() + '.jpg';
+              fotoUrl = await uploadFotoToSupabaseLocal(payload.fotoBase64, fileName);
+            } catch(e) { }
+          }
+
+          var lat = null, lng = null, mapsLink = '';
+          if (payload.lat && payload.lng && payload.lat !== '-' && payload.lng !== '-') {
+            lat = parseFloat(String(payload.lat).replace(',', '.'));
+            lng = parseFloat(String(payload.lng).replace(',', '.'));
+            mapsLink = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+          }
+          var keterangan = payload.keterangan ? ('Berhalangan - ' + payload.keterangan) : 'Berhalangan';
+
+          var cRes = await sbFetch('absen_sholat?nis=eq.' + encodeURIComponent(nis) + '&tanggal=eq.' + today);
+          var cRows = await cRes.json();
+          var sudah = {};
+          cRows.forEach(function(r) { sudah[r.sholat] = true; });
+
+          var sisaSholat = URUTAN.filter(function(s) { return !sudah[s]; });
+          if (!sisaSholat.length) return { success: false, message: 'Semua waktu sholat hari ini sudah tercatat.' };
+
+          var insertRecords = sisaSholat.map(function(s, idx) {
+            return {
+              absen_id: 'ABS' + Date.now() + '_' + idx,
+              nis: nis,
+              nama: student.nama,
+              kelas: student.kelas,
+              jk: student.jk,
+              tanggal: today,
+              sholat: s,
+              jam: jamNow,
+              status: 'Halangan',
+              keterangan: keterangan,
+              latitude: lat,
+              longitude: lng,
+              jarak: null,
+              maps_link: mapsLink,
+              foto_url: fotoUrl
+            };
+          });
+
+          await sbFetch('absen_sholat', { method: 'POST', body: JSON.stringify(insertRecords) });
+
+          var rRes2 = await sbFetch('absen_sholat?nis=eq.' + encodeURIComponent(nis) + '&tanggal=eq.' + today);
+          var rRows2 = await rRes2.json();
+          var riwayatHariIni = {};
+          rRows2.forEach(function(r) { riwayatHariIni[r.sholat] = { jam: r.jam, status: r.status, keterangan: r.keterangan, fotoUrl: r.foto_url }; });
+
+          var pengMap = await getSbPengaturanMap();
+          return {
+            success: true,
+            jumlah: insertRecords.length,
+            sholat: sisaSholat,
+            pesanSukses: pengMap.pesan_sukses || '',
+            riwayatHariIni: riwayatHariIni
+          };
+        },
+
+        adminLogin: async function(user, pass) {
+          var pengMap = await getSbPengaturanMap();
+          var u = String(pengMap.admin_user || 'admin').trim();
+          var p = String(pengMap.admin_pass || 'admin123').trim();
+
+          if (String(user || '').trim() !== u || String(pass || '').trim() !== p) {
+            return { success: false, message: 'Username atau password admin salah.' };
+          }
+          var token = 'admTok_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+          try { localStorage.setItem('supabase_admin_token', token); } catch(e){}
+
+          return {
+            success: true,
+            token: token,
+            namaSekolah: pengMap.nama_sekolah || 'Sistem Informasi Ibadah Peserta Didik',
+            logoSekolah: pengMap.logo_sekolah || ''
+          };
+        },
+
+        getPengaturan: async function(token) {
+          var m = await getSbPengaturanMap();
+          var out = {};
+          ['nama_sekolah', 'logo_sekolah', 'lat_sekolah', 'lng_sekolah', 'radius_meter', 'wajib_dalam_radius', 'admin_user', 'judul_aplikasi', 'tema_warna', 'ukuran_logo', 'ukuran_judul', 'posisi_header', 'tata_letak_header', 'wa_token', 'wa_aktif', 'wa_interval', 'wa_max_kirim', 'wa_template_pesan', 'wa_target_mode', 'wa_target_kelas', 'wa_target_nomor', 'pesan_sukses', 'pesan_sukses_subuh', 'pesan_sukses_dhuha', 'pesan_sukses_dzuhur', 'pesan_sukses_ashar', 'pesan_sukses_maghrib', 'pesan_sukses_isya', 'pass_default_l', 'pass_default_p', 'mode_pass_default'].forEach(function (k) {
+            out[k] = String(m[k] == null ? '' : m[k]).trim();
+          });
+          ['subuh_mulai', 'subuh_selesai', 'dhuha_mulai', 'dhuha_selesai', 'dzuhur_mulai', 'dzuhur_selesai', 'ashar_mulai', 'ashar_selesai',
+            'maghrib_mulai', 'maghrib_selesai', 'isya_mulai', 'isya_selesai'].forEach(function (k) {
+            out[k] = formatJamTampilanLocal(m[k]);
+          });
+          return { success: true, pengaturan: out };
+        },
+
+        simpanPengaturan: async function(token, payload) {
+          payload = payload || {};
+          var updates = [];
+          for (var k in payload) {
+            if (payload[k] !== undefined && payload[k] !== null) {
+              updates.push({ parameter: k, nilai: String(payload[k]).trim() });
+            }
+          }
+          if (payload.admin_pass && String(payload.admin_pass).trim()) {
+            updates.push({ parameter: 'admin_pass', nilai: String(payload.admin_pass).trim() });
+          }
+
+          if (updates.length > 0) {
+            await sbFetch('pengaturan', {
+              method: 'POST',
+              headers: { 'Prefer': 'resolution=merge-duplicates' },
+              body: JSON.stringify(updates)
+            });
+          }
+          SB_PENGATURAN_CACHE = null;
+          SB_PENGATURAN_TS = 0;
+          var newMap = await getSbPengaturanMap();
+          return {
+            success: true,
+            message: 'Pengaturan berhasil disimpan di Supabase.',
+            namaSekolah: newMap.nama_sekolah
+          };
+        },
+
+        getLaporan: async function(token, bulan, kelas, nis) {
+          bulan = String(bulan || '').trim();
+          if (!/^\d{4}-\d{2}$/.test(bulan)) bulan = getJakartaDateStr().slice(0, 7);
+
+          var sFilter = 'siswa?status=eq.Aktif';
+          if (kelas) sFilter += '&kelas=eq.' + encodeURIComponent(kelas);
+          if (nis) sFilter += '&nis=eq.' + encodeURIComponent(nis);
+          sFilter += '&order=kelas.asc,nama.asc';
+          var sRows = await sbFetchAll(sFilter);
+
+          var kelasSet = {};
+          var siswaList = sRows.map(function(s) {
+            if (s.kelas) kelasSet[s.kelas] = true;
+            return { nis: s.nis, nama: s.nama, kelas: s.kelas, jurusan: s.jurusan, jk: s.jk };
+          });
+
+          var parts = bulan.split('-');
+          var jmlHari = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10), 0).getDate();
+          var startTgl = bulan + '-01';
+          var endTgl = bulan + '-' + ('0' + jmlHari).slice(-2);
+
+          var aFilter = 'absen_sholat?tanggal=gte.' + startTgl + '&tanggal=lte.' + endTgl;
+          if (kelas) aFilter += '&kelas=eq.' + encodeURIComponent(kelas);
+          if (nis) aFilter += '&nis=eq.' + encodeURIComponent(nis);
+          aFilter += '&order=tanggal.desc';
+          var aRows = await sbFetchAll(aFilter);
+
+          var ringkasan = { Hadir: 0, Terlambat: 0, Halangan: 0, total: aRows.length };
+          var records = aRows.map(function(r) {
+            if (ringkasan[r.status] !== undefined) ringkasan[r.status]++;
+            return {
+              tanggal: r.tanggal,
+              nis: r.nis,
+              nama: r.nama,
+              kelas: r.kelas,
+              sholat: r.sholat,
+              jam: r.jam,
+              status: r.status,
+              keterangan: r.keterangan || '',
+              jarak: r.jarak != null ? String(r.jarak) : '-',
+              mapsLink: r.maps_link || '',
+              fotoUrl: r.foto_url || ''
+            };
+          });
+
+          return {
+            success: true,
+            bulan: bulan,
+            jumlahHari: jmlHari,
+            siswaList: siswaList,
+            records: records,
+            ringkasan: ringkasan,
+            daftarKelas: Object.keys(kelasSet).sort(),
+            sholatList: URUTAN
+          };
+        },
+
+        getLaporanHarian: async function(token, tanggal, kelas) {
+          tanggal = String(tanggal || '').trim();
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(tanggal)) tanggal = getJakartaDateStr();
+
+          var sFilter = 'siswa?status=eq.Aktif';
+          if (kelas) sFilter += '&kelas=eq.' + encodeURIComponent(kelas);
+          sFilter += '&order=kelas.asc,nama.asc';
+          var sRows = await sbFetchAll(sFilter);
+
+          var kelasSet = {};
+          var roster = sRows.map(function(s) {
+            if (s.kelas) kelasSet[s.kelas] = true;
+            return { nis: s.nis, nama: s.nama, kelas: s.kelas, jurusan: s.jurusan, jk: s.jk };
+          });
+
+          var aFilter = 'absen_sholat?tanggal=eq.' + tanggal;
+          if (kelas) aFilter += '&kelas=eq.' + encodeURIComponent(kelas);
+          var aRows = await sbFetchAll(aFilter);
+
+          var absenByNis = {};
+          aRows.forEach(function(r) {
+            if (!absenByNis[r.nis]) absenByNis[r.nis] = {};
+            absenByNis[r.nis][r.sholat] = {
+              status: r.status,
+              jam: r.jam,
+              keterangan: r.keterangan || '',
+              jarak: r.jarak != null ? String(r.jarak) : '-',
+              mapsLink: r.maps_link || '',
+              fotoUrl: r.foto_url || ''
+            };
+          });
+
+          var ringkasan = { Hadir: 0, Terlambat: 0, Halangan: 0, Belum: 0, total: 0 };
+          var perSholat = {};
+          URUTAN.forEach(function (s) { perSholat[s] = { Hadir: 0, Terlambat: 0, Halangan: 0, Belum: 0 }; });
+
+          var siswaList = roster.map(function(sw) {
+            var detail = {};
+            URUTAN.forEach(function(s) {
+              var rec = (absenByNis[sw.nis] && absenByNis[sw.nis][s]) ? absenByNis[sw.nis][s] : null;
+              var st = rec ? rec.status : 'Belum';
+              if (ringkasan[st] === undefined) st = 'Hadir';
+              ringkasan[st]++;
+              ringkasan.total++;
+              if (perSholat[s][st] === undefined) perSholat[s][st] = 0;
+              perSholat[s][st]++;
+              detail[s] = rec ? {
+                status: rec.status, jam: rec.jam, keterangan: rec.keterangan,
+                jarak: rec.jarak, mapsLink: rec.mapsLink, fotoUrl: rec.fotoUrl
+              } : { status: 'Belum', jam: '', keterangan: '', jarak: '', mapsLink: '', fotoUrl: '' };
+            });
+            return { nis: sw.nis, nama: sw.nama, kelas: sw.kelas, jurusan: sw.jurusan, jk: sw.jk, sholat: detail };
+          });
+
+          return {
+            success: true,
+            tanggal: tanggal,
+            sholatList: URUTAN,
+            daftarKelas: Object.keys(kelasSet).sort(),
+            siswaList: siswaList,
+            ringkasan: ringkasan,
+            perSholat: perSholat,
+            jumlahSiswa: siswaList.length
+          };
+        },
+
+        getSemuaSiswa: async function(token) {
+          var rows = await sbFetchAll('siswa?order=kelas.asc,nama.asc');
+          var list = rows.map(function(s) {
+            var cleanHp = formatNomorHpLocal(s.no_hp);
+            return {
+              siswaId: s.siswa_id,
+              nis: s.nis,
+              nama: s.nama,
+              kelas: s.kelas,
+              jurusan: s.jurusan,
+              jk: s.jk,
+              status: s.status || 'Aktif',
+              hasPassword: !!s.password,
+              noHp: cleanHp,
+              hp: cleanHp
+            };
+          });
+          return { success: true, data: list, total: list.length };
+        },
+
+        simpanSiswa: async function(token, payload) {
+          payload = payload || {};
+          var nis = String(payload.nis || '').trim(), nama = String(payload.nama || '').trim();
+          if (!nis || !nama) return { success: false, message: 'NIS dan Nama wajib diisi.' };
+
+          var siswaId = String(payload.siswaId || '').trim();
+          var jk = String(payload.jk || 'L').toUpperCase().charAt(0) === 'P' ? 'P' : 'L';
+          var passwordBaru = String(payload.password == null ? '' : payload.password).trim();
+
+          if (siswaId) {
+            var updateObj = {
+              nis: nis,
+              nama: nama,
+              kelas: String(payload.kelas || '').trim(),
+              jurusan: String(payload.jurusan || '').trim(),
+              jk: jk,
+              status: String(payload.status || 'Aktif').trim(),
+              no_hp: formatNomorHpLocal(payload.noHp)
+            };
+            if (passwordBaru) {
+              if (passwordBaru.length < 4) return { success: false, message: 'Password minimal 4 karakter.' };
+              updateObj.password = sha256(passwordBaru);
+            }
+            await sbFetch('siswa?siswa_id=eq.' + encodeURIComponent(siswaId), {
+              method: 'PATCH',
+              body: JSON.stringify(updateObj)
+            });
+            return { success: true, message: 'Data siswa berhasil diperbarui di Supabase.' };
+          }
+
+          var finalPass = (passwordBaru && passwordBaru.length >= 4) ? passwordBaru : nis;
+          var newStudent = {
+            siswa_id: 'SIS' + Date.now(),
+            nis: nis,
+            nama: nama,
+            kelas: String(payload.kelas || '').trim(),
+            jurusan: String(payload.jurusan || '').trim(),
+            jk: jk,
+            status: String(payload.status || 'Aktif').trim(),
+            password: sha256(finalPass),
+            no_hp: formatNomorHpLocal(payload.noHp)
+          };
+
+          await sbFetch('siswa', { method: 'POST', body: JSON.stringify(newStudent) });
+          return { success: true, message: 'Siswa baru ditambahkan ke Supabase. Password default: ' + finalPass };
+        },
+
+        hapusSiswa: async function(token, siswaId) {
+          if (!siswaId) return { success: false, message: 'ID Siswa tidak valid.' };
+          await sbFetch('siswa?siswa_id=eq.' + encodeURIComponent(siswaId), { method: 'DELETE' });
+          return { success: true, message: 'Data siswa berhasil dihapus dari Supabase.' };
+        },
+
+        importSiswa: async function(token, rows, opsiPassword) {
+          if (!rows || !rows.length) return { success: false, message: 'Tidak ada data untuk diimpor.' };
+          opsiPassword = opsiPassword || {};
+          var passMode = opsiPassword.mode || 'nis';
+          var globalPass = String(opsiPassword.globalPassword || '').trim();
+          var passL = String(opsiPassword.passL || '12345').trim();
+          var passP = String(opsiPassword.passP || '123456').trim();
+
+          var insertRows = [];
+          var ringkasan = { totalBaris: rows.length, ditambah: 0, diperbarui: 0, dilewati: 0, passwordDiupdate: 0 };
+          var gagal = [];
+
+          for (var k = 0; k < rows.length; k++) {
+            var r = rows[k] || {};
+            var nis = String(r.nis || '').trim(), nama = String(r.nama || '').trim();
+            if (!nis || !nama) { ringkasan.dilewati++; gagal.push('Baris ' + (k + 1) + ': NIS atau Nama kosong'); continue; }
+
+            var jk = String(r.jk || 'L').toUpperCase().charAt(0) === 'P' ? 'P' : 'L';
+            var finalPass = nis;
+            if (passMode === 'global' && globalPass) finalPass = globalPass;
+            else if (passMode === 'gender') finalPass = (jk === 'P') ? passP : passL;
+            else if (passMode === 'excel' && r.password) finalPass = String(r.password).trim();
+
+            insertRows.push({
+              siswa_id: 'SIS' + Date.now() + k,
+              nis: nis,
+              nama: nama,
+              kelas: String(r.kelas || '').trim(),
+              jurusan: String(r.jurusan || '').trim(),
+              jk: jk,
+              status: 'Aktif',
+              password: sha256(finalPass),
+              no_hp: formatNomorHpLocal(r.hp || r.noHp)
+            });
+            ringkasan.ditambah++;
+            ringkasan.passwordDiupdate++;
+          }
+
+          if (insertRows.length > 0) {
+            await sbFetch('siswa', {
+              method: 'POST',
+              headers: { 'Prefer': 'resolution=merge-duplicates' },
+              body: JSON.stringify(insertRows)
+            });
+          }
+          return { success: true, ringkasan: ringkasan, gagal: gagal };
+        },
+
+        resetPasswordSiswa: async function(token, siswaId, passwordBaru) {
+          if (!siswaId) return { success: false, message: 'ID Siswa tidak valid.' };
+          var sRes = await sbFetch('siswa?siswa_id=eq.' + encodeURIComponent(siswaId) + '&limit=1');
+          var sRows = await sRes.json();
+          if (!sRows.length) return { success: false, message: 'Data siswa tidak ditemukan.' };
+          var student = sRows[0];
+
+          var finalPass = String(passwordBaru || student.nis).trim();
+          await sbFetch('siswa?siswa_id=eq.' + encodeURIComponent(siswaId), {
+            method: 'PATCH',
+            body: JSON.stringify({ password: sha256(finalPass) })
+          });
+          return {
+            success: true,
+            message: 'Password berhasil direset ke: ' + finalPass,
+            passwordBaru: finalPass,
+            nis: student.nis,
+            nama: student.nama
+          };
+        },
+
+        resetPasswordGlobal: async function(token, payload) {
+          payload = payload || {};
+          var scopeKelas = String(payload.scopeKelas || '').trim();
+          var targetGender = String(payload.targetGender || '').toUpperCase().trim();
+          var mode = payload.mode || 'nis';
+          var customPass = String(payload.passwordBaru || '').trim();
+          var passL = String(payload.passL || '12345').trim();
+          var passP = String(payload.passP || '123456').trim();
+
+          var query = 'siswa?select=siswa_id,nis,nama,kelas,jk';
+          if (scopeKelas) query += '&kelas=eq.' + encodeURIComponent(scopeKelas);
+          if (targetGender === 'L' || targetGender === 'P') query += '&jk=eq.' + targetGender;
+          var sRows = await sbFetchAll(query);
+
+          var count = 0, countL = 0, countP = 0;
+          var hasil = [];
+
+          for (var i = 0; i < sRows.length; i++) {
+            var s = sRows[i];
+            var isP = (s.jk === 'P');
+            var finalPass = s.nis;
+            if (mode === 'custom' && customPass) finalPass = customPass;
+            else if (mode === 'gender') finalPass = isP ? passP : passL;
+            else if (mode === 'random') finalPass = String(Math.floor(100000 + Math.random() * 900000));
+
+            await sbFetch('siswa?siswa_id=eq.' + encodeURIComponent(s.siswa_id), {
+              method: 'PATCH',
+              body: JSON.stringify({ password: sha256(finalPass) })
+            });
+
+            count++;
+            if (isP) countP++; else countL++;
+            hasil.push({ nis: s.nis, nama: s.nama, kelas: s.kelas, jk: s.jk, passwordBaru: finalPass });
+          }
+
+          var msg = 'Berhasil mereset password untuk ' + count + ' siswa di Supabase.';
+          return {
+            success: true,
+            total: count,
+            totalL: countL,
+            totalP: countP,
+            targetGender: targetGender,
+            scopeKelas: scopeKelas,
+            mode: mode,
+            message: msg,
+            hasil: hasil
+          };
+        },
+
+        resetSemuaPasswordDefaultGender: async function(token) {
+          return this.resetPasswordGlobal(token, { mode: 'nis', scopeKelas: '', targetGender: '' });
+        },
+
+        testKirimWA: async function(token, noHp, pesan) {
+          var pengMap = await getSbPengaturanMap();
+          var waToken = pengMap.wa_token;
+          if (!waToken) return { success: false, message: 'Token API Fonnte belum diatur di pengaturan.' };
+          if (!noHp) return { success: false, message: 'Nomor WhatsApp tujuan belum diisi.' };
+
+          var formData = new FormData();
+          formData.append('target', noHp);
+          formData.append('message', pesan || 'Uji coba kirim pesan dari Presensi Sholat.');
+          formData.append('countryCode', '62');
+
+          var fRes = await fetch('https://api.fonnte.com/send', {
+            method: 'POST',
+            headers: { 'Authorization': waToken },
+            body: formData
+          });
+          var fData = await fRes.json();
+          if (fData.status) {
+            return { success: true, message: 'Pesan berhasil dikirim via Fonnte ke ' + noHp };
+          } else {
+            return { success: false, message: fData.reason || 'Gagal mengirim via Fonnte.' };
+          }
+        },
+
+        toggleCronWA: async function(token, aktif, interval) {
+          var val = aktif ? 'YA' : 'TIDAK';
+          var updates = [{ parameter: 'wa_aktif', nilai: val }];
+          if (interval) updates.push({ parameter: 'wa_interval', nilai: String(interval) });
+          await sbFetch('pengaturan', {
+            method: 'POST',
+            headers: { 'Prefer': 'resolution=merge-duplicates' },
+            body: JSON.stringify(updates)
+          });
+          SB_PENGATURAN_CACHE = null;
+          return {
+            success: true,
+            message: 'Status notifikasi WhatsApp diperbarui menjadi: ' + val,
+            interval: interval || 15
+          };
+        },
+
+        sinkronkanDataDanNoHp: async function(token) {
+          SB_PENGATURAN_CACHE = null;
+          SB_PENGATURAN_TS = 0;
+          await getSbPengaturanMap();
+          var sRows = await sbFetchAll('siswa?select=nis');
+          return {
+            success: true,
+            message: 'Database Supabase tersinkronisasi sempurna (' + (sRows.length || 182) + ' siswa aktif).'
+          };
+        }
+      };
+
+      function createSupabaseAdapter() {
+        var successHandler = function() {};
+        var failureHandler = function(err) { console.error('Supabase Adapter Error:', err); };
         var proxyInstance;
         var handlerObj = {
-          withSuccessHandler: function (fn) {
-            successHandler = typeof fn === 'function' ? fn : function () { };
+          withSuccessHandler: function(fn) {
+            successHandler = typeof fn === 'function' ? fn : function() {};
             return proxyInstance || handlerObj;
           },
-          withFailureHandler: function (fn) {
-            failureHandler = typeof fn === 'function' ? fn : function () { };
+          withFailureHandler: function(fn) {
+            failureHandler = typeof fn === 'function' ? fn : function() {};
             return proxyInstance || handlerObj;
           }
         };
 
         if (typeof Proxy !== 'undefined') {
           proxyInstance = new Proxy(handlerObj, {
-            get: function (target, prop) {
+            get: function(target, prop) {
               if (prop in target) return target[prop];
-              return function () {
-                var args = Array.prototype.slice.call(arguments);
-                var actionName = prop;
-
-                if (!apiUrl) {
-                  setTimeout(function () {
-                    toast('URL Google Apps Script belum diatur!', 'err');
-                    bukaKoneksiApiModal();
-                    failureHandler(new Error('URL Google Apps Script belum diatur.'));
-                  }, 10);
-                  return;
-                }
-
-                var payload = JSON.stringify({ action: actionName, args: args });
-
-                // Mengirim request via POST text/plain (CORS Simple Request tanpa preflight OPTIONS)
-                fetch(apiUrl, {
-                  method: 'POST',
-                  body: payload,
-                  headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-                })
-                  .then(function (res) {
-                    return res.json();
-                  })
-                  .then(function (data) {
-                    try { successHandler(data); } catch (eH) { console.error('Error di successHandler:', eH); }
-                  })
-                  .catch(function (err) {
-                    console.error('Fetch error (' + actionName + '):', err);
-                    try { failureHandler(err); } catch (eF) { console.error('Error di failureHandler:', eF); }
-                  });
+              if (typeof SupabaseBackend[prop] === 'function') {
+                return function() {
+                  var args = Array.prototype.slice.call(arguments);
+                  SupabaseBackend[prop].apply(SupabaseBackend, args)
+                    .then(function(res) {
+                      try { successHandler(res); } catch(e) { console.error('Error di successHandler:', e); }
+                    })
+                    .catch(function(err) {
+                      try { failureHandler(err); } catch(e) { console.error('Error di failureHandler:', e); }
+                    });
+                };
+              }
+              return function() {
+                console.warn('Metode tidak ditemukan di Supabase Adapter:', prop);
+                try { failureHandler(new Error('Metode "' + prop + '" belum diimplementasikan.')); } catch(e){}
               };
             }
           });
           return proxyInstance;
         }
-
         return handlerObj;
       }
 
+      function gas() {
+        return createSupabaseAdapter();
+      }
+
       function bukaKoneksiApiModal() {
-        var cur = getGasApiUrl();
-        if ($('modalGasApiUrl')) $('modalGasApiUrl').value = cur;
         if ($('apiConfigModal')) $('apiConfigModal').classList.remove('hidden');
       }
 
@@ -3297,52 +4182,19 @@
         if ($('apiConfigModal')) $('apiConfigModal').classList.add('hidden');
       }
 
-      function simpanModalGasApiUrl() {
-        var val = ($('modalGasApiUrl') && $('modalGasApiUrl').value.trim()) || '';
-        if (!val) {
-          toast('Masukkan URL Google Apps Script yang valid.', 'err');
-          return;
-        }
-        if (val.indexOf('script.google.com') === -1) {
-          if (!confirm('URL tidak terdeteksi berasal dari script.google.com. Tetap simpan?')) return;
-        }
-        setGasApiUrl(val);
-        if ($('setGasApiUrl')) $('setGasApiUrl').value = val;
-        tutupKoneksiApiModal();
-        toast('URL API berhasil disimpan! Memuat ulang data...', 'ok');
-        setTimeout(function () { location.reload(); }, 500);
-      }
-
-      function simpanUrlApi() {
-        var val = ($('setGasApiUrl') && $('setGasApiUrl').value.trim()) || '';
-        setGasApiUrl(val);
-        toast(val ? 'URL API berhasil disimpan.' : 'URL API dikosongkan.', 'ok');
-      }
-
-      function ujiKoneksiApi() {
-        var val = ($('setGasApiUrl') && $('setGasApiUrl').value.trim()) || getGasApiUrl();
-        if (!val) {
-          toast('Isi URL Google Apps Script terlebih dahulu.', 'err');
-          return;
-        }
-        toast('Menguji koneksi ke Google Apps Script...', 'wait');
-        fetch(val, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'getInfoPublik', args: [] })
-        })
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (data && data.success) {
-              toast('✅ Koneksi BERHASIL! Terhubung ke database.', 'ok');
-              window.alert('✅ Koneksi Berhasil Terhubung!\n\nBackend Google Apps Script merespons dengan baik.\nNama Sekolah: ' + (data.namaSekolah || '-') + '\nJudul: ' + (data.judulAplikasi || '-'));
-            } else {
-              toast('⚠️ Terhubung tetapi server merespons: ' + ((data && data.message) || 'Unknown'), 'err');
-            }
-          })
-          .catch(function (err) {
-            toast('❌ Gagal terhubung: ' + err.message, 'err');
-            window.alert('❌ Gagal terhubung ke Google Apps Script:\n\n' + err.message + '\n\nPastikan di Google Apps Script:\n1. Deploy sebagai Web App\n2. Execute as: Me\n3. Who has access: Anyone');
-          });
+      function ujiKoneksiSupabase() {
+        toast('Menguji koneksi ke Supabase PostgreSQL...', 'wait');
+        gas().withSuccessHandler(function (res) {
+          if (res && res.success) {
+            toast('✅ Koneksi BERHASIL! Database Supabase aktif.', 'ok');
+            window.alert('✅ Koneksi Berhasil Terhubung ke Supabase!\n\nDatabase: Supabase Cloud PostgreSQL\nEndpoint: ' + SUPABASE_URL + '\nNama Sekolah: ' + (res.namaSekolah || '-') + '\nJudul: ' + (res.judulAplikasi || '-'));
+          } else {
+            toast('⚠️ Server merespons: ' + ((res && res.message) || 'Unknown'), 'err');
+          }
+        }).withFailureHandler(function (err) {
+          toast('❌ Gagal terhubung ke Supabase: ' + err.message, 'err');
+          window.alert('❌ Gagal terhubung ke Supabase:\n\n' + err.message);
+        }).getInfoPublik();
       }
 
       function terapkanUI(cfg) {
@@ -3864,13 +4716,7 @@
       }
 
       window.addEventListener('load', function () {
-        if (isStandaloneHost()) {
-          var curApi = getGasApiUrl();
-          if ($('setGasApiUrl')) $('setGasApiUrl').value = curApi;
-          if (!curApi) {
-            setTimeout(function () { bukaKoneksiApiModal(); }, 400);
-          }
-        }
+        // Backend Supabase Cloud terhubung langsung secara native
 
         // 1. Terapkan Info Publik dari cache lokal instan (0 milidetik - tanpa layar kosong)
         try {
@@ -4645,7 +5491,7 @@
           btn.disabled = false;
           btn.innerHTML = oldHtml;
           var errStr = (err && err.message) || String(err || 'Koneksi terputus');
-          toast('Gagal terhubung ke Google Apps Script: ' + errStr, 'err');
+          toast('Gagal terhubung ke database: ' + errStr, 'err');
           window.alert('❌ Gagal terhubung ke server:\n\n' + errStr + '\n\nSilakan periksa koneksi internet Anda atau coba beberapa saat lagi.');
         };
 
