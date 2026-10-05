@@ -1633,9 +1633,10 @@
         <button class="nav-item danger" onclick="logout()"><span class="ni">🚪</span>Keluar</button>
       </nav>
     </div>
+  </div>
 
-    <!-- ============ APP ADMIN ============ -->
-    <div id="adminView" class="hidden">
+  <!-- ============ APP ADMIN ============ -->
+  <div id="adminView" class="hidden">
       <div class="app-header admin header-stacked" id="headerAdmin">
         <div class="header-inner">
           <div class="header-logo-box" id="logoBoxAdmin">
@@ -1820,7 +1821,7 @@
               </div>
               <div>
                 <label>Subjudul Header (Nama Sekolah / Tagline Bebas)</label>
-                <input type="text" id="setNama" placeholder="SMKN 1 Magelang" oninput="updateLivePreview()">
+                <input type="text" id="setNamaSub" placeholder="SMKN 1 Magelang" oninput="if($('setNama'))$('setNama').value=this.value; updateLivePreview();">
                 <div class="hint">Ditampilkan tepat di bawah judul persis sesuai teks yang diketik.</div>
               </div>
 
@@ -1943,7 +1944,7 @@
             </div>
             <div class="form-grid">
               <div class="fg-full"><label>Nama Sekolah</label><input type="text" id="setNama" placeholder="Nama sekolah"
-                  oninput="updateLivePreview()"></div>
+                  oninput="if($('setNamaSub'))$('setNamaSub').value=this.value; updateLivePreview();"></div>
               <div><label>Latitude Sekolah</label><input type="text" id="setLat" inputmode="decimal"
                   placeholder="-7.5342"></div>
               <div><label>Longitude Sekolah</label><input type="text" id="setLng" inputmode="decimal"
@@ -4300,7 +4301,7 @@
 
         var prevSub = $('prevSub');
         if (prevSub) {
-          var raw = ($('setNama') && $('setNama').value) || '';
+          var raw = ($('setNamaSub') && $('setNamaSub').value) || ($('setNama') && $('setNama').value) || '';
           var n = String(raw).replace(/^Aplikasi untuk Sekolah\s*/i, '').trim();
           prevSub.textContent = n || 'SMKN 1 Magelang';
         }
@@ -5849,8 +5850,9 @@
       function simpanLogoDanJudulCepat() {
         if (!ADMIN_TOKEN) return;
         var j = ($('setJudulAplikasi') && $('setJudulAplikasi').value.trim()) || 'Presensi Sholat & Ibadah';
-        var n = ($('setNama') && $('setNama').value.trim()) || '';
+        var n = ($('setNamaSub') && $('setNamaSub').value.trim()) || ($('setNama') && $('setNama').value.trim()) || '';
         n = n.replace(/^Aplikasi untuk Sekolah\s*/i, '').trim();
+        if ($('setNamaSub')) $('setNamaSub').value = n;
         if ($('setNama')) $('setNama').value = n;
         if (!n) { toast('Nama sekolah / subjudul wajib diisi.', 'err'); return; }
 
@@ -5903,6 +5905,7 @@
             }
           });
           if ($('setAdminPass')) $('setAdminPass').value = '';
+          if ($('setNamaSub') && $('setNama')) $('setNamaSub').value = $('setNama').value;
           updateWaIntervalHint();
           updateWaMaxKirimHint();
           toggleWaTargetMode();
@@ -5942,6 +5945,7 @@
         Object.keys(SET_MAP).forEach(function (k) { var el = $(SET_MAP[k]); if (el) payload[k] = el.value; });
         payload.nama_sekolah = String(payload.nama_sekolah || '').replace(/^Aplikasi untuk Sekolah\s*/i, '').trim();
         if ($('setNama')) $('setNama').value = payload.nama_sekolah;
+        if ($('setNamaSub')) $('setNamaSub').value = payload.nama_sekolah;
         var pass = $('setAdminPass') ? $('setAdminPass').value.trim() : ''; if (pass) payload.admin_pass = pass;
         if (logoChanged) payload['logo_sekolah'] = logoBase64;
         if (!payload.nama_sekolah) { toast('Nama sekolah / subjudul wajib diisi.', 'err'); return; }
