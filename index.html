@@ -900,7 +900,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      z-index: 100;
+      z-index: 10000;
       animation: fade 0.2s;
     }
 
@@ -2505,15 +2505,17 @@
           <button class="close-x" onclick="tutupAdminLogin()">&times;</button>
         </div>
         <label>Username</label>
-        <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin">
+        <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin" value="admin" onkeydown="if(event.key==='Enter'){$('admPass').focus();}">
         <label style="margin-top:12px;">Password</label>
         <div style="position:relative;">
-          <input type="password" id="admPass" placeholder="Password admin" style="padding-right:42px;">
+          <input type="password" id="admPass" placeholder="Password admin (admin123)" style="padding-right:42px;" onkeydown="if(event.key==='Enter'){doAdminLogin();}">
           <button type="button" class="btn-toggle-eye" onclick="toggleLihatPass('admPass', this)"
             title="Lihat/Sembunyikan">👁️</button>
         </div>
-        <div class="hint">Kredensial diatur di sheet Pengaturan (Username default: <b>admin</b>, Password default:
-          <b>admin123</b>).</div>
+        <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+          <span>Default: <b>admin</b> / <b>admin123</b></span>
+          <button type="button" class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:11px;color:var(--admin);" onclick="isiDefaultAdmin()">Isi Otomatis</button>
+        </div>
         <button class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
       </div>
     </div>
@@ -5588,22 +5590,62 @@
       }
 
       // ================= LOGIN ADMIN =================
-      function bukaAdminLogin() { $('adminLoginModal').classList.remove('hidden'); $('admUser').value = ''; $('admPass').value = ''; setTimeout(function () { $('admUser').focus(); }, 150); }
-      function tutupAdminLogin() { $('adminLoginModal').classList.add('hidden'); }
+      function bukaAdminLogin() {
+        var m = $('adminLoginModal');
+        if (!m) {
+          console.error('adminLoginModal tidak ditemukan!');
+          return;
+        }
+        m.classList.remove('hidden');
+        if (!$('admUser').value) $('admUser').value = 'admin';
+        $('admPass').value = '';
+        setTimeout(function () {
+          if ($('admPass')) $('admPass').focus();
+        }, 150);
+      }
+      function tutupAdminLogin() {
+        if ($('adminLoginModal')) $('adminLoginModal').classList.add('hidden');
+      }
+      function isiDefaultAdmin() {
+        if ($('admUser')) $('admUser').value = 'admin';
+        if ($('admPass')) $('admPass').value = 'admin123';
+        toast('Kredensial admin diisi otomatis.', 'ok');
+      }
       function doAdminLogin() {
-        var u = $('admUser').value.trim(), p = $('admPass').value;
-        if (!u || !p) { toast('Isi username & password.', 'err'); return; }
-        var btn = $('admLoginBtn'), old = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="spinner"></span><span>Masuk...</span>';
+        var u = (($('admUser') && $('admUser').value) || '').trim() || 'admin';
+        var p = (($('admPass') && $('admPass').value) || '').trim();
+        if (!p) {
+          toast('Masukkan password admin (default: admin123).', 'err');
+          if ($('admPass')) $('admPass').focus();
+          return;
+        }
+        var btn = $('admLoginBtn'), old = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span><span>Masuk...</span>'; }
         gas().withSuccessHandler(function (res) {
-          btn.disabled = false; btn.innerHTML = old;
-          if (!res || !res.success) { toast((res && res.message) || 'Login admin gagal.', 'err'); return; }
-          ADMIN_TOKEN = res.token; $('adminSchool').textContent = res.namaSekolah || 'Panel Admin';
-          localStorage.setItem('admin_sess', JSON.stringify({ u: u, p: p }));
-          if (res.logoSekolah !== undefined) terapkanLogoUI(res.logoSekolah);
-          terapkanUI(res);
-          tutupAdminLogin(); $('loginView').classList.add('hidden'); $('appView').classList.add('hidden');
-          $('adminView').classList.remove('hidden'); gotoAdminPage('Laporan'); gantiTabLaporan('harian'); muatSiswaAdmin();
-        }).withFailureHandler(function (err) { btn.disabled = false; btn.innerHTML = old; toast('Gagal terhubung: ' + err.message, 'err'); }).adminLogin(u, p);
+          if (btn) { btn.disabled = false; btn.innerHTML = old; }
+          if (!res || !res.success) {
+            toast((res && res.message) || 'Login admin gagal. Pastikan username dan password benar.', 'err');
+            return;
+          }
+          ADMIN_TOKEN = res.token;
+          if ($('adminSchool')) $('adminSchool').textContent = res.namaSekolah || 'Panel Admin';
+          try { localStorage.setItem('admin_sess', JSON.stringify({ u: u, p: p })); } catch (e) { }
+          if (res.logoSekolah !== undefined) {
+            try { terapkanLogoUI(res.logoSekolah); } catch (e) { }
+          }
+          try { terapkanUI(res); } catch (e) { }
+          tutupAdminLogin();
+          if ($('loginView')) $('loginView').classList.add('hidden');
+          if ($('appView')) $('appView').classList.add('hidden');
+          if ($('adminView')) $('adminView').classList.remove('hidden');
+          try { gotoAdminPage('Laporan'); } catch (e) { console.error('gotoAdminPage error:', e); }
+          try { gantiTabLaporan('harian'); } catch (e) { console.error('gantiTabLaporan error:', e); }
+          try { muatSiswaAdmin(); } catch (e) { console.error('muatSiswaAdmin error:', e); }
+          toast('Berhasil masuk ke Panel Admin!', 'ok');
+        }).withFailureHandler(function (err) {
+          if (btn) { btn.disabled = false; btn.innerHTML = old; }
+          toast('Gagal terhubung: ' + (err.message || err), 'err');
+        }).adminLogin(u, p);
       }
       function logoutAdmin() { localStorage.removeItem('admin_sess'); ADMIN_TOKEN = null; LAPORAN = null; LAPORAN_HARIAN = null; SISWA_ADMIN = []; PENGATURAN = null; $('adminView').classList.add('hidden'); $('loginView').classList.remove('hidden'); }
       function gotoAdminPage(page) {
@@ -6597,7 +6639,20 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
-          navigator.serviceWorker.register('./sw.js').catch(function (err) {
+          navigator.serviceWorker.register('./sw.js').then(function (reg) {
+            reg.update();
+            reg.addEventListener('updatefound', function () {
+              var newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', function () {
+                  if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+                    console.log('Versi baru aktif, memuat ulang halaman...');
+                    window.location.reload();
+                  }
+                });
+              }
+            });
+          }).catch(function (err) {
             console.log('SW registration note:', err);
           });
         });
