@@ -267,7 +267,7 @@
     @media(max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
 
     /* ================= MODALS ================= */
-    .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fade 0.2s; }
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; inset: 0; background: rgba(15, 23, 42, 0.65); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); display: flex; align-items: flex-end; justify-content: center; z-index: 99999; animation: fade 0.2s; }
     .modal.center { align-items: center; }
     @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
     .modal-box { background: #fff; width: 100%; max-width: 480px; border-radius: 26px 26px 0 0; padding: 22px; max-height: 94vh; overflow-y: auto; animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.15); }
@@ -370,7 +370,7 @@
         <p id="loginSchool">SMKN 1 Magelang</p>
       </div>
     </div>
-    <button class="admin-btn" title="Login Admin" onclick="bukaAdminLogin()">⚙️</button>
+    <button type="button" id="btnAdminHeader" class="admin-btn" title="Login Admin" onclick="bukaAdminLogin()">⚙️</button>
   </div>
   <div class="wrap">
     <div class="card">
@@ -388,7 +388,7 @@
       <div class="hint" id="loginPassHint">Password default = <b>Nomor NIS</b> masing-masing siswa. Segera ganti setelah masuk.</div>
       <button id="loginBtn" class="btn btn-primary" style="margin-top:16px;"><span>Masuk</span></button>
     </div>
-    <button class="btn btn-outline btn-block-mt" onclick="bukaAdminLogin()">⚙️ Panel Masuk Admin</button>
+    <button type="button" id="btnPanelMasukAdmin" class="btn btn-outline btn-block-mt" onclick="bukaAdminLogin()">⚙️ Panel Masuk Admin</button>
     <div class="foot">&copy; Sistem Presensi Sholat & Ibadah</div>
   </div>
 </div>
@@ -1141,21 +1141,24 @@
 </div>
 
 <!-- ============ MODAL LOGIN ADMIN ============ -->
-<div id="adminLoginModal" class="modal center hidden">
+<div id="adminLoginModal" class="modal center hidden" style="z-index: 99999;">
   <div class="modal-box">
     <div class="modal-head">
       <h3>🛡️ Login Admin</h3>
-      <button class="close-x" onclick="tutupAdminLogin()">&times;</button>
+      <button type="button" class="close-x" onclick="tutupAdminLogin()">&times;</button>
     </div>
     <label>Username</label>
-    <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin">
+    <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin" value="admin" onkeydown="if(event.key==='Enter'){$('admPass').focus();}">
     <label style="margin-top:12px;">Password</label>
     <div style="position:relative;">
-      <input type="password" id="admPass" placeholder="Password admin" style="padding-right:42px;">
+      <input type="password" id="admPass" placeholder="Password admin (admin123)" style="padding-right:42px;" onkeydown="if(event.key==='Enter'){doAdminLogin();}">
       <button type="button" class="btn-toggle-eye" onclick="toggleLihatPass('admPass', this)" title="Lihat/Sembunyikan">👁️</button>
     </div>
-    <div class="hint">Kredensial diatur di sheet Pengaturan (Username default: <b>admin</b>, Password default: <b>admin123</b>).</div>
-    <button class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
+    <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+      <span>Default: <b>admin</b> / <b>admin123</b></span>
+      <button type="button" class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:11px;color:var(--admin);" onclick="isiDefaultAdmin()">Isi Otomatis</button>
+    </div>
+    <button type="button" class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
   </div>
 </div>
 
@@ -3340,8 +3343,52 @@
   }
 
   // ================= LOGIN ADMIN =================
-  function bukaAdminLogin(){ $('adminLoginModal').classList.remove('hidden'); $('admUser').value=''; $('admPass').value=''; setTimeout(function(){ $('admUser').focus(); },150); }
-  function tutupAdminLogin(){ $('adminLoginModal').classList.add('hidden'); }
+  function bukaAdminLogin(e){
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    var m = $('adminLoginModal');
+    if (!m) {
+      console.error('adminLoginModal tidak ditemukan!');
+      var pPrompt = prompt('🛡️ MASUK MENU ADMIN\n\nMasukkan password admin (default: admin123):', 'admin123');
+      if (pPrompt !== null) {
+        if ($('admUser')) $('admUser').value = 'admin';
+        if ($('admPass')) $('admPass').value = pPrompt;
+        doAdminLogin();
+      }
+      return;
+    }
+
+    m.classList.remove('hidden');
+    m.style.setProperty('display', 'flex', 'important');
+    m.style.setProperty('z-index', '99999', 'important');
+    m.style.setProperty('visibility', 'visible', 'important');
+    m.style.setProperty('opacity', '1', 'important');
+
+    var uInput = $('admUser');
+    var pInput = $('admPass');
+    if (uInput && !uInput.value) uInput.value = 'admin';
+    if (pInput) pInput.value = '';
+    setTimeout(function () {
+      if (pInput) {
+        pInput.focus();
+        try { pInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) { }
+      }
+    }, 120);
+  }
+  function tutupAdminLogin(){
+    var m = $('adminLoginModal');
+    if (m) {
+      m.classList.add('hidden');
+      m.style.removeProperty('display');
+      m.style.removeProperty('z-index');
+      m.style.removeProperty('visibility');
+      m.style.removeProperty('opacity');
+    }
+  }
+  function isiDefaultAdmin(){
+    if ($('admUser')) $('admUser').value = 'admin';
+    if ($('admPass')) $('admPass').value = 'admin123';
+    toast('Kredensial admin diisi otomatis: admin / admin123', 'ok');
+  }
   function doAdminLogin(){
     var u=$('admUser').value.trim(), p=$('admPass').value;
     if(!u||!p){ toast('Isi username & password.','err'); return; }

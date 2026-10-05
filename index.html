@@ -894,13 +894,20 @@
     /* ================= MODALS ================= */
     .modal {
       position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
       inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.65);
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      z-index: 10000;
+      z-index: 99999;
       animation: fade 0.2s;
     }
 
@@ -1463,7 +1470,7 @@
           <p id="loginSchool">SMKN 1 Magelang</p>
         </div>
       </div>
-      <button class="admin-btn" title="Login Admin" onclick="bukaAdminLogin()">⚙️</button>
+      <button type="button" id="btnAdminHeader" class="admin-btn" title="Login Admin" onclick="bukaAdminLogin()">⚙️</button>
     </div>
     <div class="wrap">
       <div class="card">
@@ -1485,7 +1492,7 @@
           setelah masuk.</div>
         <button id="loginBtn" class="btn btn-primary" style="margin-top:16px;"><span>Masuk</span></button>
       </div>
-      <button class="btn btn-outline btn-block-mt" onclick="bukaAdminLogin()">⚙️ Panel Masuk Admin</button>
+      <button type="button" id="btnPanelMasukAdmin" class="btn btn-outline btn-block-mt" onclick="bukaAdminLogin()">⚙️ Panel Masuk Admin</button>
       <div class="foot">&copy; Sistem Presensi Sholat & Ibadah</div>
     </div>
   </div>
@@ -2498,11 +2505,11 @@
     </div>
 
     <!-- ============ MODAL LOGIN ADMIN ============ -->
-    <div id="adminLoginModal" class="modal center hidden">
+    <div id="adminLoginModal" class="modal center hidden" style="z-index: 99999;">
       <div class="modal-box">
         <div class="modal-head">
           <h3>🛡️ Login Admin</h3>
-          <button class="close-x" onclick="tutupAdminLogin()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupAdminLogin()">&times;</button>
         </div>
         <label>Username</label>
         <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin" value="admin" onkeydown="if(event.key==='Enter'){$('admPass').focus();}">
@@ -2516,7 +2523,7 @@
           <span>Default: <b>admin</b> / <b>admin123</b></span>
           <button type="button" class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:11px;color:var(--admin);" onclick="isiDefaultAdmin()">Isi Otomatis</button>
         </div>
-        <button class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
+        <button type="button" class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
       </div>
     </div>
 
@@ -4758,9 +4765,18 @@
 
         setupAutocomplete();
         if ($('crSiswaInput')) setupCariReset();
-        $('passInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
-        $('filterBulan').value = bulanIni();
-        $('filterTanggal').value = hariIniStr();
+        if ($('passInput')) $('passInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+        if ($('filterBulan')) $('filterBulan').value = bulanIni();
+        if ($('filterTanggal')) $('filterTanggal').value = hariIniStr();
+
+        var bPanel = $('btnPanelMasukAdmin');
+        if (bPanel) {
+          bPanel.addEventListener('click', function (e) { bukaAdminLogin(e); });
+        }
+        var bHdr = $('btnAdminHeader');
+        if (bHdr) {
+          bHdr.addEventListener('click', function (e) { bukaAdminLogin(e); });
+        }
 
         cekDeteksiWhatsApp();
 
@@ -5590,26 +5606,51 @@
       }
 
       // ================= LOGIN ADMIN =================
-      function bukaAdminLogin() {
+      function bukaAdminLogin(e) {
+        if (e && typeof e.preventDefault === 'function') e.preventDefault();
         var m = $('adminLoginModal');
         if (!m) {
           console.error('adminLoginModal tidak ditemukan!');
+          var pPrompt = prompt('🛡️ MASUK MENU ADMIN\n\nMasukkan password admin (default: admin123):', 'admin123');
+          if (pPrompt !== null) {
+            if ($('admUser')) $('admUser').value = 'admin';
+            if ($('admPass')) $('admPass').value = pPrompt;
+            doAdminLogin();
+          }
           return;
         }
+
         m.classList.remove('hidden');
-        if (!$('admUser').value) $('admUser').value = 'admin';
-        $('admPass').value = '';
+        m.style.setProperty('display', 'flex', 'important');
+        m.style.setProperty('z-index', '99999', 'important');
+        m.style.setProperty('visibility', 'visible', 'important');
+        m.style.setProperty('opacity', '1', 'important');
+
+        var uInput = $('admUser');
+        var pInput = $('admPass');
+        if (uInput && !uInput.value) uInput.value = 'admin';
+        if (pInput) pInput.value = '';
         setTimeout(function () {
-          if ($('admPass')) $('admPass').focus();
-        }, 150);
+          if (pInput) {
+            pInput.focus();
+            try { pInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) { }
+          }
+        }, 120);
       }
       function tutupAdminLogin() {
-        if ($('adminLoginModal')) $('adminLoginModal').classList.add('hidden');
+        var m = $('adminLoginModal');
+        if (m) {
+          m.classList.add('hidden');
+          m.style.removeProperty('display');
+          m.style.removeProperty('z-index');
+          m.style.removeProperty('visibility');
+          m.style.removeProperty('opacity');
+        }
       }
       function isiDefaultAdmin() {
         if ($('admUser')) $('admUser').value = 'admin';
         if ($('admPass')) $('admPass').value = 'admin123';
-        toast('Kredensial admin diisi otomatis.', 'ok');
+        toast('Kredensial admin diisi otomatis: admin / admin123', 'ok');
       }
       function doAdminLogin() {
         var u = (($('admUser') && $('admUser').value) || '').trim() || 'admin';
