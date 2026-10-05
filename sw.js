@@ -1,9 +1,11 @@
 // Service Worker untuk Presensi Sholat & Ibadah PWA / WebAPK Cache
-const CACHE_NAME = 'presensi-sholat-v1';
+const CACHE_NAME = 'presensi-sholat-v2';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -45,7 +47,7 @@ self.addEventListener('fetch', (event) => {
         }).catch(() => {});
         return cachedResponse;
       }
-      return fetch(event.request).catch(() => caches.match('./index.html'));
+      return fetch(event.request).catch(() => caches.match('/index.html'));
     })
   );
 });
