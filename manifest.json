@@ -1,7 +1,8 @@
 {
-  "name": "Presensi Sholat & Ibadah - SMKN 1 Magelang",
-  "short_name": "Presensi Sholat",
-  "description": "Aplikasi Presensi Sholat 5 Waktu & Dhuha Siswa SMKN 1 Magelang terintegrasi Google Sheets, GPS, dan Kamera Selfie",
+  "id": "/presensi-kloning/",
+  "name": "Presensi Sholat & Ibadah (Kloning)",
+  "short_name": "Presensi Kloning",
+  "description": "Aplikasi Presensi Sholat 5 Waktu & Dhuha Siswa (Edisi Kloning) terintegrasi Cloud Supabase, GPS Radius, dan Kamera Selfie",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
