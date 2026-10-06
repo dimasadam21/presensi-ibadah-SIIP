@@ -3740,14 +3740,22 @@
 
         simpanPengaturan: async function(token, payload) {
           payload = payload || {};
-          var updates = [];
+          var map = {};
           for (var k in payload) {
             if (payload[k] !== undefined && payload[k] !== null) {
-              updates.push({ parameter: k, nilai: String(payload[k]).trim() });
+              map[k] = String(payload[k]).trim();
             }
           }
           if (payload.admin_pass && String(payload.admin_pass).trim()) {
-            updates.push({ parameter: 'admin_pass', nilai: String(payload.admin_pass).trim() });
+            map['admin_pass'] = String(payload.admin_pass).trim();
+          } else if (map.hasOwnProperty('admin_pass') && !map['admin_pass']) {
+            // Jangan simpan admin_pass jika nilainya kosong (agar password lama tidak terhapus)
+            delete map['admin_pass'];
+          }
+
+          var updates = [];
+          for (var param in map) {
+            updates.push({ parameter: param, nilai: map[param] });
           }
 
           if (updates.length > 0) {

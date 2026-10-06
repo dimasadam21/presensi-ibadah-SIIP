@@ -1,5 +1,5 @@
 // Service Worker untuk Presensi Sholat & Ibadah PWA / WebAPK Cache
-const CACHE_NAME = 'presensi-sholat-v5';
+const CACHE_NAME = 'presensi-sholat-v6';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
