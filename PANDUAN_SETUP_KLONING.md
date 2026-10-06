@@ -136,4 +136,9 @@ Jika Anda ingin mengubah nama sekolah, judul aplikasi, radius GPS, atau jam shol
 | [`supabase_schema.sql`](./supabase_schema.sql) | Script SQL pembuatan struktur tabel & bucket storage Supabase baru |
 | [`seed_data_excel.sql`](./seed_data_excel.sql) | Data 182 siswa & konfigurasi awal untuk Supabase baru |
 | [`.env`](./.env) & [`.env.example`](./.env.example) | Template kredensial environment |
-| [`hubungkan_github_baru.bat`](./hubungkan_github_baru.bat) | Script otomatis untuk mengunggah ke repositori GitHub baru |
+| [`islamic_features.js`](./islamic_features.js) | Modul Al-Qur'an 114 surat, pelacak durasi baca, kompas kiblat, dzikir & doa harian |
+| [`auto_git_push.js`](./auto_git_push.js) | Skrip otomatis mendeteksi perubahan berkas dan melakukan git push |
+| [`mulai_auto_push.bat`](./mulai_auto_push.bat) | File batch untuk menjalankan auto git push secara visual |
+| [`mulai_auto_push_background.vbs`](./mulai_auto_push_background.vbs) | Menjalankan auto git push di latar belakang tanpa jendela CMD |
+| [`push_sekarang.bat`](./push_sekarang.bat) | Tombol 1-klik untuk melakukan git push secara instan kapan saja |
+| [`stop_auto_push.bat`](./stop_auto_push.bat) | File batch untuk menghentikan layanan pemantau auto push |
