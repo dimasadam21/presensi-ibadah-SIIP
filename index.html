@@ -80,16 +80,41 @@
     .app-header {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #fff;
-      padding: 22px 18px 24px;
-      border-radius: 0 0 26px 26px;
-      box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.28);
+      padding: 24px 18px 26px;
+      border-radius: 0 0 28px 28px;
+      box-shadow: 0 12px 30px -8px rgba(13, 148, 136, 0.3);
       position: relative;
+      overflow: hidden;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .app-header::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .app-header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: -20px;
+      width: 130px;
+      height: 130px;
+      background: radial-gradient(circle, rgba(204, 251, 241, 0.22) 0%, rgba(204, 251, 241, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .app-header.admin {
       background: linear-gradient(135deg, var(--admin), var(--admin-dark));
-      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.28);
+      box-shadow: 0 12px 30px -8px rgba(79, 70, 229, 0.3);
     }
 
     .header-inner {
@@ -98,6 +123,8 @@
       align-items: var(--header-align, center);
       text-align: var(--header-align, center);
       gap: 10px;
+      position: relative;
+      z-index: 2;
     }
 
     .header-inline .header-inner {
@@ -114,9 +141,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
       flex-shrink: 0;
       overflow: hidden;
       transition: width 0.2s, height 0.2s;
@@ -146,13 +173,24 @@
       letter-spacing: -0.02em;
       margin: 0;
       transition: font-size 0.2s;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
     }
 
     .app-header p {
-      font-size: 13px;
-      opacity: 0.92;
-      margin-top: 4px;
-      font-weight: 500;
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 4px 14px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      letter-spacing: 0.1px;
     }
 
     .admin-btn {
@@ -420,20 +458,232 @@
       color: #1d4ed8;
     }
 
-    /* ================= SHOLAT GRID (6 WAKTU) ================= */
-    .sec-title {
+    /* ================= FRESH & MODERN DASHBOARD UI ================= */
+    .card-profile-hero {
+      background: #ffffff;
+      border: 1px solid #edf2f7;
+      border-radius: 22px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+      margin-top: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .profile-main-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .profile-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .profile-greeting {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .profile-meta .nm {
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-meta .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-badge-col {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    /* Mini Progress Capaian Sholat Harian */
+    .daily-progress-box {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .daily-prog-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .daily-prog-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .prog-dot-icon {
+      font-size: 14px;
+    }
+
+    .daily-prog-count {
       font-size: 12px;
       font-weight: 800;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .daily-prog-track {
+      width: 100%;
+      height: 7px;
+      background: #f1f5f9;
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .daily-prog-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #14b8a6);
+      border-radius: 99px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Banner Khusus Siswi (Halangan / Haid) */
+    .card-halangan-banner {
+      background: linear-gradient(135deg, #fdf4ff, #fae8ff);
+      border: 1.5px solid #d8b4fe;
+      border-radius: 20px;
+      padding: 13px 16px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 14px rgba(168, 85, 247, 0.08);
+    }
+
+    .halangan-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .halangan-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .halangan-title {
+      font-weight: 800;
+      color: #7e22ce;
+      font-size: 13px;
+    }
+
+    .halangan-desc {
+      font-size: 11px;
+      color: #6b21a8;
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    .btn-halangan-pill {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #9333ea, #7e22ce);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+      font-family: inherit;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-halangan-pill:active {
+      transform: scale(0.96);
+    }
+
+    /* Card Jadwal Sholat Container */
+    .card-sholat-container {
+      background: #ffffff;
+      border: 1px solid #edf2f7;
+      border-radius: 22px;
+      padding: 18px 16px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+      margin-top: 14px;
+    }
+
+    .sholat-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .sholat-head-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sholat-head-emoji {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .sholat-head-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .sholat-head-sub {
+      font-size: 11px;
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin: 20px 4px 10px;
+      margin-top: 1px;
+    }
+
+    .sholat-live-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      background: #f1f5f9;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
     }
 
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 11px;
     }
 
     @media (min-width: 600px) {
@@ -442,65 +692,70 @@
       }
     }
 
+    /* Modern Sholat Card */
     .sholat-card {
-      background: var(--card);
-      border: 1.5px solid var(--border);
+      background: #ffffff;
+      border: 1.5px solid #f1f5f9;
       border-radius: 18px;
-      padding: 16px 12px;
+      padding: 14px 10px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 130px;
     }
 
     .sholat-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      border-color: #cbd5e1;
     }
 
     .sholat-card:active {
       transform: scale(0.97);
     }
 
-    .sholat-card.now {
-      border-color: var(--primary);
-      background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%);
-      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    .sholat-card .ic-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 6px;
+      transition: all 0.2s ease;
     }
 
     .sholat-card .ic {
-      font-size: 30px;
-      line-height: 1.1;
+      font-size: 24px;
+      line-height: 1;
     }
 
     .sholat-card .nm {
       font-weight: 800;
-      margin-top: 6px;
-      font-size: 15px;
+      font-size: 14.5px;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
     }
 
-    .sholat-card .st {
-      font-size: 12px;
-      margin-top: 6px;
-      font-weight: 600;
+    /* Active Sholat (Now) */
+    .sholat-card.now {
+      border: 2px solid var(--primary);
+      background: linear-gradient(165deg, #f0fdf4 0%, #ffffff 100%);
+      box-shadow: 0 8px 22px -4px rgba(13, 148, 136, 0.22);
+      transform: translateY(-2px);
     }
 
-    .sholat-card.done {
-      cursor: default;
-      background: #f8fafc;
-      border-color: #e2e8f0;
-    }
-
-    .sholat-card.locked {
-      opacity: 0.68;
-      cursor: not-allowed;
-      background: #f8fafc;
-      border-style: dashed;
-    }
-
-    .sholat-card.locked .ic {
-      filter: grayscale(0.7);
+    .sholat-card.now .ic-wrap {
+      background: var(--primary-light);
+      transform: scale(1.06);
     }
 
     .now-tag {
@@ -510,40 +765,128 @@
       font-size: 9px;
       font-weight: 800;
       background: var(--primary);
-      color: #fff;
-      padding: 2px 8px;
+      color: #ffffff;
+      padding: 2.5px 7px;
       border-radius: 12px;
-      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35);
     }
 
-    .st-hadir {
-      color: var(--ok);
+    .pulse-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #86efac;
+      display: inline-block;
+      animation: livePulseDot 1.4s infinite;
     }
 
-    .st-terlambat {
-      color: var(--late);
+    @keyframes livePulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.4; }
     }
 
-    .st-halangan {
-      color: var(--halangan);
+    /* Done Sholat */
+    .sholat-card.done {
+      background: #f8fafc;
+      border-color: #e2e8f0;
     }
 
-    .st-belum {
-      color: var(--muted);
+    .sholat-card.done .ic-wrap {
+      background: #f1f5f9;
     }
 
-    .st-locked {
-      color: var(--muted);
-      font-size: 11.5px;
+    /* Locked Sholat */
+    .sholat-card.locked {
+      background: #fafafa;
+      border: 1.5px dashed #cbd5e1;
+      opacity: 0.72;
+      cursor: not-allowed;
+    }
+
+    .sholat-card.locked .ic-wrap {
+      filter: grayscale(0.65);
+    }
+
+    .sholat-card.locked:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Status Pills */
+    .st-pill {
+      width: 100%;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 6px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 4px;
+    }
+
+    .st-pill.st-action-now {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(13, 148, 136, 0.28);
+    }
+
+    .st-pill.st-hadir {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .st-pill.st-terlambat {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .st-pill.st-halangan {
+      background: #f3e8ff;
+      color: #7e22ce;
+    }
+
+    .st-pill.st-locked {
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 10.5px;
       font-weight: 600;
     }
 
     .status-dot {
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      margin-right: 4px;
+      margin-right: 2px;
+    }
+
+    /* Dashboard Footer Hint */
+    .dashboard-footer-hint {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border-radius: 12px;
+      font-size: 11.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+      border: 1px dashed #e2e8f0;
+    }
+
+    .dash-hint-icon {
+      font-size: 15px;
+      flex-shrink: 0;
     }
 
     /* ================= RIWAYAT ================= */
@@ -733,13 +1076,14 @@
       right: 0;
       max-width: 480px;
       margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
       display: flex;
       justify-content: space-around;
       padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-      box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.05);
       z-index: 50;
     }
 
@@ -760,32 +1104,62 @@
       color: var(--muted);
       font-size: 11px;
       font-weight: 600;
-      transition: all 0.15s;
-      border-radius: 12px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 14px;
       font-family: inherit;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 380px) {
+      .nav-item {
+        font-size: 10px;
+        padding: 6px 1px;
+      }
+      .nav-item .ni {
+        font-size: 18px;
+      }
     }
 
     .nav-item .ni {
       font-size: 20px;
       line-height: 1;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-item:hover {
+      color: var(--primary);
+    }
+
+    .nav-item:hover .ni {
+      transform: translateY(-2px);
     }
 
     .nav-item.active {
       color: var(--primary);
-      font-weight: 700;
+      font-weight: 800;
+      background: rgba(13, 148, 136, 0.09);
+    }
+
+    .nav-item.active .ni {
+      transform: translateY(-1px) scale(1.08);
     }
 
     .nav-item.admin.active {
       color: var(--admin);
-      font-weight: 700;
+      font-weight: 800;
+      background: rgba(79, 70, 229, 0.09);
     }
 
     .nav-item.danger {
       color: var(--danger);
     }
 
+    .nav-item.danger:hover {
+      background: rgba(239, 68, 68, 0.08);
+    }
+
     .nav-item:active {
-      transform: scale(0.94);
+      transform: scale(0.93);
     }
 
     #appView .wrap,
@@ -2065,56 +2439,95 @@
     </div>
     <div class="wrap">
       <div id="tabAbsen">
-        <div class="card">
-          <div class="profile">
+        <!-- 1. Hero Card: Profil Siswa & Capaian Harian -->
+        <div class="card card-profile-hero">
+          <div class="profile-main-row">
             <div class="avatar" id="avatar">S</div>
-            <div>
+            <div class="profile-meta">
+              <div class="profile-greeting" id="dashGreeting">Assalamu'alaikum 👋</div>
               <div class="nm" id="pNama">-</div>
               <div class="sub" id="pInfo">-</div>
+            </div>
+            <div class="profile-badge-col">
               <span class="badge" id="pBadge"></span>
             </div>
           </div>
-          <!-- Banner Khusus Siswi (Halangan / Haid) -->
-          <div id="bannerHalanganPerempuan" class="card-halangan-banner hidden"
-            style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border:1.5px solid #d8b4fe;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 12px rgba(168,85,247,0.08);">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span style="font-size:24px;line-height:1;flex-shrink:0;">🌙</span>
-              <div>
-                <div style="font-weight:700;color:#7e22ce;font-size:13px;">Sedang Berhalangan / Haid?</div>
-                <div style="font-size:11px;color:#6b21a8;margin-top:2px;">Catat izin halangan sholat hari ini (tanpa
-                  perlu selfie).</div>
+
+          <!-- Mini Progress Capaian Sholat Hari Ini -->
+          <div class="daily-progress-box">
+            <div class="daily-prog-info">
+              <div class="daily-prog-title">
+                <span class="prog-dot-icon">✨</span>
+                <span>Progres Sholat Hari Ini</span>
+              </div>
+              <div class="daily-prog-count">
+                <b id="progDoneCount">0</b><span style="opacity:0.75">/6 Waktu</span>
               </div>
             </div>
-            <button type="button" class="btn btn-halangan btn-sm" onclick="bukaModalHalanganHarian()"
-              style="flex-shrink:0;padding:6px 12px;font-size:12px;font-weight:700;box-shadow:0 2px 6px rgba(168,85,247,0.25);">Lapor
-              Halangan</button>
+            <div class="daily-prog-track">
+              <div class="daily-prog-bar" id="progBarFill" style="width: 0%;"></div>
+            </div>
           </div>
-
-          <div class="sec-title">Pilih Waktu Sholat</div>
-          <div class="grid" id="sholatGrid"></div>
-          <div class="foot">Ketuk salah satu kartu sholat yang sedang aktif untuk melakukan absensi.</div>
         </div>
 
-        <!-- ============ MENU IBADAH & AMALAN HARIAN ============ -->
-        <div class="card card-islamic-menu" style="margin-top: 14px; padding: 16px;">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:20px;">✨</span>
-              <span style="font-weight:800; font-size:15px; color:var(--text);">Menu Ibadah & Amalan Harian</span>
+        <!-- Banner Khusus Siswi (Halangan / Haid) -->
+        <div id="bannerHalanganPerempuan" class="card-halangan-banner hidden">
+          <div class="halangan-left">
+            <span class="halangan-icon">🌙</span>
+            <div>
+              <div class="halangan-title">Sedang Berhalangan / Haid?</div>
+              <div class="halangan-desc">Catat izin halangan sholat hari ini (tanpa perlu selfie).</div>
             </div>
-            <span style="font-size:11px; font-weight:700; color:var(--primary); background:var(--primary-light); padding:3px 8px; border-radius:20px;">Sunnah & Qur'ani</span>
+          </div>
+          <button type="button" class="btn-halangan-pill" onclick="bukaModalHalanganHarian()">Lapor Halangan</button>
+        </div>
+
+        <!-- 2. Container Card: Jadwal & Presensi Sholat -->
+        <div class="card card-sholat-container">
+          <div class="sholat-section-head">
+            <div class="sholat-head-left">
+              <span class="sholat-head-emoji">🕌</span>
+              <div>
+                <div class="sholat-head-title">Pilih Waktu Sholat</div>
+                <div class="sholat-head-sub">Ketuk kartu aktif untuk absensi</div>
+              </div>
+            </div>
+            <span class="sholat-live-badge">WIB • Hari Ini</span>
+          </div>
+
+          <div class="grid" id="sholatGrid"></div>
+
+          <div class="dashboard-footer-hint">
+            <span class="dash-hint-icon">💡</span>
+            <span>Ketuk salah satu kartu sholat yang sedang aktif untuk melakukan absensi.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ TAB IBADAH & AMALAN HARIAN ============ -->
+      <div id="tabIbadah" class="hidden">
+        <div class="card card-islamic-menu" style="padding: 18px 16px; border-radius: 22px; border: 1px solid #edf2f7; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); margin-top: 14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:22px; line-height:1;">✨</span>
+              <div>
+                <div style="font-weight:800; font-size:15px; color:var(--text); letter-spacing:-0.01em;">Menu Ibadah & Amalan Harian</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:1px;">Sunnah dan amalan penunjang ibadah peserta didik</div>
+              </div>
+            </div>
+            <span style="font-size:11px; font-weight:700; color:var(--primary); background:var(--primary-light); padding:4px 10px; border-radius:20px; white-space:nowrap;">Sunnah & Qur'ani</span>
           </div>
 
           <!-- Quick Tracker Banner Quran Reading Today -->
-          <div id="bannerDurasiQuranRingkas" onclick="bukaModalQuran()" style="cursor:pointer; background:linear-gradient(135deg, #f0fdf4, #ecfdf5); border:1.5px solid #a7f3d0; border-radius:14px; padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div id="bannerDurasiQuranRingkas" onclick="bukaModalQuran()" style="cursor:pointer; background:linear-gradient(135deg, #f0fdf4, #ecfdf5); border:1.5px solid #a7f3d0; border-radius:16px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:0 2px 8px rgba(5,150,105,0.06); transition:transform 0.15s ease;">
             <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:22px;">⏱️</span>
+              <span style="font-size:24px;">⏱️</span>
               <div>
                 <div style="font-size:11px; color:#065f46; font-weight:600;">Waktu Membaca Al-Qur'an Hari Ini</div>
-                <div id="dispDurasiQuranHariIniRingkas" style="font-size:14px; color:#047857; font-weight:800;">0 Menit 0 Detik</div>
+                <div id="dispDurasiQuranHariIniRingkas" style="font-size:14.5px; color:#047857; font-weight:800;">0 Menit 0 Detik</div>
               </div>
             </div>
-            <span style="font-size:11.5px; font-weight:700; color:#059669; background:#fff; padding:4px 10px; border-radius:10px; border:1px solid #a7f3d0;">Buka Qur'an 📖</span>
+            <span style="font-size:11.5px; font-weight:700; color:#059669; background:#fff; padding:5px 12px; border-radius:10px; border:1px solid #a7f3d0; white-space:nowrap; box-shadow:0 1px 3px rgba(0,0,0,0.04);">Buka Qur'an 📖</span>
           </div>
 
           <!-- 2x2 Grid Fitur Ibadah -->
@@ -2160,6 +2573,7 @@
             </div>
           </div>
         </div>
+      </div>
 
         <div id="tabRiwayat" class="hidden">
           <div class="sec-title" style="display:flex;align-items:center;justify-content:space-between;">
@@ -2247,6 +2661,8 @@
       <nav class="bottom-nav">
         <button class="nav-item active" id="navAbsen" onclick="gotoTab('Absen')"><span
             class="ni">🕌</span>Absen</button>
+        <button class="nav-item" id="navIbadah" onclick="gotoTab('Ibadah')"><span
+            class="ni">📖</span>Ibadah</button>
         <button class="nav-item" id="navRiwayat" onclick="gotoTab('Riwayat')"><span class="ni">📋</span>Riwayat</button>
         <button class="nav-item" id="navAkun" onclick="gotoTab('Akun')"><span class="ni">👤</span>Akun</button>
         <button class="nav-item danger" onclick="logout()"><span class="ni">🚪</span>Keluar</button>
@@ -6021,6 +6437,15 @@
         var bt = siswi ? 'Perempuan' : 'Laki-laki', bc = 'badge ' + (siswi ? 'p' : 'l');
         $('pBadge').textContent = bt; $('pBadge').className = bc; $('aBadge').textContent = bt; $('aBadge').className = bc;
 
+        var jamNow = new Date().getHours();
+        var sapaan = 'Assalamu\'alaikum 👋';
+        if (jamNow >= 4 && jamNow < 11) sapaan = 'Selamat Pagi 👋';
+        else if (jamNow >= 11 && jamNow < 15) sapaan = 'Selamat Siang 👋';
+        else if (jamNow >= 15 && jamNow < 18) sapaan = 'Selamat Sore 👋';
+        else sapaan = 'Selamat Malam 👋';
+        var elGreet = $('dashGreeting');
+        if (elGreet) elGreet.textContent = sapaan;
+
         var bBanner = $('bannerHalanganPerempuan');
         if (bBanner) bBanner.classList.toggle('hidden', !siswi);
 
@@ -6045,15 +6470,25 @@
       }
 
       function gotoTab(tab) {
-        ['Absen', 'Riwayat', 'Akun'].forEach(function (t) { $('tab' + t).classList.toggle('hidden', t !== tab); $('nav' + t).classList.toggle('active', t === tab); });
+        ['Absen', 'Ibadah', 'Riwayat', 'Akun'].forEach(function (t) {
+          var elTab = $('tab' + t);
+          var elNav = $('nav' + t);
+          if (elTab) elTab.classList.toggle('hidden', t !== tab);
+          if (elNav) elNav.classList.toggle('active', t === tab);
+        });
         if (tab === 'Riwayat') renderRiwayat();
+        if (tab === 'Ibadah' && typeof updateTampilanDurasiQuranSemua === 'function') {
+          updateTampilanDurasiQuranSemua();
+        }
       }
       function renderGrid() {
         var grid = $('sholatGrid'); grid.innerHTML = '';
         var siswi = isSiswiPerempuan(SISWA);
+        var totalDone = 0;
         URUTAN.forEach(function (nm) {
           var rec = RIWAYAT[nm];
           var done = !!rec;
+          if (done) totalDone++;
           var stWaktu = statusWaktuSholat(nm);
           var isAktif = stWaktu.aktif;
           var locked = (!done && !isAktif);
@@ -6064,17 +6499,18 @@
           var stHtml;
           if (done) {
             var cls = rec.status === 'Hadir' ? 'st-hadir' : (rec.status === 'Terlambat' ? 'st-terlambat' : 'st-halangan');
-            stHtml = '<div class="st ' + cls + '"><span class="status-dot" style="background:currentColor"></span>' + rec.status + ' • ' + (rec.jam || '').slice(0, 5) + '</div>';
+            var iconStatus = rec.status === 'Hadir' ? '✓ ' : (rec.status === 'Terlambat' ? '⚠️ ' : '🌙 ');
+            stHtml = '<div class="st-pill ' + cls + '"><span class="status-dot" style="background:currentColor"></span>' + iconStatus + rec.status + ' • ' + (rec.jam || '').slice(0, 5) + '</div>';
           } else if (isAktif) {
-            stHtml = '<div class="st st-belum">Ketuk untuk absen</div>';
+            stHtml = '<div class="st-pill st-action-now">📸 Ketuk untuk Absen</div>';
           } else if (stWaktu.lewat) {
-            stHtml = '<div class="st st-locked">🔒 Selesai (' + stWaktu.mulai + '–' + stWaktu.selesai + ')</div>';
+            stHtml = '<div class="st-pill st-locked">🔒 Selesai (' + stWaktu.mulai + '–' + stWaktu.selesai + ')</div>';
           } else {
-            stHtml = '<div class="st st-locked">🔒 ' + stWaktu.mulai + '–' + stWaktu.selesai + '</div>';
+            stHtml = '<div class="st-pill st-locked">🔒 ' + stWaktu.mulai + '–' + stWaktu.selesai + '</div>';
           }
 
-          var badgeHtml = (isAktif && !done) ? '<span class="now-tag">SEKARANG</span>' : '';
-          card.innerHTML = badgeHtml + '<div class="ic">' + SHOLAT_ICON[nm] + '</div><div class="nm">' + nm + '</div>' + stHtml;
+          var badgeHtml = (isAktif && !done) ? '<span class="now-tag"><span class="pulse-dot"></span>AKTIF</span>' : '';
+          card.innerHTML = badgeHtml + '<div class="ic-wrap"><span class="ic">' + SHOLAT_ICON[nm] + '</span></div><div class="nm">' + nm + '</div>' + stHtml;
 
           if (isAktif && !done) {
             card.addEventListener('click', function () { bukaModal(nm); });
@@ -6098,6 +6534,11 @@
 
           grid.appendChild(card);
         });
+
+        var elProgDone = $('progDoneCount');
+        if (elProgDone) elProgDone.textContent = totalDone;
+        var elProgFill = $('progBarFill');
+        if (elProgFill) elProgFill.style.width = Math.round((totalDone / URUTAN.length) * 100) + '%';
       }
 
       // ================= RIWAYAT SISWA =================
