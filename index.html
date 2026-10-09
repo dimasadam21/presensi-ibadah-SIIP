@@ -4784,6 +4784,101 @@
 
           </div>
 
+          <!-- CARD: IMPOR PRESENSI SHOLAT SISWA (EXCEL MASSAL) -->
+          <div class="card set-card" style="border: 2px solid #10b981; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 120px); margin-top:20px;">
+            <div class="set-head">
+              <span class="set-ic" style="background:#dcfce7; border-color:#86efac; color:#15803d;">📥</span>
+              <div>
+                <div class="set-t">Impor Presensi Sholat Siswa Massal (Excel)</div>
+                <div class="set-d">Unduh format template siswa yang belum absen, isi status sholat di Excel, lalu unggah kembali agar otomatis tercatat di server tanpa perlu absen mandiri lagi.</div>
+              </div>
+            </div>
+
+            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px 14px; margin-bottom:16px; font-size:12.5px; color:#065f46; line-height:1.5;">
+              ✅ <b>Solusi Absen Praktis & Cepat:</b><br>
+              • Cocok untuk sholat berjamaah di sekolah (Dzuhur/Ashar/Dhuha) atau absen kolektif per kelas.<br>
+              • Template yang diunduh sudah berisi <b>Nama, Kelas, dan NIS siswa</b> (bisa dipilih khusus siswa yang belum absen).<br>
+              • Begitu diimpor, data langsung masuk ke database laporan dan akun siswa otomatis berstatus <b>Hadir</b> sehingga <b>tidak perlu presensi lagi</b>.
+            </div>
+
+            <!-- LANGKAH 1: UNDUH FORMAT -->
+            <div style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; padding:15px; margin-bottom:16px;">
+              <div style="font-weight:800; font-size:13.5px; color:#0f172a; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                <span style="background:#10b981; color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px;">1</span>
+                <span>Unduh Format Template Siswa</span>
+              </div>
+              
+              <div class="form-grid" style="margin-bottom:12px;">
+                <div>
+                  <label style="font-weight:700;">📅 Tanggal Presensi</label>
+                  <input type="date" id="impTglPresensi" class="form-control" style="background:#fff;">
+                </div>
+                <div>
+                  <label style="font-weight:700;">🏫 Filter Kelas</label>
+                  <select id="impFilterKelas" class="form-control" style="background:#fff;">
+                    <option value="">Semua Kelas (Seluruh Siswa)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-weight:700;">👥 Pilihan Siswa di Template</label>
+                  <select id="impOpsiSiswa" class="form-control" style="background:#fff;">
+                    <option value="belum" selected>Hanya Siswa yang BELUM Absen (Rekomendasi)</option>
+                    <option value="semua">Semua Siswa Terdaftar (Lengkap)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-weight:700;">✏️ Status Default di Template</label>
+                  <select id="impDefaultStatus" class="form-control" style="background:#fff;">
+                    <option value="Hadir" selected>Otomatis Isi "Hadir" (Tinggal Edit yg Tidak Hadir)</option>
+                    <option value="">Kosongkan (Diisi Manual Satu per Satu)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end;">
+                <button type="button" class="btn btn-outline" style="background:#fff; border-color:#10b981; color:#047857; font-weight:700; padding:8px 16px;" onclick="unduhTemplatePresensiExcel(this)">
+                  <span>📥 Unduh Format Template Excel (.xlsx)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- LANGKAH 2: UNGGAH & SIMPAN -->
+            <div style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; padding:15px;">
+              <div style="font-weight:800; font-size:13.5px; color:#0f172a; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                <span style="background:#10b981; color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px;">2</span>
+                <span>Unggah & Simpan Presensi Masuk</span>
+              </div>
+
+              <div class="form-grid" style="margin-bottom:12px;">
+                <div class="fg-full">
+                  <label style="font-weight:700;">📁 Pilih File Excel yang Sudah Diisi (.xlsx / .xls / .csv)</label>
+                  <input type="file" id="fileImportPresensi" accept=".xlsx, .xls, .csv" class="form-control" style="padding:8px; background:#fff;">
+                </div>
+                <div>
+                  <label style="font-weight:700;">🕒 Jam Absen Standar (Jika di Excel Kosong)</label>
+                  <input type="time" id="impJamDefault" value="12:30" class="form-control" style="background:#fff;">
+                  <div class="hint">Jam ini dicatat jika pada baris Excel tidak dicantumkan jam spesifik.</div>
+                </div>
+                <div>
+                  <label style="font-weight:700;">⚙️ Opsi Penanganan Data</label>
+                  <div style="margin-top:8px;">
+                    <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#334155;">
+                      <input type="checkbox" id="chkTimpaPresensi" checked style="width:16px; height:16px;">
+                      <span>Perbarui / Timpa jika siswa sudah memiliki absen pada tanggal & sholat yang sama</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:14px; padding-top:10px; border-top:1px solid #e2e8f0;">
+                <span id="impStatusInfo" style="font-size:12px; color:#64748b;">Pilih file Excel di atas lalu klik tombol proses.</span>
+                <button type="button" class="btn btn-admin" id="btnProsesImportPresensi" onclick="prosesImportPresensiExcel(this)" style="font-weight:800; padding:10px 22px; background:#059669; border-color:#047857;">
+                  <span>🚀 Unggah & Proses Presensi Siswa</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
             <button class="btn btn-outline btn-block-mt" style="flex:0 0 auto;margin:0;" onclick="muatPengaturan()">↺
               Muat Ulang</button>
@@ -6083,6 +6178,17 @@
                   });
                 }, 120);
               },
+              importPresensiSholat: function (tok, records, opsi) {
+                var self = this;
+                setTimeout(function () {
+                  if (self._ok) self._ok({
+                    success: true,
+                    totalInserted: records.length,
+                    totalProcessed: records.length,
+                    message: 'Berhasil mengimpor ' + records.length + ' presensi sholat siswa (Simulasi Offline).'
+                  });
+                }, 150);
+              },
               resetPasswordGlobal: function (tok, p) {
                 var self = this;
                 setTimeout(function () {
@@ -7021,6 +7127,81 @@
             });
           }
           return { success: true, ringkasan: ringkasan, gagal: gagal };
+        },
+
+        importPresensiSholat: async function(token, records, opsi) {
+          if (!records || !records.length) {
+            return { success: false, message: 'Tidak ada data presensi sholat yang valid untuk diimpor.' };
+          }
+          opsi = opsi || {};
+          var timpa = opsi.timpa !== false;
+          var batchSize = 50;
+          var insertedCount = 0;
+          var updatedCount = 0;
+
+          // Kelompokkan per tanggal untuk cek data yang sudah ada
+          var tanggalSet = {};
+          records.forEach(function(r) { if (r.tanggal) tanggalSet[r.tanggal] = true; });
+          var tglList = Object.keys(tanggalSet);
+
+          var existingMap = {};
+          for (var t = 0; t < tglList.length; t++) {
+            var tgl = tglList[t];
+            try {
+              var existRows = await sbFetchAll('absen_sholat?tanggal=eq.' + encodeURIComponent(tgl));
+              existRows.forEach(function(ex) {
+                var key = String(ex.nis).trim() + '|' + String(ex.tanggal).trim() + '|' + String(ex.sholat).trim();
+                existingMap[key] = ex.absen_id;
+              });
+            } catch(eExist) { }
+          }
+
+          var toInsert = [];
+          var toUpdate = [];
+
+          for (var i = 0; i < records.length; i++) {
+            var rec = records[i];
+            var key = String(rec.nis).trim() + '|' + String(rec.tanggal).trim() + '|' + String(rec.sholat).trim();
+            if (existingMap[key]) {
+              if (timpa) {
+                toUpdate.push({ absen_id: existingMap[key], record: rec });
+              }
+            } else {
+              toInsert.push(rec);
+            }
+          }
+
+          // Lakukan insert batch
+          for (var b = 0; b < toInsert.length; b += batchSize) {
+            var chunk = toInsert.slice(b, b + batchSize);
+            await sbFetch('absen_sholat', {
+              method: 'POST',
+              body: JSON.stringify(chunk)
+            });
+            insertedCount += chunk.length;
+          }
+
+          // Lakukan update untuk data yang ditimpa
+          for (var u = 0; u < toUpdate.length; u++) {
+            var item = toUpdate[u];
+            await sbFetch('absen_sholat?absen_id=eq.' + encodeURIComponent(item.absen_id), {
+              method: 'PATCH',
+              body: JSON.stringify({
+                status: item.record.status,
+                jam: item.record.jam,
+                keterangan: item.record.keterangan || 'Impor Admin Presensi Massal'
+              })
+            });
+            updatedCount++;
+          }
+
+          return {
+            success: true,
+            totalInserted: insertedCount,
+            totalUpdated: updatedCount,
+            totalProcessed: insertedCount + updatedCount,
+            message: 'Berhasil mengimpor presensi: ' + insertedCount + ' data baru' + (updatedCount ? ', ' + updatedCount + ' data diperbarui.' : '.')
+          };
         },
 
         resetPasswordSiswa: async function(token, siswaId, passwordBaru) {
@@ -9002,11 +9183,13 @@
                 SISWA_ADMIN = res.data || res.dataSiswa || [];
                 updateWaHpCount();
                 renderWaKelasCheckboxes();
+                initFormImportPresensi();
               }
             }).getSemuaSiswa(ADMIN_TOKEN);
           } else {
             updateWaHpCount();
             renderWaKelasCheckboxes();
+            initFormImportPresensi();
           }
         }
       }
@@ -9231,6 +9414,7 @@
           }
 
           updateLivePreview();
+          initFormImportPresensi();
         }).withFailureHandler(function (err) { toast('Gagal terhubung: ' + err.message, 'err'); }).getPengaturan(ADMIN_TOKEN);
       }
 
@@ -10629,6 +10813,383 @@
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Data Siswa');
         XLSX.writeFile(wb, 'Data_Siswa.xlsx');
         toast('Data siswa diekspor ke Excel.', 'ok');
+      }
+
+      // ================= IMPOR PRESENSI SHOLAT SISWA (MASSAL) =================
+      function initFormImportPresensi() {
+        var elTgl = $('impTglPresensi');
+        if (elTgl && !elTgl.value) elTgl.value = getJakartaDateStr();
+        var selKelas = $('impFilterKelas');
+        if (selKelas) {
+          var kelasList = [];
+          if (SISWA_ADMIN && SISWA_ADMIN.length) {
+            var set = {};
+            SISWA_ADMIN.forEach(function (s) { if (s.kelas) set[s.kelas] = true; });
+            kelasList = Object.keys(set).sort();
+          } else if (LAPORAN_HARIAN && LAPORAN_HARIAN.daftarKelas) {
+            kelasList = LAPORAN_HARIAN.daftarKelas;
+          }
+          var cur = selKelas.value || '';
+          selKelas.innerHTML = '<option value="">Semua Kelas (Seluruh Siswa)</option>' +
+            kelasList.map(function (k) { return '<option value="' + esc(k) + '"' + (k === cur ? ' selected' : '') + '>Kelas ' + esc(k) + '</option>'; }).join('');
+        }
+      }
+
+      function unduhTemplatePresensiExcel(btn) {
+        var tgl = ($('impTglPresensi') && $('impTglPresensi').value.trim()) || getJakartaDateStr();
+        var kls = ($('impFilterKelas') && $('impFilterKelas').value.trim()) || '';
+        var opsi = ($('impOpsiSiswa') && $('impOpsiSiswa').value) || 'belum';
+        var defSt = ($('impDefaultStatus') && $('impDefaultStatus').value) || 'Hadir';
+
+        var oldHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner"></span> Menyiapkan Template...';
+        }
+
+        var onSiswaReady = function () {
+          // Ambil siswa aktif
+          var targetSiswa = (SISWA_ADMIN || []).filter(function (s) {
+            var st = String(s.status || 'Aktif').toLowerCase();
+            if (st !== 'aktif') return false;
+            if (kls && s.kelas !== kls) return false;
+            return true;
+          });
+
+          if (!targetSiswa.length) {
+            if (btn) { btn.disabled = false; btn.innerHTML = oldHtml; }
+            toast('Tidak ada data siswa aktif yang ditemukan' + (kls ? ' di kelas ' + kls : '') + '.', 'err');
+            return;
+          }
+
+          // Cek existing attendance jika opsi 'belum' dipilih
+          var proceedWithData = function (existingRows) {
+            var existByNis = {};
+            (existingRows || []).forEach(function (r) {
+              var n = String(r.nis).trim();
+              if (!existByNis[n]) existByNis[n] = {};
+              existByNis[n][r.sholat] = r.status;
+            });
+
+            var sholatWajib = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+            var listDownload = targetSiswa;
+
+            if (opsi === 'belum') {
+              var belumList = targetSiswa.filter(function (s) {
+                var att = existByNis[String(s.nis).trim()] || {};
+                return sholatWajib.some(function (w) { return !att[w]; });
+              });
+
+              if (belumList.length > 0) {
+                listDownload = belumList;
+              } else {
+                var ok = window.confirm('Semua siswa di kelas ini (' + targetSiswa.length + ' siswa) sudah memiliki catatan presensi pada tanggal ' + tgl + '.\n\nTetap unduh format template untuk seluruh siswa?');
+                if (!ok) {
+                  if (btn) { btn.disabled = false; btn.innerHTML = oldHtml; }
+                  return;
+                }
+              }
+            }
+
+            // Susun baris Excel
+            var head = ['No', 'NIS', 'Nama', 'Kelas', 'JenisKelamin', 'Tanggal', 'Subuh', 'Dhuha', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya', 'Keterangan'];
+            var rows = listDownload.map(function (s, idx) {
+              var att = existByNis[String(s.nis).trim()] || {};
+              return [
+                idx + 1,
+                s.nis,
+                s.nama,
+                s.kelas || '',
+                s.jk || 'L',
+                tgl,
+                att['Subuh'] || defSt,
+                att['Dhuha'] || (defSt === 'Hadir' ? '-' : ''),
+                att['Dzuhur'] || defSt,
+                att['Ashar'] || defSt,
+                att['Maghrib'] || defSt,
+                att['Isya'] || defSt,
+                'Impor Admin'
+              ];
+            });
+
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.aoa_to_sheet([head].concat(rows));
+            ws['!cols'] = [
+              { wch: 5 },  // No
+              { wch: 14 }, // NIS
+              { wch: 28 }, // Nama
+              { wch: 14 }, // Kelas
+              { wch: 6 },  // JK
+              { wch: 12 }, // Tanggal
+              { wch: 10 }, // Subuh
+              { wch: 10 }, // Dhuha
+              { wch: 10 }, // Dzuhur
+              { wch: 10 }, // Ashar
+              { wch: 10 }, // Maghrib
+              { wch: 10 }, // Isya
+              { wch: 18 }  // Keterangan
+            ];
+            XLSX.utils.book_append_sheet(wb, ws, 'Data_Presensi');
+
+            // Sheet 2: Petunjuk
+            var petunjuk = [
+              ['PETUNJUK FORMAT PENGISIAN IMPOR PRESENSI SHOLAT SISWA'],
+              [''],
+              ['1. Kolom NIS dan Nama :', 'Jangan mengubah nomor NIS karena NIS merupakan kunci unik data siswa.'],
+              ['2. Kolom Tanggal       :', 'Format tanggal harus YYYY-MM-DD (contoh: ' + tgl + ').'],
+              ['3. Pilihan Status Sholat:'],
+              ['   - Hadir (atau ketik H / 1 / V)        : Siswa hadir melaksanakan sholat.'],
+              ['   - Terlambat (atau ketik T)             : Siswa hadir namun terlambat.'],
+              ['   - Halangan (atau ketik R / Haid / Izin): Khusus siswi berhalangan syar\'i.'],
+              ['   - Kosongkan atau ketik strip (-)       : Dilewati (siswa belum/tidak absen).'],
+              ['4. Jam Presensi       :', 'Sistem otomatis mengisi jam standar sholat atau jam default saat file diunggah.'],
+              ['5. Hasil Impor        :', 'Data otomatis masuk ke server dan siswa tidak perlu absen mandiri lagi.']
+            ];
+            var wsPetunjuk = XLSX.utils.aoa_to_sheet(petunjuk);
+            wsPetunjuk['!cols'] = [{ wch: 26 }, { wch: 70 }];
+            XLSX.utils.book_append_sheet(wb, wsPetunjuk, 'Petunjuk_Format');
+
+            var fileName = 'Format_Presensi_Sholat_' + (kls ? kls.replace(/[^a-zA-Z0-9]/g, '_') : 'Semua') + '_' + tgl + '.xlsx';
+            XLSX.writeFile(wb, fileName);
+
+            if (btn) { btn.disabled = false; btn.innerHTML = oldHtml; }
+            toast('Template format (' + listDownload.length + ' siswa) berhasil diunduh.', 'ok');
+          };
+
+          if (opsi === 'belum') {
+            if (typeof sbFetchAll === 'function') {
+              sbFetchAll('absen_sholat?tanggal=eq.' + encodeURIComponent(tgl)).then(function (rows) {
+                proceedWithData(rows);
+              }).catch(function () {
+                proceedWithData([]);
+              });
+            } else {
+              gas().withSuccessHandler(function (res) {
+                var rows = [];
+                if (res && res.siswaList) {
+                  res.siswaList.forEach(function (sw) {
+                    Object.keys(sw.sholat || {}).forEach(function (sh) {
+                      var sc = sw.sholat[sh];
+                      if (sc && sc.status && sc.status !== 'Belum') {
+                        rows.push({ nis: sw.nis, sholat: sh, status: sc.status });
+                      }
+                    });
+                  });
+                }
+                proceedWithData(rows);
+              }).withFailureHandler(function () {
+                proceedWithData([]);
+              }).getLaporanHarian(ADMIN_TOKEN, tgl, kls);
+            }
+          } else {
+            proceedWithData([]);
+          }
+        };
+
+        if (!SISWA_ADMIN || !SISWA_ADMIN.length) {
+          gas().withSuccessHandler(function (res) {
+            if (res && res.success) {
+              SISWA_ADMIN = res.data || res.dataSiswa || [];
+              initFormImportPresensi();
+              onSiswaReady();
+            } else {
+              if (btn) { btn.disabled = false; btn.innerHTML = oldHtml; }
+              toast('Gagal memuat daftar siswa.', 'err');
+            }
+          }).withFailureHandler(function (err) {
+            if (btn) { btn.disabled = false; btn.innerHTML = oldHtml; }
+            toast('Gagal terhubung: ' + err.message, 'err');
+          }).getSemuaSiswa(ADMIN_TOKEN);
+        } else {
+          onSiswaReady();
+        }
+      }
+
+      function prosesImportPresensiExcel(btn) {
+        var fileInput = $('fileImportPresensi');
+        var file = fileInput && fileInput.files && fileInput.files[0];
+        if (!file) {
+          toast('Pilih file Excel (.xlsx / .xls / .csv) terlebih dahulu.', 'err');
+          return;
+        }
+
+        var chkTimpa = $('chkTimpaPresensi') ? $('chkTimpaPresensi').checked : true;
+        var jamDefault = ($('impJamDefault') && $('impJamDefault').value.trim()) || '12:30';
+        var tglFallback = ($('impTglPresensi') && $('impTglPresensi').value.trim()) || getJakartaDateStr();
+
+        var oldHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Membaca file...';
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            var data = e.target.result;
+            var wb = XLSX.read(data, { type: 'binary' });
+            var firstSheet = wb.Sheets[wb.SheetNames[0]];
+            var rows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+            if (!rows || !rows.length) {
+              btn.disabled = false;
+              btn.innerHTML = oldHtml;
+              toast('File Excel kosong atau tidak memiliki baris data.', 'err');
+              return;
+            }
+
+            var sholatNames = ['Subuh', 'Dhuha', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+            var defaultJamMap = {
+              'Subuh': '05:00:00',
+              'Dhuha': '08:30:00',
+              'Dzuhur': '12:30:00',
+              'Ashar': '15:45:00',
+              'Maghrib': '18:15:00',
+              'Isya': '19:45:00'
+            };
+
+            var studentMap = {};
+            (SISWA_ADMIN || []).forEach(function (s) {
+              if (s.nis) studentMap[String(s.nis).trim()] = s;
+            });
+
+            var records = [];
+            var nisUniqueSet = {};
+            var countPerSholat = { Subuh: 0, Dhuha: 0, Dzuhur: 0, Ashar: 0, Maghrib: 0, Isya: 0 };
+
+            rows.forEach(function (r) {
+              var nis = '';
+              Object.keys(r).forEach(function (k) {
+                var kl = k.trim().toLowerCase();
+                if (kl === 'nis' || kl === 'nomor induk' || kl === 'no induk') nis = String(r[k]).trim();
+              });
+              if (!nis) return;
+
+              var sObj = studentMap[nis] || {};
+              var nama = String(r.Nama || r.nama || sObj.nama || '').trim();
+              var kelas = String(r.Kelas || r.kelas || sObj.kelas || '').trim();
+              var jkRaw = String(r.JenisKelamin || r.jk || r.JK || sObj.jk || 'L').trim().toUpperCase();
+              var jk = jkRaw.charAt(0) === 'P' ? 'P' : 'L';
+              var tanggal = String(r.Tanggal || r.tanggal || tglFallback).trim();
+              if (!/^\d{4}-\d{2}-\d{2}$/.test(tanggal)) tanggal = tglFallback;
+
+              var ketRow = String(r.Keterangan || r.keterangan || 'Impor Admin Presensi Massal').trim();
+
+              sholatNames.forEach(function (sName) {
+                var cellVal = '';
+                Object.keys(r).forEach(function (k) {
+                  if (k.trim().toLowerCase() === sName.toLowerCase()) {
+                    cellVal = String(r[k]).trim();
+                  }
+                });
+                if (!cellVal) return;
+
+                var v = cellVal.toLowerCase();
+                var normStatus = null;
+                if (/^(hadir|h|1|v|y|ya|masuk|hadir\s*\(sudah\))$/i.test(v)) normStatus = 'Hadir';
+                else if (/^(terlambat|t|telat|late)$/i.test(v)) normStatus = 'Terlambat';
+                else if (/^(halangan|r|haid|izin|sakit)$/i.test(v)) normStatus = 'Halangan';
+
+                if (!normStatus) return;
+
+                var jamVal = (jamDefault && jamDefault.length >= 5) ? (jamDefault.slice(0, 5) + ':00') : (defaultJamMap[sName] || '12:30:00');
+
+                records.push({
+                  absen_id: 'ABS_IMP_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                  nis: nis,
+                  nama: nama,
+                  kelas: kelas,
+                  jk: jk,
+                  tanggal: tanggal,
+                  sholat: sName,
+                  jam: jamVal,
+                  status: normStatus,
+                  keterangan: ketRow,
+                  latitude: '-',
+                  longitude: '-',
+                  jarak: null,
+                  maps_link: '',
+                  foto_url: ''
+                });
+
+                nisUniqueSet[nis] = true;
+                countPerSholat[sName]++;
+              });
+            });
+
+            if (!records.length) {
+              btn.disabled = false;
+              btn.innerHTML = oldHtml;
+              window.alert('⚠️ Tidak ditemukan status sholat yang valid di file Excel.\n\nPastikan kolom sholat (Subuh, Dhuha, Dzuhur, Ashar, Maghrib, Isya) terisi status Hadir, Terlambat, atau Halangan.');
+              return;
+            }
+
+            var totalSiswa = Object.keys(nisUniqueSet).length;
+            var rincianSholatText = sholatNames.map(function (s) { return s + ': ' + countPerSholat[s]; }).join(', ');
+
+            var confirmMsg = 'KONFIRMASI IMPOR PRESENSI SHOLAT:\n\n' +
+              '• Total Record Presensi : ' + records.length + ' data\n' +
+              '• Jumlah Siswa Terdata : ' + totalSiswa + ' siswa\n' +
+              '• Rincian per Sholat   : ' + rincianSholatText + '\n' +
+              '• Timpa Data Lama      : ' + (chkTimpa ? 'YA' : 'TIDAK') + '\n\n' +
+              'Apakah Anda yakin ingin memasukkan data presensi ini?\n' +
+              'Data presensi sholat siswa otomatis tercatat di server dan siswa tidak perlu absen mandiri lagi.';
+
+            if (!window.confirm(confirmMsg)) {
+              btn.disabled = false;
+              btn.innerHTML = oldHtml;
+              return;
+            }
+
+            btn.innerHTML = '<span class="spinner"></span> Menyimpan ke server (' + records.length + ' data)...';
+
+            gas().withSuccessHandler(function (res) {
+              btn.disabled = false;
+              btn.innerHTML = oldHtml;
+              if (!cekSesi(res)) return;
+              if (!res || !res.success) {
+                toast((res && res.message) || 'Gagal menyimpan data presensi.', 'err');
+                return;
+              }
+
+              var suksesMsg = '✅ IMPOR PRESENSI SHOLAT BERHASIL!\n\n' +
+                'Sebanyak ' + (res.totalProcessed || records.length) + ' data presensi untuk ' + totalSiswa + ' siswa berhasil dimasukkan ke sistem.\n\n' +
+                'Status presensi siswa otomatis aktif dan tercatat lengkap di laporan harian. Siswa tidak perlu presensi mandiri lagi.';
+
+              window.alert(suksesMsg);
+              toast('Impor ' + records.length + ' presensi sholat siswa sukses.', 'ok');
+
+              var elStatus = $('impStatusInfo');
+              if (elStatus) {
+                elStatus.innerHTML = '<span style="color:#10b981;font-weight:700;">✅ Terakhir diimpor: ' + records.length + ' data presensi (' + totalSiswa + ' siswa) pada ' + new Date().toLocaleTimeString('id-ID') + ' WIB</span>';
+              }
+
+              fileInput.value = '';
+
+              if (typeof muatLaporanHarian === 'function') muatLaporanHarian();
+
+              if (SISWA && nisUniqueSet[SISWA.nis]) {
+                if (typeof renderRiwayat === 'function') renderRiwayat();
+                if (typeof renderGrid === 'function') renderGrid();
+              }
+            }).withFailureHandler(function (err) {
+              btn.disabled = false;
+              btn.innerHTML = oldHtml;
+              toast('Gagal terhubung: ' + err.message, 'err');
+            }).importPresensiSholat(ADMIN_TOKEN, records, { timpa: chkTimpa });
+
+          } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = oldHtml;
+            toast('Gagal memproses file: ' + err.message, 'err');
+          }
+        };
+
+        reader.onerror = function () {
+          btn.disabled = false;
+          btn.innerHTML = oldHtml;
+          toast('Gagal membaca file Excel.', 'err');
+        };
+
+        reader.readAsBinaryString(file);
       }
     </script>
     <script>
