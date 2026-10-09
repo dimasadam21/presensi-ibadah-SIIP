@@ -7161,6 +7161,11 @@
 
           for (var i = 0; i < records.length; i++) {
             var rec = records[i];
+            // Sanitasi tipe data numerik Supabase / PostgreSQL (double precision & numeric)
+            if (rec.latitude === '-' || typeof rec.latitude !== 'number' || isNaN(rec.latitude)) rec.latitude = null;
+            if (rec.longitude === '-' || typeof rec.longitude !== 'number' || isNaN(rec.longitude)) rec.longitude = null;
+            if (rec.jarak === '-' || typeof rec.jarak !== 'number' || isNaN(rec.jarak)) rec.jarak = null;
+
             var key = String(rec.nis).trim() + '|' + String(rec.tanggal).trim() + '|' + String(rec.sholat).trim();
             if (existingMap[key]) {
               if (timpa) {
@@ -7174,17 +7179,21 @@
           // Lakukan insert batch
           for (var b = 0; b < toInsert.length; b += batchSize) {
             var chunk = toInsert.slice(b, b + batchSize);
-            await sbFetch('absen_sholat', {
+            var insRes = await sbFetch('absen_sholat', {
               method: 'POST',
               body: JSON.stringify(chunk)
             });
+            if (!insRes.ok) {
+              var errJson = await insRes.json().catch(function() { return {}; });
+              throw new Error(errJson.message || errJson.details || errJson.error || ('Gagal menyimpan data ke database (' + insRes.status + ')'));
+            }
             insertedCount += chunk.length;
           }
 
           // Lakukan update untuk data yang ditimpa
           for (var u = 0; u < toUpdate.length; u++) {
             var item = toUpdate[u];
-            await sbFetch('absen_sholat?absen_id=eq.' + encodeURIComponent(item.absen_id), {
+            var updRes = await sbFetch('absen_sholat?absen_id=eq.' + encodeURIComponent(item.absen_id), {
               method: 'PATCH',
               body: JSON.stringify({
                 status: item.record.status,
@@ -7192,6 +7201,10 @@
                 keterangan: item.record.keterangan || 'Impor Admin Presensi Massal'
               })
             });
+            if (!updRes.ok) {
+              var errJson = await updRes.json().catch(function() { return {}; });
+              throw new Error(errJson.message || errJson.details || errJson.error || ('Gagal memperbarui data di database (' + updRes.status + ')'));
+            }
             updatedCount++;
           }
 
@@ -11103,8 +11116,8 @@
                   jam: jamVal,
                   status: normStatus,
                   keterangan: ketRow,
-                  latitude: '-',
-                  longitude: '-',
+                  latitude: null,
+                  longitude: null,
                   jarak: null,
                   maps_link: '',
                   foto_url: ''
