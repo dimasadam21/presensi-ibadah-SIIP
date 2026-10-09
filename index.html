@@ -992,6 +992,115 @@
       transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* 5 Waktu Sholat Indikator Mini (Hijau jika sudah, Merah jika belum) */
+    .daily-prog-indicators {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .prog-sholat-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 3px 6px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border-width: 1.5px;
+      border-style: solid;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+
+    .prog-sholat-badge:hover {
+      transform: translateY(-2px);
+    }
+
+    .prog-sholat-badge:active {
+      transform: scale(0.96);
+    }
+
+    /* Status: SUDAH SHOLAT (HIJAU MEWAH) */
+    .prog-sholat-badge.is-done {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.12) 100%);
+      border-color: rgba(52, 211, 153, 0.55);
+      color: #6ee7b7;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(52, 211, 153, 0.08);
+    }
+
+    .prog-sholat-badge.is-done .sholat-mini-mark {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.28);
+    }
+
+    /* Status: BELUM SHOLAT (MERAH ELEGAN) */
+    .prog-sholat-badge.is-not-done {
+      background: linear-gradient(145deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.1) 100%);
+      border-color: rgba(248, 113, 113, 0.5);
+      color: #fca5a5;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.15), inset 0 0 10px rgba(239, 68, 68, 0.06);
+    }
+
+    .prog-sholat-badge.is-not-done .sholat-mini-mark {
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.28);
+    }
+
+    .prog-sholat-badge .sholat-mini-ic {
+      font-size: 16px;
+      line-height: 1;
+      margin-bottom: 3px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .prog-sholat-badge .sholat-mini-name {
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    .prog-sholat-badge .sholat-mini-mark {
+      font-size: 9px;
+      font-weight: 800;
+      margin-top: 3px;
+      padding: 1px 5px;
+      border-radius: 99px;
+      line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    @media (max-width: 480px) {
+      .daily-prog-indicators {
+        gap: 4px;
+        margin-top: 8px;
+      }
+      .prog-sholat-badge {
+        padding: 5px 2px 5px;
+        border-radius: 10px;
+      }
+      .prog-sholat-badge .sholat-mini-ic {
+        font-size: 14px;
+      }
+      .prog-sholat-badge .sholat-mini-name {
+        font-size: 9px;
+      }
+      .prog-sholat-badge .sholat-mini-mark {
+        font-size: 8px;
+        padding: 1px 3px;
+      }
+    }
+
     /* Banner Khusus Siswi (Halangan / Haid) */
     .card-halangan-banner {
       background: linear-gradient(135deg, rgba(88, 28, 135, 0.5), rgba(59, 7, 100, 0.6));
@@ -3345,12 +3454,14 @@
                 <span>Progres Sholat Hari Ini</span>
               </div>
               <div class="daily-prog-count">
-                <b id="progDoneCount">0</b><span style="opacity:0.75">/6 Waktu</span>
+                <b id="progDoneCount">0</b><span style="opacity:0.75">/5 Waktu</span>
               </div>
             </div>
             <div class="daily-prog-track">
               <div class="daily-prog-bar" id="progBarFill" style="width: 0%;"></div>
             </div>
+            <!-- Indikator 5 Waktu Sholat Wajib (Subuh, Dzuhur, Ashar, Maghrib, Isya) -->
+            <div class="daily-prog-indicators" id="progIndicatorsGrid"></div>
           </div>
         </div>
 
@@ -7894,10 +8005,48 @@
           grid.appendChild(card);
         });
 
+        // Hitung progres 5 sholat wajib (Subuh, Dzuhur, Ashar, Maghrib, Isya - Sholat Dhuha tidak dihitung)
+        var SHOLAT_WAJIB_5 = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+        var totalDone5 = 0;
+        var indicatorsHtml = '';
+
+        SHOLAT_WAJIB_5.forEach(function (nm) {
+          var rec = RIWAYAT[nm];
+          var isDone = !!rec;
+          if (isDone) totalDone5++;
+          var cls = isDone ? 'is-done' : 'is-not-done';
+          var markIcon = isDone ? '✓' : '✕';
+          var statusDetail = isDone ? (rec.status + ' • ' + (rec.jam || '').slice(0, 5) + ' WIB') : 'Belum Absen';
+
+          indicatorsHtml += '<div class="prog-sholat-badge ' + cls + '" title="' + nm + ': ' + statusDetail + '" onclick="klikMiniProgSholat(\'' + nm + '\')">' +
+            '<span class="sholat-mini-ic">' + (SHOLAT_ICON[nm] || '🕌') + '</span>' +
+            '<span class="sholat-mini-name">' + nm + '</span>' +
+            '<span class="sholat-mini-mark">' + markIcon + '</span>' +
+          '</div>';
+        });
+
         var elProgDone = $('progDoneCount');
-        if (elProgDone) elProgDone.textContent = totalDone;
+        if (elProgDone) elProgDone.textContent = totalDone5;
         var elProgFill = $('progBarFill');
-        if (elProgFill) elProgFill.style.width = Math.round((totalDone / URUTAN.length) * 100) + '%';
+        if (elProgFill) elProgFill.style.width = Math.round((totalDone5 / 5) * 100) + '%';
+        var elProgGrid = $('progIndicatorsGrid');
+        if (elProgGrid) elProgGrid.innerHTML = indicatorsHtml;
+      }
+
+      function klikMiniProgSholat(nm) {
+        var rec = RIWAYAT[nm];
+        if (rec) {
+          toast('Sholat ' + nm + ': ' + rec.status + ' (' + (rec.jam || '').slice(0, 5) + ' WIB)', 'ok');
+          return;
+        }
+        var st = statusWaktuSholat(nm);
+        if (st.aktif) {
+          bukaModal(nm);
+        } else if (st.lewat) {
+          toast('Waktu sholat ' + nm + ' sudah berakhir. Jadwal: ' + st.mulai + '–' + st.selesai + ' WIB.', 'err');
+        } else {
+          toast('Belum waktunya sholat ' + nm + '. Jadwal buka: ' + st.mulai + '–' + st.selesai + ' WIB.', 'err');
+        }
       }
 
       // ================= RIWAYAT SISWA =================
