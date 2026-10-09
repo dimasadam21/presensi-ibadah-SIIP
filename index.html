@@ -992,7 +992,7 @@
       transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* 5 Waktu Sholat Indikator Mini (Hijau jika sudah, Merah jika belum) */
+    /* 5 Waktu Sholat Indikator Mini (Presisi & Available) */
     .daily-prog-indicators {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -1005,8 +1005,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 7px 3px 6px;
-      border-radius: 12px;
+      padding: 8px 4px 7px;
+      border-radius: 14px;
       font-size: 11px;
       font-weight: 700;
       text-align: center;
@@ -1016,7 +1016,9 @@
       position: relative;
       cursor: pointer;
       user-select: none;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.55);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
 
     .prog-sholat-badge:hover {
@@ -1027,57 +1029,109 @@
       transform: scale(0.96);
     }
 
-    /* Status: SUDAH SHOLAT (HIJAU MEWAH) */
-    .prog-sholat-badge.is-done {
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.12) 100%);
-      border-color: rgba(52, 211, 153, 0.55);
-      color: #6ee7b7;
-      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(52, 211, 153, 0.08);
-    }
-
-    .prog-sholat-badge.is-done .sholat-mini-mark {
-      color: #34d399;
-      background: rgba(16, 185, 129, 0.28);
-    }
-
-    /* Status: BELUM SHOLAT (MERAH ELEGAN) */
-    .prog-sholat-badge.is-not-done {
-      background: linear-gradient(145deg, rgba(239, 68, 68, 0.18) 0%, rgba(185, 28, 28, 0.1) 100%);
-      border-color: rgba(248, 113, 113, 0.5);
-      color: #fca5a5;
-      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.15), inset 0 0 10px rgba(239, 68, 68, 0.06);
-    }
-
-    .prog-sholat-badge.is-not-done .sholat-mini-mark {
-      color: #f87171;
-      background: rgba(239, 68, 68, 0.28);
+    .prog-sholat-badge .mini-ic-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
     }
 
     .prog-sholat-badge .sholat-mini-ic {
-      font-size: 16px;
+      font-size: 18px;
       line-height: 1;
-      margin-bottom: 3px;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
     }
 
     .prog-sholat-badge .sholat-mini-name {
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 700;
       line-height: 1.2;
       letter-spacing: -0.2px;
       white-space: nowrap;
+      margin-bottom: 2px;
     }
 
     .prog-sholat-badge .sholat-mini-mark {
       font-size: 9px;
       font-weight: 800;
-      margin-top: 3px;
-      padding: 1px 5px;
+      padding: 1.5px 6px;
       border-radius: 99px;
       line-height: 1.2;
       display: inline-flex;
       align-items: center;
       gap: 2px;
+      letter-spacing: -0.1px;
+    }
+
+    /* Status: SUDAH SHOLAT (HIJAU MEWAH) */
+    .prog-sholat-badge.is-done {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.24) 0%, rgba(5, 150, 105, 0.14) 100%);
+      border-color: rgba(52, 211, 153, 0.65);
+      color: #6ee7b7;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25), inset 0 0 10px rgba(52, 211, 153, 0.1);
+    }
+
+    .prog-sholat-badge.is-done .mini-ic-box {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: rgba(52, 211, 153, 0.55);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+    }
+
+    .prog-sholat-badge.is-done .sholat-mini-mark {
+      color: #ffffff;
+      background: rgba(16, 185, 129, 0.5);
+      border: 1px solid rgba(52, 211, 153, 0.65);
+    }
+
+    /* Status: SEDANG TERSEDIA / AKTIF SEKARANG */
+    .prog-sholat-badge.is-now-available {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.3) 0%, rgba(6, 78, 59, 0.25) 100%);
+      border-color: rgba(52, 211, 153, 0.95);
+      color: #a7f3d0;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.45), inset 0 0 10px rgba(52, 211, 153, 0.2);
+      animation: pulseMiniActive 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseMiniActive {
+      0%, 100% { border-color: rgba(52, 211, 153, 0.95); box-shadow: 0 0 14px rgba(16, 185, 129, 0.4); }
+      50% { border-color: #34d399; box-shadow: 0 0 24px rgba(52, 211, 153, 0.8); }
+    }
+
+    .prog-sholat-badge.is-now-available .mini-ic-box {
+      background: rgba(16, 185, 129, 0.38);
+      border-color: rgba(52, 211, 153, 0.85);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
+    }
+
+    .prog-sholat-badge.is-now-available .sholat-mini-mark {
+      color: #ffffff;
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+    }
+
+    /* Status: BELUM SHOLAT (MERAH ELEGAN) */
+    .prog-sholat-badge.is-not-done {
+      background: linear-gradient(145deg, rgba(239, 68, 68, 0.16) 0%, rgba(185, 28, 28, 0.08) 100%);
+      border-color: rgba(248, 113, 113, 0.45);
+      color: #fca5a5;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.12), inset 0 0 10px rgba(239, 68, 68, 0.05);
+    }
+
+    .prog-sholat-badge.is-not-done .mini-ic-box {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(248, 113, 113, 0.3);
+    }
+
+    .prog-sholat-badge.is-not-done .sholat-mini-mark {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.28);
     }
 
     @media (max-width: 480px) {
@@ -1086,18 +1140,24 @@
         margin-top: 8px;
       }
       .prog-sholat-badge {
-        padding: 5px 2px 5px;
-        border-radius: 10px;
+        padding: 6px 2px 5px;
+        border-radius: 11px;
+      }
+      .prog-sholat-badge .mini-ic-box {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        margin-bottom: 3px;
       }
       .prog-sholat-badge .sholat-mini-ic {
-        font-size: 14px;
+        font-size: 15px;
       }
       .prog-sholat-badge .sholat-mini-name {
-        font-size: 9px;
+        font-size: 9.5px;
       }
       .prog-sholat-badge .sholat-mini-mark {
         font-size: 8px;
-        padding: 1px 3px;
+        padding: 1px 4px;
       }
     }
 
@@ -1231,91 +1291,184 @@
       }
     }
 
-    /* Modern Sholat Card */
+    /* Modern Precision Sholat Card */
     .sholat-card {
       background: rgba(18, 29, 52, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
-      padding: 14px 10px;
+      padding: 14px 10px 12px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 16px rgba(0, 0, 0, 0.35);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      min-height: 130px;
-      backdrop-filter: blur(12px);
+      min-height: 146px;
+      backdrop-filter: blur(14px);
     }
 
     .sholat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      border-color: rgba(52, 211, 153, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      border-color: rgba(52, 211, 153, 0.45);
     }
 
     .sholat-card:active {
       transform: scale(0.97);
     }
 
+    /* Precision Square Icon Container */
     .sholat-card .ic-wrap {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.22), 0 4px 12px rgba(0, 0, 0, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 6px;
-      transition: all 0.2s ease;
+      margin-bottom: 8px;
+      position: relative;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(8px);
+    }
+
+    .sholat-card:hover .ic-wrap {
+      transform: scale(1.08) translateY(-1px);
     }
 
     .sholat-card .ic {
-      font-size: 24px;
+      font-size: 28px;
       line-height: 1;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
     }
 
     .sholat-card .nm {
       font-weight: 800;
       font-size: 14.5px;
-      color: #ffffff;
+      color: #f8fafc;
       letter-spacing: -0.01em;
       margin-bottom: 4px;
     }
 
-    /* Active Sholat (Now) */
+    /* Khot & Nuansa Presisi Setiap Waktu Sholat */
+    .sholat-card[data-sholat="Subuh"] .ic-wrap {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.28) 0%, rgba(14, 165, 233, 0.2) 100%);
+      border-color: rgba(251, 146, 60, 0.42);
+      box-shadow: 0 4px 16px rgba(249, 115, 22, 0.22), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .sholat-card[data-sholat="Dhuha"] .ic-wrap {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(234, 179, 8, 0.2) 100%);
+      border-color: rgba(251, 191, 36, 0.45);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .sholat-card[data-sholat="Dzuhur"] .ic-wrap {
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.32) 0%, rgba(16, 185, 129, 0.24) 100%);
+      border-color: rgba(250, 204, 21, 0.45);
+      box-shadow: 0 4px 16px rgba(234, 179, 8, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .sholat-card[data-sholat="Ashar"] .ic-wrap {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.28) 0%, rgba(249, 115, 22, 0.22) 100%);
+      border-color: rgba(56, 189, 248, 0.42);
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.22), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .sholat-card[data-sholat="Maghrib"] .ic-wrap {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.3) 0%, rgba(147, 51, 234, 0.24) 100%);
+      border-color: rgba(244, 63, 94, 0.42);
+      box-shadow: 0 4px 16px rgba(244, 63, 94, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .sholat-card[data-sholat="Isya"] .ic-wrap {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.32) 0%, rgba(30, 58, 138, 0.42) 100%);
+      border-color: rgba(129, 140, 248, 0.42);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Active Sholat (Now & Available) */
     .sholat-card.now {
       border: 1.5px solid rgba(52, 211, 153, 0.95);
-      background: linear-gradient(145deg, rgba(6, 44, 38, 0.85), rgba(15, 30, 56, 0.95));
+      background: linear-gradient(145deg, rgba(6, 44, 38, 0.9), rgba(15, 30, 56, 0.95));
       box-shadow: 0 0 35px rgba(16, 185, 129, 0.4), inset 0 0 20px rgba(16, 185, 129, 0.15);
       transform: translateY(-2px);
     }
 
     .sholat-card.now .ic-wrap {
+      border-color: rgba(52, 211, 153, 0.9);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.65), inset 0 0 12px rgba(52, 211, 153, 0.35);
+      animation: pulseIconActive 2.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseIconActive {
+      0%, 100% { transform: scale(1.06); box-shadow: 0 0 16px rgba(52, 211, 153, 0.55), inset 0 0 8px rgba(52, 211, 153, 0.3); }
+      50% { transform: scale(1.12); box-shadow: 0 0 26px rgba(52, 211, 153, 0.85), inset 0 0 14px rgba(52, 211, 153, 0.45); }
+    }
+
+    /* Corner Badges */
+    .card-corner-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 2.5px 7px;
+      border-radius: 99px;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3.5px;
+      backdrop-filter: blur(8px);
+      line-height: 1.2;
+    }
+
+    .card-corner-badge.badge-available {
       background: rgba(16, 185, 129, 0.28);
-      border-color: rgba(52, 211, 153, 0.6);
-      transform: scale(1.08);
+      border: 1px solid rgba(52, 211, 153, 0.85);
+      color: #6ee7b7;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+    }
+
+    .card-corner-badge.badge-done {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: #a7f3d0;
+    }
+
+    .card-corner-badge.badge-upcoming {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+    }
+
+    .card-corner-badge.badge-ended {
+      background: rgba(148, 163, 184, 0.14);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      color: #94a3b8;
     }
 
     .now-tag {
       position: absolute;
       top: 8px;
       right: 8px;
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 800;
-      background: rgba(16, 185, 129, 0.25);
-      border: 1px solid rgba(52, 211, 153, 0.7);
+      background: rgba(16, 185, 129, 0.28);
+      border: 1px solid rgba(52, 211, 153, 0.85);
       color: #6ee7b7;
       padding: 2.5px 7px;
-      border-radius: 12px;
+      border-radius: 99px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+      gap: 3.5px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
     }
 
     .pulse-dot {
@@ -1336,32 +1489,52 @@
     /* Done Sholat */
     .sholat-card.done {
       background: rgba(16, 185, 129, 0.08);
-      border-color: rgba(52, 211, 153, 0.35);
+      border-color: rgba(52, 211, 153, 0.45);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
     }
 
     .sholat-card.done .ic-wrap {
-      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(52, 211, 153, 0.55);
+      box-shadow: 0 2px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .ic-check-badge {
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #0f172a;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.6);
     }
 
     /* Locked Sholat */
     .sholat-card.locked {
-      background: rgba(15, 23, 42, 0.45);
-      border-color: rgba(255, 255, 255, 0.05);
-      cursor: default;
+      background: rgba(15, 23, 42, 0.55);
+      border-color: rgba(255, 255, 255, 0.07);
+      cursor: pointer;
     }
 
     .sholat-card.locked .ic-wrap {
-      opacity: 0.6;
+      opacity: 0.95;
     }
 
     .sholat-card.locked .nm {
-      color: #94a3b8;
+      color: #cbd5e1;
     }
 
     .sholat-card.locked:hover {
-      transform: none;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-      border-color: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.15);
     }
 
     /* Status Pills */
@@ -1383,10 +1556,11 @@
     }
 
     .st-pill.st-action-now {
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
       box-shadow: 0 4px 18px rgba(16, 185, 129, 0.6);
       font-weight: 800;
+      letter-spacing: 0.2px;
       animation: pulseAction 2s infinite;
     }
 
@@ -1396,26 +1570,42 @@
     }
 
     .st-pill.st-hadir {
-      background: rgba(16, 185, 129, 0.22);
+      background: rgba(16, 185, 129, 0.2);
       color: #6ee7b7;
-      border: 1px solid rgba(52, 211, 153, 0.4);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
     }
 
     .st-pill.st-terlambat {
       background: rgba(245, 158, 11, 0.22);
       color: #fde047;
-      border: 1px solid rgba(245, 158, 11, 0.4);
+      border: 1px solid rgba(245, 158, 11, 0.45);
     }
 
     .st-pill.st-halangan {
       background: rgba(168, 85, 247, 0.22);
       color: #e9d5ff;
-      border: 1px solid rgba(168, 85, 247, 0.4);
+      border: 1px solid rgba(168, 85, 247, 0.45);
+    }
+
+    .st-pill.st-upcoming {
+      background: rgba(56, 189, 248, 0.12);
+      color: #bae6fd;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-weight: 600;
+    }
+
+    .st-pill.st-ended {
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-weight: 600;
+      font-size: 10.5px;
     }
 
     .st-pill.st-locked {
       background: rgba(255, 255, 255, 0.06);
-      color: #64748b;
+      color: #94a3b8;
       font-size: 10.5px;
       font-weight: 600;
     }
@@ -3460,8 +3650,34 @@
             <div class="daily-prog-track">
               <div class="daily-prog-bar" id="progBarFill" style="width: 0%;"></div>
             </div>
-            <!-- Indikator 5 Waktu Sholat Wajib (Subuh, Dzuhur, Ashar, Maghrib, Isya) -->
-            <div class="daily-prog-indicators" id="progIndicatorsGrid"></div>
+            <!-- Indikator 5 Waktu Sholat Wajib (Subuh, Dzuhur, Ashar, Maghrib, Isya - Tersedia Langsung) -->
+            <div class="daily-prog-indicators" id="progIndicatorsGrid">
+              <div class="prog-sholat-badge is-not-done" data-waktu="Subuh" title="Subuh: Belum Absen" onclick="klikMiniProgSholat('Subuh')">
+                <div class="mini-ic-box"><span class="sholat-mini-ic">🌅</span></div>
+                <span class="sholat-mini-name">Subuh</span>
+                <span class="sholat-mini-mark">✕ Belum</span>
+              </div>
+              <div class="prog-sholat-badge is-not-done" data-waktu="Dzuhur" title="Dzuhur: Belum Absen" onclick="klikMiniProgSholat('Dzuhur')">
+                <div class="mini-ic-box"><span class="sholat-mini-ic">☀️</span></div>
+                <span class="sholat-mini-name">Dzuhur</span>
+                <span class="sholat-mini-mark">✕ Belum</span>
+              </div>
+              <div class="prog-sholat-badge is-not-done" data-waktu="Ashar" title="Ashar: Belum Absen" onclick="klikMiniProgSholat('Ashar')">
+                <div class="mini-ic-box"><span class="sholat-mini-ic">⛅</span></div>
+                <span class="sholat-mini-name">Ashar</span>
+                <span class="sholat-mini-mark">✕ Belum</span>
+              </div>
+              <div class="prog-sholat-badge is-not-done" data-waktu="Maghrib" title="Maghrib: Belum Absen" onclick="klikMiniProgSholat('Maghrib')">
+                <div class="mini-ic-box"><span class="sholat-mini-ic">🌇</span></div>
+                <span class="sholat-mini-name">Maghrib</span>
+                <span class="sholat-mini-mark">✕ Belum</span>
+              </div>
+              <div class="prog-sholat-badge is-not-done" data-waktu="Isya" title="Isya: Belum Absen" onclick="klikMiniProgSholat('Isya')">
+                <div class="mini-ic-box"><span class="sholat-mini-ic">🌙</span></div>
+                <span class="sholat-mini-name">Isya</span>
+                <span class="sholat-mini-mark">✕ Belum</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3490,7 +3706,44 @@
             <span class="sholat-live-badge">WIB • Hari Ini</span>
           </div>
 
-          <div class="grid" id="sholatGrid"></div>
+          <div class="grid" id="sholatGrid">
+            <div class="sholat-card" data-sholat="Subuh">
+              <span class="card-corner-badge badge-ended">⏱️ LEWAT</span>
+              <div class="ic-wrap"><span class="ic">🌅</span></div>
+              <div class="nm">Subuh</div>
+              <div class="st-pill st-locked st-ended">⏱️ Selesai (04:25–09:00)</div>
+            </div>
+            <div class="sholat-card" data-sholat="Dhuha">
+              <span class="card-corner-badge badge-ended">⏱️ LEWAT</span>
+              <div class="ic-wrap"><span class="ic">🌤️</span></div>
+              <div class="nm">Dhuha</div>
+              <div class="st-pill st-locked st-ended">⏱️ Selesai (07:00–11:00)</div>
+            </div>
+            <div class="sholat-card now" data-sholat="Dzuhur">
+              <span class="card-corner-badge badge-available"><span class="pulse-dot"></span>TERSEDIA</span>
+              <div class="ic-wrap"><span class="ic">☀️</span></div>
+              <div class="nm">Dzuhur</div>
+              <div class="st-pill st-action-now">⚡ BUKA • Ketuk Absen</div>
+            </div>
+            <div class="sholat-card" data-sholat="Ashar">
+              <span class="card-corner-badge badge-upcoming">🕒 NANTI</span>
+              <div class="ic-wrap"><span class="ic">⛅</span></div>
+              <div class="nm">Ashar</div>
+              <div class="st-pill st-locked st-upcoming">🕒 Buka 15:00 WIB</div>
+            </div>
+            <div class="sholat-card" data-sholat="Maghrib">
+              <span class="card-corner-badge badge-upcoming">🕒 NANTI</span>
+              <div class="ic-wrap"><span class="ic">🌇</span></div>
+              <div class="nm">Maghrib</div>
+              <div class="st-pill st-locked st-upcoming">🕒 Buka 17:45 WIB</div>
+            </div>
+            <div class="sholat-card" data-sholat="Isya">
+              <span class="card-corner-badge badge-upcoming">🕒 NANTI</span>
+              <div class="ic-wrap"><span class="ic">🌙</span></div>
+              <div class="nm">Isya</div>
+              <div class="st-pill st-locked st-upcoming">🕒 Buka 19:00 WIB</div>
+            </div>
+          </div>
 
           <div class="dashboard-footer-hint">
             <span class="dash-hint-icon">💡</span>
@@ -7982,7 +8235,8 @@
         if (tab === 'Riwayat') renderRiwayat();
       }
       function renderGrid() {
-        var grid = $('sholatGrid'); grid.innerHTML = '';
+        var grid = $('sholatGrid');
+        if (grid) grid.innerHTML = '';
         var siswi = isSiswiPerempuan(SISWA);
         var totalDone = 0;
         URUTAN.forEach(function (nm) {
@@ -7995,28 +8249,37 @@
 
           var card = document.createElement('div');
           card.className = 'sholat-card' + (isAktif && !done ? ' now' : '') + (done ? ' done' : '') + (locked ? ' locked' : '');
+          card.setAttribute('data-sholat', nm);
 
-          var stHtml;
+          var stHtml = '';
+          var cornerTag = '';
+          var icCheckHtml = '';
+
           if (done) {
             var cls = rec.status === 'Hadir' ? 'st-hadir' : (rec.status === 'Terlambat' ? 'st-terlambat' : 'st-halangan');
             var iconStatus = rec.status === 'Hadir' ? '✓ ' : (rec.status === 'Terlambat' ? '⚠️ ' : '🌙 ');
-            stHtml = '<div class="st-pill ' + cls + '"><span class="status-dot" style="background:currentColor"></span>' + iconStatus + rec.status + ' • ' + (rec.jam || '').slice(0, 5) + '</div>';
+            stHtml = '<div class="st-pill ' + cls + '"><span class="status-dot" style="background:currentColor"></span>' + iconStatus + rec.status + ' • ' + (rec.jam || '').slice(0, 5) + ' WIB</div>';
+            var stBadgeLabel = (rec.status === 'Hadir' ? 'HADIR' : (rec.status === 'Terlambat' ? 'TERLAMBAT' : 'HALANGAN'));
+            cornerTag = '<span class="card-corner-badge badge-done">✓ ' + stBadgeLabel + '</span>';
+            icCheckHtml = '<span class="ic-check-badge">✓</span>';
           } else if (isAktif) {
-            stHtml = '<div class="st-pill st-action-now">📸 Ketuk untuk Absen</div>';
+            stHtml = '<div class="st-pill st-action-now">⚡ BUKA • Ketuk Absen</div>';
+            cornerTag = '<span class="card-corner-badge badge-available"><span class="pulse-dot"></span>TERSEDIA</span>';
           } else if (stWaktu.lewat) {
-            stHtml = '<div class="st-pill st-locked">🔒 Selesai (' + stWaktu.mulai + '–' + stWaktu.selesai + ')</div>';
+            stHtml = '<div class="st-pill st-locked st-ended">⏱️ Selesai (' + stWaktu.mulai + '–' + stWaktu.selesai + ')</div>';
+            cornerTag = '<span class="card-corner-badge badge-ended">⏱️ LEWAT</span>';
           } else {
-            stHtml = '<div class="st-pill st-locked">🔒 ' + stWaktu.mulai + '–' + stWaktu.selesai + '</div>';
+            stHtml = '<div class="st-pill st-locked st-upcoming">🕒 Buka ' + stWaktu.mulai + ' WIB</div>';
+            cornerTag = '<span class="card-corner-badge badge-upcoming">🕒 NANTI</span>';
           }
 
-          var badgeHtml = (isAktif && !done) ? '<span class="now-tag"><span class="pulse-dot"></span>AKTIF</span>' : '';
-          card.innerHTML = badgeHtml + '<div class="ic-wrap"><span class="ic">' + SHOLAT_ICON[nm] + '</span></div><div class="nm">' + nm + '</div>' + stHtml;
+          card.innerHTML = cornerTag + '<div class="ic-wrap"><span class="ic">' + (SHOLAT_ICON[nm] || '🕌') + '</span>' + icCheckHtml + '</div><div class="nm">' + nm + '</div>' + stHtml;
 
           if (isAktif && !done) {
             card.addEventListener('click', function () { bukaModal(nm); });
           } else if (done) {
             card.addEventListener('click', function () {
-              toast('Kamu sudah absen ' + nm + ' hari ini (' + rec.status + ' jam ' + (rec.jam || '').slice(0, 5) + ').', 'ok');
+              toast('Kamu sudah absen ' + nm + ' hari ini (' + rec.status + ' jam ' + (rec.jam || '').slice(0, 5) + ' WIB).', 'ok');
             });
           } else if (locked) {
             card.addEventListener('click', function () {
@@ -8027,12 +8290,12 @@
               if (stWaktu.lewat) {
                 toast('Waktu sholat ' + nm + ' sudah berakhir. Jadwal: ' + stWaktu.mulai + '–' + stWaktu.selesai + ' WIB.', 'err');
               } else {
-                toast('Belum waktunya sholat ' + nm + '. Jadwal buka: ' + stWaktu.mulai + '–' + stWaktu.selesai + ' WIB.', 'err');
+                toast('Sholat ' + nm + ' dibuka pukul ' + stWaktu.mulai + '–' + stWaktu.selesai + ' WIB. Silakan bersiap!', 'ok');
               }
             });
           }
 
-          grid.appendChild(card);
+          if (grid) grid.appendChild(card);
         });
 
         // Hitung progres 5 sholat wajib (Subuh, Dzuhur, Ashar, Maghrib, Isya - Sholat Dhuha tidak dihitung)
@@ -8044,12 +8307,15 @@
           var rec = RIWAYAT[nm];
           var isDone = !!rec;
           if (isDone) totalDone5++;
-          var cls = isDone ? 'is-done' : 'is-not-done';
-          var markIcon = isDone ? '✓' : '✕';
-          var statusDetail = isDone ? (rec.status + ' • ' + (rec.jam || '').slice(0, 5) + ' WIB') : 'Belum Absen';
+          var st = statusWaktuSholat(nm);
+          var isAktif = st.aktif;
 
-          indicatorsHtml += '<div class="prog-sholat-badge ' + cls + '" title="' + nm + ': ' + statusDetail + '" onclick="klikMiniProgSholat(\'' + nm + '\')">' +
-            '<span class="sholat-mini-ic">' + (SHOLAT_ICON[nm] || '🕌') + '</span>' +
+          var cls = isDone ? 'is-done' : (isAktif ? 'is-now-available' : 'is-not-done');
+          var markIcon = isDone ? '✓ Hadir' : (isAktif ? '⚡ Buka' : '✕ Belum');
+          var statusDetail = isDone ? (rec.status + ' • ' + (rec.jam || '').slice(0, 5) + ' WIB') : (isAktif ? 'Sedang Dibuka (Tersedia)' : ('Jadwal: ' + st.mulai + '–' + st.selesai + ' WIB'));
+
+          indicatorsHtml += '<div class="prog-sholat-badge ' + cls + '" data-waktu="' + nm + '" title="' + nm + ': ' + statusDetail + '" onclick="klikMiniProgSholat(\'' + nm + '\')">' +
+            '<div class="mini-ic-box"><span class="sholat-mini-ic">' + (SHOLAT_ICON[nm] || '🕌') + '</span></div>' +
             '<span class="sholat-mini-name">' + nm + '</span>' +
             '<span class="sholat-mini-mark">' + markIcon + '</span>' +
           '</div>';
@@ -8064,6 +8330,7 @@
       }
 
       function klikMiniProgSholat(nm) {
+        var siswi = isSiswiPerempuan(SISWA);
         var rec = RIWAYAT[nm];
         if (rec) {
           toast('Sholat ' + nm + ': ' + rec.status + ' (' + (rec.jam || '').slice(0, 5) + ' WIB)', 'ok');
@@ -8072,10 +8339,12 @@
         var st = statusWaktuSholat(nm);
         if (st.aktif) {
           bukaModal(nm);
+        } else if (siswi) {
+          bukaModal(nm, 'Halangan');
         } else if (st.lewat) {
           toast('Waktu sholat ' + nm + ' sudah berakhir. Jadwal: ' + st.mulai + '–' + st.selesai + ' WIB.', 'err');
         } else {
-          toast('Belum waktunya sholat ' + nm + '. Jadwal buka: ' + st.mulai + '–' + st.selesai + ' WIB.', 'err');
+          toast('Sholat ' + nm + ' dibuka pukul ' + st.mulai + '–' + st.selesai + ' WIB. Silakan bersiap!', 'ok');
         }
       }
 
