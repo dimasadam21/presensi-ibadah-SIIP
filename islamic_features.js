@@ -899,14 +899,87 @@ function filterDaftarSuratQuran() {
 // ==============================================================================
 // 3.2 FITUR BACA PER AYAT (DENGAN AUDIO, KHOT NASKHI, TAFSIR & ASBAB SHORTCUT)
 // ==============================================================================
+// HELPER FETCH AYAT SURAH DENGAN MULTI-API FALLBACK (TIDAK PERNAH GAGAL)
+async function fetchSurahAyatOnline(nomorSurat) {
+  var sNum = parseInt(nomorSurat, 10);
+  if (isNaN(sNum) || sNum < 1 || sNum > 114) sNum = 1;
+
+  // 1. Cek cache
+  if (QURAN_AYAT_CACHE[sNum] && QURAN_AYAT_CACHE[sNum].ayatList && QURAN_AYAT_CACHE[sNum].ayatList.length > 0) {
+    return QURAN_AYAT_CACHE[sNum].ayatList;
+  }
+
+  // 2. Server 1: equran.id (Kemenag Official Indonesia, tercepat)
+  try {
+    var res1 = await fetch('https://equran.id/api/v2/surat/' + sNum);
+    if (res1.ok) {
+      var j1 = await res1.json();
+      if (j1 && j1.data && j1.data.ayat && j1.data.ayat.length > 0) {
+        return j1.data.ayat;
+      }
+    }
+  } catch (e1) {
+    console.warn('equran.id gagal, beralih ke server cadangan #1:', e1);
+  }
+
+  // 3. Server 2: quran.gading.dev (API Terpercaya Open Source)
+  try {
+    var res2 = await fetch('https://api.quran.gading.dev/surah/' + sNum);
+    if (res2.ok) {
+      var j2 = await res2.json();
+      if (j2 && j2.data && j2.data.verses && j2.data.verses.length > 0) {
+        return j2.data.verses.map(function(v) {
+          return {
+            nomorAyat: v.number.inSurah,
+            teksArab: v.text.arab,
+            teksLatin: (v.text.transliteration && v.text.transliteration.en) || '',
+            teksIndonesia: (v.translation && v.translation.id) || '',
+            audio: (v.audio && v.audio.primary) ? { '05': v.audio.primary } : {}
+          };
+        });
+      }
+    }
+  } catch (e2) {
+    console.warn('quran.gading.dev gagal, beralih ke server cadangan #2:', e2);
+  }
+
+  // 4. Server 3: alquran.cloud (Global CDN)
+  try {
+    var res3 = await fetch('https://api.alquran.cloud/v1/surah/' + sNum + '/editions/quran-uthmani,id.indonesian');
+    if (res3.ok) {
+      var j3 = await res3.json();
+      if (j3 && j3.data && j3.data.length >= 2) {
+        var arabAyahs = j3.data[0].ayahs;
+        var indoAyahs = j3.data[1].ayahs;
+        return arabAyahs.map(function(a, idx) {
+          return {
+            nomorAyat: a.numberInSurah,
+            teksArab: a.text,
+            teksLatin: '',
+            teksIndonesia: (indoAyahs[idx] && indoAyahs[idx].text) || '',
+            audio: {}
+          };
+        });
+      }
+    }
+  } catch (e3) {
+    console.warn('alquran.cloud gagal:', e3);
+  }
+
+  throw new Error('Semua server penyedia ayat sedang offline.');
+}
+
 async function bacaSuratQuran(nomorSurat, targetAyat) {
   var meta = QURAN_SURAHS.find(function (s) { return s.no === nomorSurat; });
   if (!meta) return;
 
+  // Pastikan mode adalah 'ayat'
+  setModeQuran('ayat');
+
   var vList = document.getElementById('quranSurahListView');
-  var vReader = document.getElementById('quranVerseReaderView');
-  if (vList) vList.classList.add('hidden');
-  if (vReader) {
+  var vReader = document.getElementById('quranAyatReaderView');
+  if (vList && vReader) {
+    vList.classList.add('hidden');
     vReader.classList.remove('hidden');
     vReader.dataset.surahAktif = nomorSurat;
   }
@@ -935,30 +1008,17 @@ async function bacaSuratQuran(nomorSurat, targetAyat) {
   var container = document.getElementById('readerAyatContainer');
   container.innerHTML = '<div style="text-align:center;padding:40px 10px;color:var(--muted);"><span class="spin">⏳</span> Memuat ayat-ayat Surat ' + meta.nama + ' versi Kemenag RI...</div>';
 
-  // 1. Cek cache lokal
-  if (QURAN_AYAT_CACHE[nomorSurat]) {
-    renderAyatList(QURAN_AYAT_CACHE[nomorSurat].ayatList, meta, targetAyat);
-    return;
-  }
-
-  // 2. Fetch dari equran.id API v2 (Kemenag Official)
   try {
-    var res = await fetch('https://equran.id/api/v2/surat/' + nomorSurat);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var json = await res.json();
-    if (json && json.data && json.data.ayat) {
-      QURAN_AYAT_CACHE[nomorSurat] = {
-        nama: meta.nama,
-        arab: meta.arab,
-        hal: meta.hal,
-        ayatList: json.data.ayat
-      };
-      renderAyatList(json.data.ayat, meta, targetAyat);
-      return;
-    }
-    throw new Error('Data tidak lengkap');
+    var ayatList = await fetchSurahAyatOnline(nomorSurat);
+    QURAN_AYAT_CACHE[nomorSurat] = {
+      nama: meta.nama,
+      arab: meta.arab,
+      hal: meta.hal,
+      ayatList: ayatList
+    };
+    renderAyatList(ayatList, meta, targetAyat);
   } catch (err) {
-    console.warn('Gagal memuat ayat online, menampilkan data darurat:', err);
+    console.warn('Gagal memuat ayat online:', err);
     container.innerHTML = '<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:16px;text-align:center;color:#991b1b;font-size:13px;line-height:1.6;">' +
       '⚠️ <b>Gagal memuat ayat secara online (koneksi terputus).</b><br>' +
       'Silakan periksa koneksi internet Anda.<br>' +
@@ -1151,9 +1211,25 @@ function bukaAsbabDariAyat(nomorSurat, nomorAyat) {
 // ==============================================================================
 // 3.3 FITUR BACA PER HALAMAN (MUSHAF STANDAR KEMENAG RI 604 HALAMAN)
 // ==============================================================================
+var MUSHAF_IMAGE_CDNS = [
+  // 1. Android Quran Global CDN (PNG 1024, cepat dan stabil)
+  function (p) { return 'https://android.quran.com/data/width_1024/page' + String(p).padStart(3, '0') + '.png'; },
+  // 2. Quran.ws Vector SVG CDN (Vector SVG standar resmi, selalu jernih dan anti-blokir)
+  function (p) { return 'https://cdn.quran.ws/svg/pages/v1.1.1/hafs-kfqc/' + p + '.svg'; },
+  // 3. Quran App Madani CDN
+  function (p) { return 'https://files.quran.app/hafs/madani/width_1024/page' + String(p).padStart(3, '0') + '.png'; },
+  // 4. MP3Quran Vector SVG CDN
+  function (p) { return 'https://www.mp3quran.net/api/quran_pages_svg/' + String(p).padStart(3, '0') + '.svg'; },
+  // 5. MyQuran JPEG CDN
+  function (p) { return 'https://www.myquran.us/content/quran/arabic/' + String(p).padStart(4, '0') + '.jpg'; }
+];
+
+var CURRENT_MUSHAF_CDN_INDEX = 0;
+var CURRENT_PAGE_LOADING = 1;
+
 function initJuzSelectDropdown() {
   var sel = document.getElementById('selectJuzJumper');
-  if (!sel || sel.children.length > 0) return;
+  if (!sel || sel.children.length >= 30) return;
 
   var optHtml = '';
   for (var j = 1; j <= 30; j++) {
@@ -1167,6 +1243,8 @@ async function bacaHalamanQuran(pageNum) {
   if (isNaN(p) || p < 1) p = 1;
   if (p > 604) p = 604;
 
+  CURRENT_PAGE_LOADING = p;
+  CURRENT_MUSHAF_CDN_INDEX = 0;
   QURAN_PAGE_STATE.currentPage = p;
   localStorage.setItem('quran_last_page', p);
 
@@ -1191,16 +1269,21 @@ async function bacaHalamanQuran(pageNum) {
   // Timer membaca aktif
   mulaiTimerQuran(surah.no, 'Halaman ' + p);
 
-  // 1. Mode Visual Mushaf Gambar
+  // 1. Mode Visual Mushaf Gambar (Dengan Multi-CDN Auto Fallback)
   var imgEl = document.getElementById('mushafPageImage');
   var loader = document.getElementById('mushafImgLoader');
-  if (loader) loader.style.display = 'flex';
-
-  var padNum = String(p).padStart(3, '0');
-  var imgUrl = 'https://files.quran.app/hafs/madani/width_1024/page' + padNum + '.png';
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.innerHTML = '<span class="spin" style="font-size:26px;">⏳</span>' +
+      '<span id="mushafLoaderText" style="font-size:12.5px; color:#475569; font-weight:700;">Memuat Mushaf Halaman ' + p + '...</span>' +
+      '<button class="btn btn-outline btn-sm" onclick="setModeTampilanHalaman(\'teks\')" style="margin-top:4px; font-size:11px; padding:3px 10px;">⚡ Tampilkan Teks Khot Naskhi</button>';
+  }
 
   if (imgEl) {
-    imgEl.src = imgUrl;
+    imgEl.style.display = 'none';
+    imgEl.onload = onMushafImgLoaded;
+    imgEl.onerror = onMushafImgError;
+    imgEl.src = MUSHAF_IMAGE_CDNS[0](p);
   }
 
   // 2. Fetch data ayat teks halaman tersebut untuk mode teks & footer
@@ -1209,17 +1292,41 @@ async function bacaHalamanQuran(pageNum) {
 
 function onMushafImgLoaded() {
   var loader = document.getElementById('mushafImgLoader');
+  var imgEl = document.getElementById('mushafPageImage');
   if (loader) loader.style.display = 'none';
+  if (imgEl) imgEl.style.display = 'block';
 }
 
 function onMushafImgError() {
+  var imgEl = document.getElementById('mushafPageImage');
+  if (!imgEl || !imgEl.src || imgEl.src === window.location.href || imgEl.src.endsWith('#')) {
+    return;
+  }
+
+  CURRENT_MUSHAF_CDN_INDEX++;
+  if (CURRENT_MUSHAF_CDN_INDEX < MUSHAF_IMAGE_CDNS.length) {
+    var nextUrl = MUSHAF_IMAGE_CDNS[CURRENT_MUSHAF_CDN_INDEX](CURRENT_PAGE_LOADING);
+    var loaderTxt = document.getElementById('mushafLoaderText');
+    if (loaderTxt) loaderTxt.textContent = 'Mencoba server cadangan #' + (CURRENT_MUSHAF_CDN_INDEX + 1) + '...';
+    imgEl.src = nextUrl;
+    return;
+  }
+
+  // Jika seluruh 5 CDN gagal terhubung (misal sedang offline total)
   var loader = document.getElementById('mushafImgLoader');
   if (loader) {
-    loader.innerHTML = '<div style="color:#b91c1c;padding:20px;text-align:center;">' +
-      '⚠️ Gagal memuat gambar halaman.<br>' +
-      '<button class="btn btn-outline btn-sm" onclick="setModeTampilanHalaman(\'teks\')" style="margin-top:8px;">Beralih ke Teks Khot Naskhi</button>' +
+    loader.innerHTML = '<div style="color:#b91c1c;padding:18px;text-align:center;line-height:1.5;">' +
+      '<div style="font-size:24px;margin-bottom:4px;">⚠️</div>' +
+      '<b style="font-size:13px;">Gambar halaman mushaf tidak dapat dimuat dari koneksi ini.</b><br>' +
+      '<span style="font-size:11.5px;color:#64748b;">Beralih ke tampilan teks ayat Khot Naskhi Kemenag.</span><br>' +
+      '<div style="display:flex;gap:6px;justify-content:center;margin-top:10px;">' +
+        '<button class="btn btn-primary btn-sm" onclick="setModeTampilanHalaman(\'teks\')">📝 Buka Teks Khot Naskhi</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="bacaHalamanQuran(' + CURRENT_PAGE_LOADING + ')">🔄 Coba Lagi</button>' +
+      '</div>' +
     '</div>';
   }
+  // Otomatis aktifkan mode teks agar siswa tidak menemui layar kosong
+  setModeTampilanHalaman('teks');
 }
 
 async function muatDataAyatHalaman(p, defaultSurah) {
@@ -1231,25 +1338,57 @@ async function muatDataAyatHalaman(p, defaultSurah) {
     return;
   }
 
-  try {
-    var res = await fetch('https://api.quran.com/api/v4/verses/by_page/' + p + '?language=id&words=false&translations=33&fields=text_uthmani,chapter_id,verse_number,juz_number');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var json = await res.json();
-    if (json && json.verses) {
-      QURAN_PAGE_CACHE[p] = json.verses;
-      renderHalamanTeks(json.verses, p);
-      return;
-    }
-  } catch(e) {
-    console.warn('Gagal fetch ayat halaman via API, fallback ke surat master:', e);
+  if (textContainer) {
+    textContainer.innerHTML = '<div style="text-align:center;padding:30px 10px;color:var(--muted);"><span class="spin">⏳</span> Memuat teks ayat Khot Naskhi Kemenag...</div>';
   }
 
+  // 1. Coba fetch ayat per halaman dari api.quran.com
+  try {
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() { controller.abort(); }, 5000);
+    var res = await fetch('https://api.quran.com/api/v4/verses/by_page/' + p + '?language=id&words=false&translations=33&fields=text_uthmani,chapter_id,verse_number,juz_number', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      var json = await res.json();
+      if (json && json.verses && json.verses.length > 0) {
+        QURAN_PAGE_CACHE[p] = json.verses;
+        renderHalamanTeks(json.verses, p);
+        return;
+      }
+    }
+  } catch(e) {
+    console.warn('api.quran.com halaman gagal, beralih ke server cadangan surat:', e);
+  }
+
+  // 2. Fallback cerdas: Ambil ayat surat dari equran.id / server cadangan
+  try {
+    var ayatList = await fetchSurahAyatOnline(defaultSurah.no);
+    if (ayatList && ayatList.length > 0) {
+      var versesFormatted = ayatList.map(function(a) {
+        return {
+          chapter_id: defaultSurah.no,
+          verse_number: a.nomorAyat,
+          text_uthmani: a.teksArab,
+          translation: a.teksIndonesia
+        };
+      });
+      QURAN_PAGE_CACHE[p] = versesFormatted;
+      renderHalamanTeks(versesFormatted, p);
+      return;
+    }
+  } catch(err2) {
+    console.warn('Fallback ayat surat gagal:', err2);
+  }
+
+  // 3. Fallback darurat bila offline total
   if (footerEl) {
     footerEl.textContent = 'Halaman ' + p + ' • Terkait Surah ' + defaultSurah.no + '. ' + defaultSurah.nama;
   }
   if (textContainer) {
-    textContainer.innerHTML = '<div style="text-align:center;padding:20px;font-size:14px;color:var(--muted);">' +
-      'Gunakan tombol <b>"Buka di Per Ayat"</b> di bawah untuk membaca seluruh ayat surat ' + defaultSurah.nama + ' secara lengkap dengan terjemahan.' +
+    textContainer.innerHTML = '<div style="text-align:center;padding:24px;background:#fef2f2;border-radius:12px;border:1px solid #fecaca;color:#991b1b;">' +
+      '<b>Gagal memuat teks ayat secara online.</b><br>' +
+      '<button class="btn btn-primary btn-sm" onclick="muatDataAyatHalaman(' + p + ', ' + JSON.stringify(defaultSurah) + ')" style="margin-top:10px;">🔄 Coba Lagi</button> ' +
+      '<button class="btn btn-outline btn-sm" onclick="bacaSuratQuran(' + defaultSurah.no + ')" style="margin-top:10px;">📖 Buka Surat ' + defaultSurah.nama + '</button>' +
     '</div>';
   }
 }
