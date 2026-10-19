@@ -16,38 +16,47 @@ Sistem telah disesuaikan agar:
 
 ---
 
-## 🗄️ 1. Pengaturan Database Supabase Baru
+## 🗄️ 1. Pengaturan Database Mandiri (Pemisahan Data 100%)
 
-Agar data siswa dan riwayat presensi aplikasi kloning tidak tercampur dengan aplikasi lama, buatlah proyek Supabase baru:
+Agar seluruh data siswa, presensi sholat, dan pengaturan aplikasi kloning ini **terpisah total dan berdikari sendiri** dari aplikasi utama, Anda memiliki 2 pilihan yang sangat fleksibel:
 
-### Langkah A: Buat Proyek Supabase Baru
-1. Masuk ke [Supabase Dashboard](https://supabase.com/dashboard).
-2. Klik **New Project**.
-3. Masukkan nama proyek (misal: `Presensi Ibadah Kloning` atau `S-I-I-P Kloning`).
-4. Atur database password, dan pilih Region: **Singapore (`ap-southeast-1`)** untuk latensi tercepat di Indonesia.
-5. Tunggu pembuatan database selesai (sekitar 1-2 menit).
+---
 
-### Langkah B: Jalankan Skema & Data Awal
-1. Di dashboard Supabase baru Anda, buka menu **SQL Editor** (ikon terminal/SQL di menu kiri).
-2. Klik **New query**, lalu salin dan tempel seluruh isi file [`supabase_schema.sql`](./supabase_schema.sql), kemudian klik **Run**.  
-   *(Langkah ini membuat tabel `siswa`, `absen_sholat`, `pengaturan`, `log_notif_wa`, serta storage bucket `foto_absen`)*.
-3. Buka tab query baru di SQL Editor, salin dan tempel seluruh isi file [`seed_data_excel.sql`](./seed_data_excel.sql), lalu klik **Run**.  
-   *(Langkah ini mengimpor 182 data siswa, konfigurasi waktu sholat, dan riwayat presensi awal)*.
+### 🟢 PILIHAN A: Menggunakan Supabase Saat Ini (Paling Cepat & Praktis)
+*Anda TIDAK PERLU membuat akun atau proyek Supabase baru. Supabase saat ini dapat menampung kedua aplikasi sekaligus secara aman tanpa pernah mencampuri data.*
 
-### Langkah C: Hubungkan Kredensial ke Aplikasi
-1. Di dashboard Supabase baru Anda, buka **Project Settings** > **API**.
-2. Salin **Project URL** dan **Project API Keys (`anon` / `public`)**.
-3. Buka file [`config.js`](./config.js) di folder ini, lalu masukkan kredensial baru Anda:
+1. Buka [Supabase Dashboard](https://supabase.com/dashboard) pada proyek Anda saat ini (`pkjnbuzfknbcakmtfkif`).
+2. Masuk ke menu **SQL Editor** (ikon terminal/SQL di menu sebelah kiri).
+3. Klik tombol **New query**.
+4. Buka file [`setup_database_kloning_terpisah.sql`](./setup_database_kloning_terpisah.sql) di folder ini, salin seluruh kodenya, tempel ke SQL Editor Supabase, lalu klik tombol **Run**.
+5. **Selesai!** Supabase akan otomatis membuat:
+   - Tabel `kloning_pengaturan` (dengan salinan master pengaturan awal)
+   - Tabel `kloning_siswa` (dengan salinan data 182 siswa)
+   - Tabel `kloning_absen_sholat` (bersih & siap mencatat presensi khusus aplikasi kloning)
+   - Bucket Storage `foto_absen_kloning` (untuk foto selfie presensi kloning)
+6. Aplikasi kloning ini sudah dikonfigurasi menggunakan `TABLE_PREFIX: "kloning_"`, sehingga seluruh aksi presensi atau perubahan data tidak akan pernah menyentuh tabel aplikasi utama!
+
+---
+
+### 🔵 PILIHAN B: Menggunakan Proyek Supabase Baru (Terpisah Total Secara Cloud)
+*Jika Anda ingin proyek Supabase yang benar-benar berbeda secara fisik:*
+
+1. Masuk ke [Supabase Dashboard](https://supabase.com/dashboard) dan klik **New Project**.
+2. Masukkan nama (misal: `Presensi Ibadah Kloning`), buat password, dan pilih region Singapore.
+3. Di dashboard proyek baru, buka **SQL Editor** > **New query**, lalu salin dan jalankan seluruh isi file [`setup_database_kloning_terpisah.sql`](./setup_database_kloning_terpisah.sql).
+4. Buka **Project Settings** > **API**, salin **Project URL** dan **Project API Keys (`anon` / `public`)**.
+5. Buka file [`config.js`](./config.js) di folder ini, lalu masukkan kredensial baru Anda:
    ```javascript
    window.APP_CONFIG = {
      SUPABASE_URL: "https://proyek-baru-anda.supabase.co",
      SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-     SUPABASE_STORAGE_BUCKET: "foto_absen",
-     // ...
+     TABLE_PREFIX: "kloning_", // atau "" jika tanpa prefix di project baru
+     SUPABASE_STORAGE_BUCKET: "foto_absen_kloning"
    };
    ```
-4. *(Opsional)* Anda juga dapat menyimpannya di file [`.env`](./.env) untuk keperluan dokumentasi atau backend lokal.
-5. *(Alternatif Langsung di Web)*: Anda juga bisa membuka aplikasi di browser, masuk ke **Panel Admin** (login: `admin` / `admin123`) > **Pengaturan** > **Status Koneksi Database Supabase**, masukkan URL & Key baru lalu klik **Simpan & Terapkan Database Baru**.
+6. *(Alternatif Langsung di Web)*: Anda juga bisa masuk ke **Panel Admin** (login: `admin` / `admin123`) > **Pengaturan** > **Status Koneksi Database Supabase**, masukkan URL & Key baru lalu klik **Simpan & Terapkan Database**.
+
+---
 
 ---
 

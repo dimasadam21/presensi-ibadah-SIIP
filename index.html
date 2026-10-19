@@ -4562,34 +4562,39 @@
           <div class="card set-card" id="cardKoneksiApi">
             <div class="set-head"><span class="set-ic">⚡</span>
               <div>
-                <div class="set-t">Status Koneksi Database Supabase (Cloud PostgreSQL)</div>
-                <div class="set-d">Aplikasi edisi kloning ini dapat dihubungkan ke instance Cloud Supabase baru secara mandiri.</div>
+                <div class="set-t">Status Koneksi Database Supabase (Data Mandiri & Terpisah)</div>
+                <div class="set-d">Seluruh data siswa, presensi sholat, dan konfigurasi aplikasi kloning ini terisolasi 100% dari aplikasi utama.</div>
               </div>
             </div>
             <div class="form-grid">
               <div class="fg-full">
                 <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:12px;font-size:12.5px;color:#166534;line-height:1.6;">
-                  ✅ <b>Status: Database Supabase Aktif</b><br>
+                  ✅ <b>Status: Database Supabase Mandiri (Data Terpisah 100%)</b><br>
                   Endpoint Aktif: <code id="dispSupabaseUrl">https://pkjnbuzfknbcakmtfkif.supabase.co</code><br>
-                  Storage Bucket: <code id="dispSupabaseBucket">foto_absen</code> (Publik)<br>
+                  Prefix Tabel Terpisah: <code id="dispSupabasePrefix" style="background:#dcfce7;color:#15803d;padding:2px 6px;border-radius:4px;font-weight:700;">kloning_</code> <span style="font-size:11.5px;color:#166534;">(Tabel: kloning_siswa, kloning_absen_sholat, kloning_pengaturan)</span><br>
+                  Storage Bucket: <code id="dispSupabaseBucket">foto_absen_kloning</code> (Publik)<br>
                   Sumber Konfigurasi: <span id="dispSupabaseSource" style="font-weight:600;">Default / config.js</span>
                 </div>
               </div>
               <div class="fg-full" style="margin-top:6px;">
-                <label>Supabase Project URL (Kloning Baru)</label>
-                <input type="text" id="setSbUrl" placeholder="https://your-new-project-id.supabase.co">
+                <label>Supabase Project URL</label>
+                <input type="text" id="setSbUrl" placeholder="https://pkjnbuzfknbcakmtfkif.supabase.co">
               </div>
               <div class="fg-full">
                 <label>Supabase Public Anon Key</label>
                 <input type="text" id="setSbKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
               </div>
               <div>
+                <label>Prefix Tabel Database (Pemisah Data)</label>
+                <input type="text" id="setSbPrefix" placeholder="kloning_">
+              </div>
+              <div>
                 <label>Nama Storage Bucket Foto</label>
-                <input type="text" id="setSbBucket" placeholder="foto_absen">
+                <input type="text" id="setSbBucket" placeholder="foto_absen_kloning">
               </div>
             </div>
             <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
-              <button type="button" class="btn btn-primary btn-sm" onclick="simpanKoneksiSupabaseCustom()">💾 Simpan & Terapkan Database Baru</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="simpanKoneksiSupabaseCustom()">💾 Simpan & Terapkan Database</button>
               <button type="button" class="btn btn-outline btn-sm" onclick="ujiKoneksiSupabase()">⚡ Tes Koneksi Supabase</button>
               <button type="button" class="btn btn-outline btn-sm" style="color:#dc2626;border-color:#fca5a5;" onclick="resetKoneksiSupabaseDefault()">🔄 Kembalikan ke Default</button>
             </div>
@@ -5079,9 +5084,13 @@
           <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#334155;">Supabase Public Anon Key:</label>
           <input type="text" id="modalSbKey" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;" placeholder="eyJhbGciOiJIUzI1NiIs...">
         </div>
+        <div style="margin-bottom:10px;">
+          <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#334155;">Prefix Tabel (Pemisah Data):</label>
+          <input type="text" id="modalSbPrefix" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;" placeholder="kloning_">
+        </div>
         <div style="margin-bottom:14px;">
           <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#334155;">Storage Bucket Foto Presensi:</label>
-          <input type="text" id="modalSbBucket" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;" placeholder="foto_absen">
+          <input type="text" id="modalSbBucket" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;" placeholder="foto_absen_kloning">
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button type="button" class="btn btn-primary" style="flex:1;" onclick="simpanKoneksiSupabaseDariModal()">💾 Simpan & Terapkan</button>
@@ -5994,6 +6003,14 @@
     <div id="toast"></div>
 
     <script>
+      // ================= STORAGE ISOLATION (EDISI KLONING MANDIRI) =================
+      var klonStorage = window.klonStorage || {
+        _prefix: 'kloning_',
+        getItem: function(k) { try { return klonStorage.getItem(this._prefix + k); } catch(e) { return null; } },
+        setItem: function(k, v) { try { klonStorage.setItem(this._prefix + k, v); } catch(e) {} },
+        removeItem: function(k) { try { klonStorage.removeItem(this._prefix + k); } catch(e) {} }
+      };
+
       // ================= OFFLINE MOCK SHIM UNTUK TESTING LOKAL =================
       if (typeof google === 'undefined' || !google.script || !google.script.run) {
         window.google = window.google || {};
@@ -6250,7 +6267,7 @@
       };
       var WINDOWS = (function () {
         try {
-          var saved = localStorage.getItem('jendela_sholat');
+          var saved = klonStorage.getItem('jendela_sholat');
           if (saved) return Object.assign({}, DEFAULT_WINDOWS, JSON.parse(saved));
         } catch (e) { }
         return Object.assign({}, DEFAULT_WINDOWS);
@@ -6280,7 +6297,7 @@
           }
         });
         try {
-          localStorage.setItem('jendela_sholat', JSON.stringify(WINDOWS));
+          klonStorage.setItem('jendela_sholat', JSON.stringify(WINDOWS));
         } catch (e) { }
         if (SISWA && typeof renderGrid === 'function' && !$('tabAbsen').classList.contains('hidden')) {
           renderGrid();
@@ -6293,20 +6310,36 @@
       function toast(msg, type) { var t = $('toast'); t.textContent = msg; t.className = 'show ' + (type || ''); setTimeout(function () { t.className = t.className.replace('show', ''); }, 3400); }
       function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-      // ================= NATIVE SUPABASE BACKEND ADAPTER (KLONING) =================
+      // ================= NATIVE SUPABASE BACKEND ADAPTER (KLONING MANDIRI) =================
       var CFG = (window.APP_CONFIG || {});
       var DEFAULT_SUPABASE_URL = 'https://pkjnbuzfknbcakmtfkif.supabase.co';
       var DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBram5idXpma25iY2FrbXRma2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODI5OTAsImV4cCI6MjEwNjc1ODk5MH0.xdDDnoYJ05_Uq0m5IVz1H1rc-Fpon5ERXjUqrKfpmpY';
-      var DEFAULT_SUPABASE_STORAGE_BUCKET = 'foto_absen';
+      var DEFAULT_SUPABASE_STORAGE_BUCKET = 'foto_absen_kloning';
+      var DEFAULT_TABLE_PREFIX = 'kloning_';
 
       function isSbPlaceholder(v) {
         if (!v || typeof v !== 'string') return true;
         return v.indexOf('your-new-project-id') !== -1 || v.indexOf('your-new-anon-key') !== -1;
       }
 
-      var SUPABASE_URL = (localStorage.getItem('sb_custom_url') || (!isSbPlaceholder(CFG.SUPABASE_URL) ? CFG.SUPABASE_URL : DEFAULT_SUPABASE_URL)).trim();
-      var SUPABASE_ANON_KEY = (localStorage.getItem('sb_custom_key') || (!isSbPlaceholder(CFG.SUPABASE_ANON_KEY) ? CFG.SUPABASE_ANON_KEY : DEFAULT_SUPABASE_ANON_KEY)).trim();
-      var SUPABASE_STORAGE_BUCKET = (localStorage.getItem('sb_custom_bucket') || CFG.SUPABASE_STORAGE_BUCKET || DEFAULT_SUPABASE_STORAGE_BUCKET).trim();
+      var SUPABASE_URL = (klonStorage.getItem('sb_custom_url') || (!isSbPlaceholder(CFG.SUPABASE_URL) ? CFG.SUPABASE_URL : DEFAULT_SUPABASE_URL)).trim();
+      var SUPABASE_ANON_KEY = (klonStorage.getItem('sb_custom_key') || (!isSbPlaceholder(CFG.SUPABASE_ANON_KEY) ? CFG.SUPABASE_ANON_KEY : DEFAULT_SUPABASE_ANON_KEY)).trim();
+      var SUPABASE_STORAGE_BUCKET = (klonStorage.getItem('sb_custom_bucket') || CFG.SUPABASE_STORAGE_BUCKET || DEFAULT_SUPABASE_STORAGE_BUCKET).trim();
+      var TABLE_PREFIX = (klonStorage.getItem('sb_custom_prefix') !== null ? klonStorage.getItem('sb_custom_prefix') : (CFG.TABLE_PREFIX !== undefined ? CFG.TABLE_PREFIX : DEFAULT_TABLE_PREFIX)).trim();
+
+      function applyTablePrefix(path) {
+        if (!path || path.startsWith('http')) return path;
+        var prefix = TABLE_PREFIX || '';
+        if (!prefix) return path;
+        var knownTables = ['siswa', 'absen_sholat', 'pengaturan', 'log_notif_wa'];
+        for (var i = 0; i < knownTables.length; i++) {
+          var t = knownTables[i];
+          if (path === t || path.startsWith(t + '?') || path.startsWith(t + '/')) {
+            return prefix + path;
+          }
+        }
+        return path;
+      }
 
       // Pure JS SHA-256 for universal, fast, synchronous hashing in any browser
       function sha256(ascii) {
@@ -6371,13 +6404,18 @@
 
       async function sbFetch(path, opts) {
         opts = opts || {};
-        var url = path.startsWith('http') ? path : (SUPABASE_URL + '/rest/v1/' + path);
+        var resolvedPath = applyTablePrefix(path);
+        var url = resolvedPath.startsWith('http') ? resolvedPath : (SUPABASE_URL + '/rest/v1/' + resolvedPath);
         opts.headers = getSbHeaders(opts.headers);
         var res = await fetch(url, opts);
         if (!res.ok) {
           var errBody;
           try { errBody = await res.json(); } catch(e) { errBody = { message: res.statusText }; }
-          throw new Error(errBody.message || errBody.error || ('HTTP Error ' + res.status));
+          var errMsg = errBody.message || errBody.error || ('HTTP Error ' + res.status);
+          if (res.status === 404 && (errMsg.indexOf('Could not find the table') !== -1 || errBody.code === 'PGRST205')) {
+            errMsg = 'Tabel database kloning ("' + (resolvedPath.split('?')[0]) + '") belum dibuat di Supabase.\nSilakan jalankan file SQL "setup_database_kloning_terpisah.sql" di SQL Editor Supabase agar database terpisah aktif sempurna.';
+          }
+          throw new Error(errMsg);
         }
         return res;
       }
@@ -6825,7 +6863,7 @@
             return { success: false, message: 'Username atau password admin salah.' };
           }
           var token = 'admTok_' + Date.now() + '_' + Math.random().toString(36).substring(2);
-          try { localStorage.setItem('supabase_admin_token', token); } catch(e){}
+          try { klonStorage.setItem('supabase_admin_token', token); } catch(e){}
 
           return {
             success: true,
@@ -7391,20 +7429,23 @@
       }
 
       function updateSupabaseConfigDisplay() {
-        var isCustom = !!localStorage.getItem('sb_custom_url');
+        var isCustom = !!klonStorage.getItem('sb_custom_url');
         var isFromConfigJs = !isCustom && (!isSbPlaceholder(CFG.SUPABASE_URL) && CFG.SUPABASE_URL !== DEFAULT_SUPABASE_URL);
-        var sourceLabel = isCustom ? 'Tersimpan di Browser (Custom Local)' : (isFromConfigJs ? 'Tersimpan di config.js' : 'Default (S-I-I-P)');
+        var sourceLabel = isCustom ? 'Tersimpan di Browser (Custom Local)' : (isFromConfigJs ? 'Tersimpan di config.js' : 'Default (Edisi Kloning Mandiri)');
 
         if ($('dispSupabaseUrl')) $('dispSupabaseUrl').textContent = SUPABASE_URL;
+        if ($('dispSupabasePrefix')) $('dispSupabasePrefix').textContent = TABLE_PREFIX || '(tanpa prefix)';
         if ($('dispSupabaseBucket')) $('dispSupabaseBucket').textContent = SUPABASE_STORAGE_BUCKET;
         if ($('dispSupabaseSource')) $('dispSupabaseSource').textContent = sourceLabel;
 
         if ($('setSbUrl')) $('setSbUrl').value = SUPABASE_URL;
         if ($('setSbKey')) $('setSbKey').value = SUPABASE_ANON_KEY;
+        if ($('setSbPrefix')) $('setSbPrefix').value = TABLE_PREFIX;
         if ($('setSbBucket')) $('setSbBucket').value = SUPABASE_STORAGE_BUCKET;
 
         if ($('modalSbUrl')) $('modalSbUrl').value = SUPABASE_URL;
         if ($('modalSbKey')) $('modalSbKey').value = SUPABASE_ANON_KEY;
+        if ($('modalSbPrefix')) $('modalSbPrefix').value = TABLE_PREFIX;
         if ($('modalSbBucket')) $('modalSbBucket').value = SUPABASE_STORAGE_BUCKET;
       }
 
@@ -7420,7 +7461,8 @@
       function simpanKoneksiSupabaseCustom() {
         var u = ($('setSbUrl') ? $('setSbUrl').value : '').trim();
         var k = ($('setSbKey') ? $('setSbKey').value : '').trim();
-        var b = ($('setSbBucket') ? $('setSbBucket').value : '').trim() || 'foto_absen';
+        var p = ($('setSbPrefix') ? $('setSbPrefix').value : '').trim();
+        var b = ($('setSbBucket') ? $('setSbBucket').value : '').trim() || 'foto_absen_kloning';
 
         if (!u || !u.startsWith('http')) {
           alert('Mohon masukkan Supabase URL yang valid (diawali https://).');
@@ -7431,12 +7473,14 @@
           return;
         }
 
-        localStorage.setItem('sb_custom_url', u);
-        localStorage.setItem('sb_custom_key', k);
-        localStorage.setItem('sb_custom_bucket', b);
+        klonStorage.setItem('sb_custom_url', u);
+        klonStorage.setItem('sb_custom_key', k);
+        klonStorage.setItem('sb_custom_prefix', p);
+        klonStorage.setItem('sb_custom_bucket', b);
 
         SUPABASE_URL = u;
         SUPABASE_ANON_KEY = k;
+        TABLE_PREFIX = p;
         SUPABASE_STORAGE_BUCKET = b;
         SB_PENGATURAN_CACHE = null;
 
@@ -7448,7 +7492,8 @@
       function simpanKoneksiSupabaseDariModal() {
         var u = ($('modalSbUrl') ? $('modalSbUrl').value : '').trim();
         var k = ($('modalSbKey') ? $('modalSbKey').value : '').trim();
-        var b = ($('modalSbBucket') ? $('modalSbBucket').value : '').trim() || 'foto_absen';
+        var p = ($('modalSbPrefix') ? $('modalSbPrefix').value : '').trim();
+        var b = ($('modalSbBucket') ? $('modalSbBucket').value : '').trim() || 'foto_absen_kloning';
 
         if (!u || !u.startsWith('http')) {
           alert('Mohon masukkan Supabase URL yang valid (diawali https://).');
@@ -7459,12 +7504,14 @@
           return;
         }
 
-        localStorage.setItem('sb_custom_url', u);
-        localStorage.setItem('sb_custom_key', k);
-        localStorage.setItem('sb_custom_bucket', b);
+        klonStorage.setItem('sb_custom_url', u);
+        klonStorage.setItem('sb_custom_key', k);
+        klonStorage.setItem('sb_custom_prefix', p);
+        klonStorage.setItem('sb_custom_bucket', b);
 
         SUPABASE_URL = u;
         SUPABASE_ANON_KEY = k;
+        TABLE_PREFIX = p;
         SUPABASE_STORAGE_BUCKET = b;
         SB_PENGATURAN_CACHE = null;
 
@@ -7476,12 +7523,14 @@
 
       function resetKoneksiSupabaseDefault() {
         if (!confirm('Apakah Anda yakin ingin mereset koneksi Supabase kembali ke default awal?')) return;
-        localStorage.removeItem('sb_custom_url');
-        localStorage.removeItem('sb_custom_key');
-        localStorage.removeItem('sb_custom_bucket');
+        klonStorage.removeItem('sb_custom_url');
+        klonStorage.removeItem('sb_custom_key');
+        klonStorage.removeItem('sb_custom_prefix');
+        klonStorage.removeItem('sb_custom_bucket');
 
         SUPABASE_URL = (!isSbPlaceholder(CFG.SUPABASE_URL) ? CFG.SUPABASE_URL : DEFAULT_SUPABASE_URL).trim();
         SUPABASE_ANON_KEY = (!isSbPlaceholder(CFG.SUPABASE_ANON_KEY) ? CFG.SUPABASE_ANON_KEY : DEFAULT_SUPABASE_ANON_KEY).trim();
+        TABLE_PREFIX = (CFG.TABLE_PREFIX !== undefined ? CFG.TABLE_PREFIX : DEFAULT_TABLE_PREFIX).trim();
         SUPABASE_STORAGE_BUCKET = (CFG.SUPABASE_STORAGE_BUCKET || DEFAULT_SUPABASE_STORAGE_BUCKET).trim();
         SB_PENGATURAN_CACHE = null;
 
@@ -7995,13 +8044,13 @@
       }
 
       function muatDaftarSiswaJikaPerlu(skipJikaSudahLogin) {
-        var admSess = localStorage.getItem('admin_sess');
+        var admSess = klonStorage.getItem('admin_sess');
         if (skipJikaSudahLogin || admSess) {
           return; // Menghemat kuota GAS bagi siswa/admin yang sudah login
         }
         // Baca dari cache localStorage terlebih dahulu (instant autocomplete)
         try {
-          var cached = localStorage.getItem('daftar_siswa_cache');
+          var cached = klonStorage.getItem('daftar_siswa_cache');
           if (cached) {
             var cObj = JSON.parse(cached);
             if (cObj && cObj.data && cObj.data.length) {
@@ -8016,7 +8065,7 @@
           if (res && res.success && res.data) {
             DAFTAR = res.data;
             try {
-              localStorage.setItem('daftar_siswa_cache', JSON.stringify({ data: res.data, ts: Date.now() }));
+              klonStorage.setItem('daftar_siswa_cache', JSON.stringify({ data: res.data, ts: Date.now() }));
             } catch (e) { }
           }
         }).withFailureHandler(function () { }).getDaftarSiswa();
@@ -8029,7 +8078,7 @@
 
         // 1. Terapkan Info Publik dari cache lokal instan (0 milidetik - tanpa layar kosong)
         try {
-          var savedInfo = localStorage.getItem('info_publik_cache');
+          var savedInfo = klonStorage.getItem('info_publik_cache');
           if (savedInfo) {
             var parsedInfo = JSON.parse(savedInfo);
             if (parsedInfo && parsedInfo.success) terapkanInfoPublikKeUI(parsedInfo);
@@ -8039,14 +8088,14 @@
         // 2. Pemulihan sesi instan (Anti-lempar ke login saat kamera HP reload)
         var pulihSiswa = false;
         try {
-          var sData = localStorage.getItem('siswa_data');
+          var sData = klonStorage.getItem('siswa_data');
           if (sData) {
             var sObj = JSON.parse(sData);
             if (sObj && sObj.nis) {
               SISWA = sObj;
               tampilApp();
               pulihSiswa = true;
-              var rSaved = localStorage.getItem('riwayat_hari_ini');
+              var rSaved = klonStorage.getItem('riwayat_hari_ini');
               if (rSaved) { try { RIWAYAT = JSON.parse(rSaved); renderRiwayat(); renderGrid(); } catch (ex) { } }
             }
           }
@@ -8056,7 +8105,7 @@
         gas().withSuccessHandler(function (res) {
           if (res && res.success) {
             terapkanInfoPublikKeUI(res);
-            try { localStorage.setItem('info_publik_cache', JSON.stringify(res)); } catch (e) { }
+            try { klonStorage.setItem('info_publik_cache', JSON.stringify(res)); } catch (e) { }
           }
         }).withFailureHandler(function () { }).getInfoPublik();
 
@@ -8081,7 +8130,7 @@
         cekDeteksiWhatsApp();
 
         setTimeout(function () {
-          var admSess = localStorage.getItem('admin_sess');
+          var admSess = klonStorage.getItem('admin_sess');
           if (admSess) {
             try { var as = JSON.parse(admSess); $('admUser').value = as.u; $('admPass').value = as.p; doAdminLogin(); } catch (e) { }
           } else {
@@ -8090,13 +8139,13 @@
               gas().withSuccessHandler(function (res) {
                 if (res && res.success) {
                   RIWAYAT = res.riwayatHariIni || {};
-                  try { localStorage.setItem('riwayat_hari_ini', JSON.stringify(RIWAYAT)); } catch (ex) { }
+                  try { klonStorage.setItem('riwayat_hari_ini', JSON.stringify(RIWAYAT)); } catch (ex) { }
                   renderRiwayat();
                   renderGrid();
                 }
               }).getRiwayatSholat(SISWA.nis);
             } else {
-              var sSess = localStorage.getItem('siswa_sess');
+              var sSess = klonStorage.getItem('siswa_sess');
               if (sSess) {
                 try { var ss = JSON.parse(sSess); $('nisInput').value = ss.n; $('passInput').value = ss.p; doLogin(); } catch (e) { }
               }
@@ -8232,7 +8281,7 @@
             }
             ADMIN_TOKEN = res.token;
             $('adminSchool').textContent = res.namaSekolah || 'Panel Admin';
-            localStorage.setItem('admin_sess', JSON.stringify({ u: nis, p: pass }));
+            klonStorage.setItem('admin_sess', JSON.stringify({ u: nis, p: pass }));
             if (res.logoSekolah !== undefined) terapkanLogoUI(res.logoSekolah);
             terapkanUI(res);
             tutupAdminLogin();
@@ -8265,9 +8314,9 @@
           btn.disabled = false; btn.innerHTML = '<span>Masuk</span>';
           if (!res || !res.success) { toast((res && res.message) || 'Login gagal.', 'err'); return; }
           try {
-            localStorage.setItem('siswa_sess', JSON.stringify({ n: res.siswa.nis, p: pass }));
-            localStorage.setItem('siswa_data', JSON.stringify(res.siswa));
-            if (res.riwayatHariIni) localStorage.setItem('riwayat_hari_ini', JSON.stringify(res.riwayatHariIni));
+            klonStorage.setItem('siswa_sess', JSON.stringify({ n: res.siswa.nis, p: pass }));
+            klonStorage.setItem('siswa_data', JSON.stringify(res.siswa));
+            if (res.riwayatHariIni) klonStorage.setItem('riwayat_hari_ini', JSON.stringify(res.riwayatHariIni));
           } catch (e) { }
           SISWA = res.siswa; RIWAYAT = res.riwayatHariIni || {}; SHOLAT_NOW = res.sholatSaatIni || '';
           if (res.jendelaSholat) updateJendelaSholat(res.jendelaSholat);
@@ -8286,9 +8335,9 @@
       }
       function logout() {
         try {
-          localStorage.removeItem('siswa_sess');
-          localStorage.removeItem('siswa_data');
-          localStorage.removeItem('riwayat_hari_ini');
+          klonStorage.removeItem('siswa_sess');
+          klonStorage.removeItem('siswa_data');
+          klonStorage.removeItem('riwayat_hari_ini');
         } catch (e) { }
         SISWA = null;
         if (gridTimer) { clearInterval(gridTimer); gridTimer = null; }
@@ -8979,7 +9028,7 @@
             return;
           }
           RIWAYAT = res.riwayatHariIni || RIWAYAT;
-          try { localStorage.setItem('riwayat_hari_ini', JSON.stringify(RIWAYAT)); } catch (e) { }
+          try { klonStorage.setItem('riwayat_hari_ini', JSON.stringify(RIWAYAT)); } catch (e) { }
           tutupModal();
           renderGrid();
           if (isSemua) {
@@ -9057,7 +9106,7 @@
 
           // Update session localStorage agar auto login berikutnya tetap valid
           try {
-            localStorage.setItem('siswa_sess', JSON.stringify({ n: SISWA.nis, p: baru }));
+            klonStorage.setItem('siswa_sess', JSON.stringify({ n: SISWA.nis, p: baru }));
           } catch (e) { }
 
           SISWA.passwordDefault = false;
@@ -9084,7 +9133,7 @@
         gas().withSuccessHandler(function (res) {
           btn.disabled = false; btn.innerHTML = old;
           if (!res || !res.success) { toast((res && res.message) || 'Gagal mengganti password.', 'err'); return; }
-          try { localStorage.setItem('siswa_sess', JSON.stringify({ n: SISWA.nis, p: baru })); } catch (e) { }
+          try { klonStorage.setItem('siswa_sess', JSON.stringify({ n: SISWA.nis, p: baru })); } catch (e) { }
           SISWA.passwordDefault = false;
           renderPassStatusBox();
           tutupGantiPassword(); toast('Password berhasil diganti.', 'ok');
@@ -9156,7 +9205,7 @@
           }
           ADMIN_TOKEN = res.token;
           if ($('adminSchool')) $('adminSchool').textContent = res.namaSekolah || 'Panel Admin';
-          try { localStorage.setItem('admin_sess', JSON.stringify({ u: u, p: p })); } catch (e) { }
+          try { klonStorage.setItem('admin_sess', JSON.stringify({ u: u, p: p })); } catch (e) { }
           if (res.logoSekolah !== undefined) {
             try { terapkanLogoUI(res.logoSekolah); } catch (e) { }
           }
@@ -9174,7 +9223,7 @@
           toast('Gagal terhubung: ' + (err.message || err), 'err');
         }).adminLogin(u, p);
       }
-      function logoutAdmin() { localStorage.removeItem('admin_sess'); ADMIN_TOKEN = null; LAPORAN = null; LAPORAN_HARIAN = null; SISWA_ADMIN = []; PENGATURAN = null; $('adminView').classList.add('hidden'); $('loginView').classList.remove('hidden'); }
+      function logoutAdmin() { klonStorage.removeItem('admin_sess'); ADMIN_TOKEN = null; LAPORAN = null; LAPORAN_HARIAN = null; SISWA_ADMIN = []; PENGATURAN = null; $('adminView').classList.add('hidden'); $('loginView').classList.remove('hidden'); }
       function gotoAdminPage(page) {
         $('pageLaporan').classList.toggle('hidden', page !== 'Laporan');
         $('pageSiswa').classList.toggle('hidden', page !== 'Siswa');

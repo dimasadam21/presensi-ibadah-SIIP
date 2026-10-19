@@ -206,7 +206,7 @@ function getTodayKey() {
 function getSiswaNis() {
   if (typeof SISWA !== 'undefined' && SISWA && SISWA.nis) return SISWA.nis;
   try {
-    var s = localStorage.getItem('siswa_data');
+    var s = (window.klonStorage || localStorage).getItem('siswa_data');
     if (s) { var o = JSON.parse(s); if (o && o.nis) return o.nis; }
   } catch (e) { }
   return 'tamu';
@@ -215,14 +215,14 @@ function getSiswaNis() {
 function getQuranReadingDurationTodaySec() {
   var nis = getSiswaNis();
   var key = 'quran_duration_' + nis + '_' + getTodayKey();
-  var v = parseInt(localStorage.getItem(key), 10);
+  var v = parseInt((window.klonStorage || localStorage).getItem(key), 10);
   return isNaN(v) ? 0 : v;
 }
 
 function simpanQuranReadingDurationTodaySec(totalSec) {
   var nis = getSiswaNis();
   var key = 'quran_duration_' + nis + '_' + getTodayKey();
-  localStorage.setItem(key, totalSec);
+  (window.klonStorage || localStorage).setItem(key, totalSec);
 }
 
 function formatDetikKeWaktuLengkap(detik) {
@@ -792,7 +792,7 @@ function setModeQuran(mode) {
     if (modalTitle) modalTitle.textContent = '📄 Mushaf Al-Qur\'an Standar Kemenag (Per Halaman)';
     if (cPage) cPage.classList.remove('hidden');
     initJuzSelectDropdown();
-    var lastHal = parseInt(localStorage.getItem('quran_last_page'), 10) || QURAN_PAGE_STATE.currentPage || 1;
+    var lastHal = parseInt((window.klonStorage || localStorage).getItem('quran_last_page'), 10) || QURAN_PAGE_STATE.currentPage || 1;
     bacaHalamanQuran(lastHal);
   } else if (mode === 'tafsir') {
     if (modalTitle) modalTitle.textContent = '📚 Tafsir Al-Qur\'an Kemenag RI';
@@ -1246,7 +1246,7 @@ async function bacaHalamanQuran(pageNum) {
   CURRENT_PAGE_LOADING = p;
   CURRENT_MUSHAF_CDN_INDEX = 0;
   QURAN_PAGE_STATE.currentPage = p;
-  localStorage.setItem('quran_last_page', p);
+  (window.klonStorage || localStorage).setItem('quran_last_page', p);
 
   // Ambil Juz dan Surat yang memuat halaman ini
   var juz = getJuzFromPage(p);
@@ -2442,7 +2442,7 @@ var KATALOG_DOA_DEFAULT = [
 
 function getKatalogDoa() {
   try {
-    var stored = localStorage.getItem('katalog_doa_harian');
+    var stored = (window.klonStorage || localStorage).getItem('katalog_doa_harian');
     if (stored) {
       var arr = JSON.parse(stored);
       if (Array.isArray(arr) && arr.length > 0) return arr;
@@ -2453,7 +2453,7 @@ function getKatalogDoa() {
 
 function simpanKatalogDoa(arr) {
   try {
-    localStorage.setItem('katalog_doa_harian', JSON.stringify(arr));
+    (window.klonStorage || localStorage).setItem('katalog_doa_harian', JSON.stringify(arr));
   } catch (e) { }
 }
 
