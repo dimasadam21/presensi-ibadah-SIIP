@@ -55,13 +55,11 @@ window.APP_CONFIG = {
   // Supabase Public Anon Key
   SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBram5idXpma25iY2FrbXRma2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODI5OTAsImV4cCI6MjEwNjc1ODk5MH0.xdDDnoYJ05_Uq0m5IVz1H1rc-Fpon5ERXjUqrKfpmpY",
 
-  // PREFIX TABEL KHUSUS KLONING (ISOLASI DATA 100%)
-  // Menjamin seluruh query membaca & menulis ke tabel kloning:
-  // - kloning_siswa
-  // - kloning_absen_sholat
-  // - kloning_pengaturan
-  // - kloning_log_notif_wa
-  TABLE_PREFIX: "kloning_",
+  // PREFIX TABEL KHUSUS KLONING
+  // Catatan: Gunakan "" (tanpa prefix) agar langsung terhubung ke tabel aktif saat ini.
+  // Jika Anda telah menjalankan skrip "setup_database_kloning_terpisah.sql" di Supabase,
+  // Anda dapat mengubahnya menjadi "kloning_" untuk isolasi tabel penuh.
+  TABLE_PREFIX: "",
 
   // Nama Storage Bucket khusus untuk foto selfie presensi kloning
   SUPABASE_STORAGE_BUCKET: "foto_absen_kloning",

@@ -146,8 +146,38 @@ Jika Anda ingin mengubah nama sekolah, judul aplikasi, radius GPS, atau jam shol
 | [`seed_data_excel.sql`](./seed_data_excel.sql) | Data 182 siswa & konfigurasi awal untuk Supabase baru |
 | [`.env`](./.env) & [`.env.example`](./.env.example) | Template kredensial environment |
 | [`islamic_features.js`](./islamic_features.js) | Modul Al-Qur'an 114 surat, pelacak durasi baca, kompas kiblat, dzikir & doa harian |
+| [`ramadhan_feature.js`](./ramadhan_feature.js) | Modul Fitur Bulan Ramadhan: 30 judul kegiatan editable, tanggal mulai, jurnal siswa (lokasi, dampak, bukti foto/PDF), rekap & verifikasi admin, ekspor Excel |
 | [`auto_git_push.js`](./auto_git_push.js) | Skrip otomatis mendeteksi perubahan berkas dan melakukan git push |
 | [`mulai_auto_push.bat`](./mulai_auto_push.bat) | File batch untuk menjalankan auto git push secara visual |
 | [`mulai_auto_push_background.vbs`](./mulai_auto_push_background.vbs) | Menjalankan auto git push di latar belakang tanpa jendela CMD |
 | [`push_sekarang.bat`](./push_sekarang.bat) | Tombol 1-klik untuk melakukan git push secara instan kapan saja |
 | [`stop_auto_push.bat`](./stop_auto_push.bat) | File batch untuk menghentikan layanan pemantau auto push |
+
+---
+
+## 🌙 6. Panduan Fitur Bulan Ramadhan
+
+Fitur **Bulan Ramadhan** dirancang khusus untuk mendampingi peserta didik beribadah selama 30 hari penuh di bulan suci Ramadhan:
+
+### A. Fitur Siswa:
+1. **Kalender 30 Hari Ramadhan:**
+   - Menampilkan Hari ke-1 s/d Hari ke-30 lengkap dengan tanggal Masehi yang otomatis dihitung dari tanggal mulai yang ditetapkan Admin.
+   - Menandai secara interaktif: Hari Ini (⚡ Buka Form), Sudah Diisi (✓ Selesai), Terlewat, dan Akan Datang.
+2. **Form Jurnal Ibadah:**
+   - **Judul Kegiatan Ramadhan:** Sesuai agenda yang ditetapkan oleh guru/admin.
+   - **Dimana (Lokasi):** Input tempat pelaksanaan ibadah (contoh: Masjid Jami', Rumah, Musholla Sekolah, dll.) dengan tombol saran cepat.
+   - **Dampak (Hikmah & Refleksi):** Kolom refleksi perubahan positif dan nilai ibadah yang dirasakan.
+   - **Bukti Kegiatan (File Gambar atau PDF):** Mendukung unggahan foto kamera/galeri (otomatis dikompresi) atau file dokumen PDF (maksimal 10MB).
+
+### B. Fitur Admin (Panel Admin):
+1. **Pengaturan 30 Kegiatan Ramadhan:**
+   - Admin dapat **mengubah/mengedit seluruh 30 judul dan panduan kegiatan Ramadhan** kapan saja.
+   - Mengatur **Tanggal Mulai 1 Ramadhan** dan status aktif fitur.
+   - Tombol **Reset ke 30 Judul Standar Kemenag** untuk mengembalikan template awal.
+2. **Pemeriksaan & Verifikasi Hasil Siswa:**
+   - Statistik real-time: Total Siswa, Jurnal Terkumpul, Siswa Mengisi Hari Ini, Partisipasi.
+   - Filter lengkap: Hari ke-X (Hari 1-30), Kelas, Status Verifikasi, dan Pencarian Nama/NIS.
+   - Pratinjau langsung bukti gambar beresolusi tinggi atau dokumen PDF interaktif.
+   - Validasi status (`Disetujui`, `Perlu Revisi`, `Menunggu`) disertai kolom catatan masukan guru.
+3. **Ekspor Rekapitulasi Excel (XLSX):**
+   - Mengunduh laporan rekapitulasi jurnal Ramadhan seluruh siswa ke spreadsheet Excel dengan 1 kali klik.

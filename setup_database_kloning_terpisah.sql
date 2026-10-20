@@ -83,13 +83,51 @@ CREATE TABLE IF NOT EXISTS public.kloning_log_notif_wa (
 );
 
 -- ==============================================================================
--- 6. INDEXING UNTUK QUERY SUPER CEPAT
+-- 6. TABEL KEGIATAN & JURNAL BULAN RAMADHAN (KLONING)
+-- ==============================================================================
+-- A. Master 30 Judul Agenda Kegiatan Ramadhan (Bisa diubah/diedit Admin)
+CREATE TABLE IF NOT EXISTS public.kloning_ramadhan_kegiatan (
+    hari_ke INT PRIMARY KEY CHECK (hari_ke BETWEEN 1 AND 30),
+    judul TEXT NOT NULL,
+    deskripsi TEXT DEFAULT '',
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('asia/jakarta', NOW())
+);
+
+-- B. Jurnal Hasil Pengerjaan Ramadhan Siswa (Judul, Dimana, Dampak, Bukti Gambar/PDF)
+CREATE TABLE IF NOT EXISTS public.kloning_ramadhan_siswa (
+    id VARCHAR(100) PRIMARY KEY DEFAULT 'RAM_' || (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT::TEXT || '_' || LPAD(FLOOR(RANDOM() * 9000 + 1000)::TEXT, 4, '0'),
+    nis VARCHAR(30) NOT NULL REFERENCES public.kloning_siswa(nis) ON UPDATE CASCADE ON DELETE CASCADE,
+    nama VARCHAR(150) NOT NULL,
+    kelas VARCHAR(30) NOT NULL,
+    hari_ke INT NOT NULL CHECK (hari_ke BETWEEN 1 AND 30),
+    tanggal DATE NOT NULL,
+    judul_kegiatan TEXT NOT NULL,
+    dimana TEXT NOT NULL,
+    dampak TEXT NOT NULL,
+    bukti_url TEXT NOT NULL,
+    file_type VARCHAR(20) DEFAULT 'image', -- 'image' atau 'pdf'
+    file_name VARCHAR(255) DEFAULT '',
+    status_verifikasi VARCHAR(30) DEFAULT 'Menunggu' CHECK (status_verifikasi IN ('Menunggu', 'Disetujui', 'Perlu Revisi')),
+    catatan_guru TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT TIMEZONE('asia/jakarta', NOW()),
+    updated_at TIMESTAMPTZ DEFAULT TIMEZONE('asia/jakarta', NOW()),
+    
+    -- Mencegah entri ganda siswa pada hari Ramadhan yang sama
+    CONSTRAINT uq_kloning_ramadhan_siswa_hari UNIQUE (nis, hari_ke)
+);
+
+-- ==============================================================================
+-- 7. INDEXING UNTUK QUERY SUPER CEPAT
 -- ==============================================================================
 CREATE INDEX IF NOT EXISTS idx_kloning_absen_tanggal_sholat ON public.kloning_absen_sholat(tanggal, sholat);
 CREATE INDEX IF NOT EXISTS idx_kloning_absen_nis_tanggal ON public.kloning_absen_sholat(nis, tanggal);
 CREATE INDEX IF NOT EXISTS idx_kloning_absen_kelas ON public.kloning_absen_sholat(kelas);
 CREATE INDEX IF NOT EXISTS idx_kloning_siswa_kelas ON public.kloning_siswa(kelas);
 CREATE INDEX IF NOT EXISTS idx_kloning_siswa_nis ON public.kloning_siswa(nis);
+CREATE INDEX IF NOT EXISTS idx_kloning_ramadhan_hari ON public.kloning_ramadhan_siswa(hari_ke);
+CREATE INDEX IF NOT EXISTS idx_kloning_ramadhan_nis ON public.kloning_ramadhan_siswa(nis);
+CREATE INDEX IF NOT EXISTS idx_kloning_ramadhan_kelas ON public.kloning_ramadhan_siswa(kelas);
+CREATE INDEX IF NOT EXISTS idx_kloning_ramadhan_tanggal ON public.kloning_ramadhan_siswa(tanggal);
 
 -- ==============================================================================
 -- 7. AUTO-UPDATE TIMESTAMP TRIGGER
@@ -160,6 +198,32 @@ END $$;
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Manage Kloning Log WA' AND tablename = 'kloning_log_notif_wa') THEN
     CREATE POLICY "Public Manage Kloning Log WA" ON public.kloning_log_notif_wa FOR ALL USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+-- Ramadhan Kegiatan Policies
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Read Kloning Ramadhan Kegiatan' AND tablename = 'kloning_ramadhan_kegiatan') THEN
+    CREATE POLICY "Public Read Kloning Ramadhan Kegiatan" ON public.kloning_ramadhan_kegiatan FOR SELECT USING (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Manage Kloning Ramadhan Kegiatan' AND tablename = 'kloning_ramadhan_kegiatan') THEN
+    CREATE POLICY "Public Manage Kloning Ramadhan Kegiatan" ON public.kloning_ramadhan_kegiatan FOR ALL USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+-- Ramadhan Siswa Policies
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Read Kloning Ramadhan Siswa' AND tablename = 'kloning_ramadhan_siswa') THEN
+    CREATE POLICY "Public Read Kloning Ramadhan Siswa" ON public.kloning_ramadhan_siswa FOR SELECT USING (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Insert Kloning Ramadhan Siswa' AND tablename = 'kloning_ramadhan_siswa') THEN
+    CREATE POLICY "Public Insert Kloning Ramadhan Siswa" ON public.kloning_ramadhan_siswa FOR INSERT WITH CHECK (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Update Kloning Ramadhan Siswa' AND tablename = 'kloning_ramadhan_siswa') THEN
+    CREATE POLICY "Public Update Kloning Ramadhan Siswa" ON public.kloning_ramadhan_siswa FOR UPDATE USING (true) WITH CHECK (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Delete Kloning Ramadhan Siswa' AND tablename = 'kloning_ramadhan_siswa') THEN
+    CREATE POLICY "Public Delete Kloning Ramadhan Siswa" ON public.kloning_ramadhan_siswa FOR DELETE USING (true);
   END IF;
 END $$;
 
@@ -243,8 +307,50 @@ VALUES
     ('wa_target_mode', 'semua', 'semua / kelas / nomor'),
     ('wa_target_kelas', '', 'Daftar kelas jika target_mode = kelas'),
     ('wa_target_nomor', '', 'Nomor spesifik jika target_mode = nomor'),
-    ('wa_template_pesan', 'Assalamu''alaikum *{nama}*,\n\nWaktu sholat *{sholat}* sedang berlangsung.\nSegera laksanakan sholat dan lakukan absen di aplikasi {sekolah}.\n\n_(Pesan otomatis pengingat ibadah)_', 'Template broadcast WA')
+    ('wa_template_pesan', 'Assalamu''alaikum *{nama}*,\n\nWaktu sholat *{sholat}* sedang berlangsung.\nSegera laksanakan sholat dan lakukan absen di aplikasi {sekolah}.\n\n_(Pesan otomatis pengingat ibadah)_', 'Template broadcast WA'),
+
+    -- Pengaturan Fitur Bulan Ramadhan
+    ('ramadhan_tgl_mulai', '2026-02-18', 'Tanggal mulai 1 Ramadhan'),
+    ('ramadhan_aktif', 'YA', 'Status aktif fitur Ramadhan (YA / TIDAK)'),
+    ('ramadhan_judul', 'Jurnal Kegiatan Ramadhan', 'Judul utama agenda kegiatan Ramadhan')
 ON CONFLICT (parameter) DO NOTHING;
+
+-- C. Inisialisasi 30 Agenda Kegiatan Ramadhan Default
+INSERT INTO public.kloning_ramadhan_kegiatan (hari_ke, judul, deskripsi)
+VALUES
+    (1, 'Niat & Puasa Pertama Ramadhan', 'Meneguhkan niat puasa sebulan penuh karena Allah SWT, sahur bersama keluarga, dan menyambut hari pertama dengan hati bersih.'),
+    (2, 'Menjaga Sholat Fardhu Berjamaah', 'Membiasakan sholat lima waktu tepat waktu dan diutamakan berjamaah di masjid/musholla atau bersama keluarga di rumah.'),
+    (3, 'Tadarus Al-Qur''an (Target Khatam)', 'Membaca Al-Qur''an secara tartil minimal 1 juz atau beberapa maqra'' dan menghayati terjemahannya.'),
+    (4, 'Sedekah Subuh & Kepedulian Sosial', 'Menyisihkan sebagian uang saku ke kotak infak masjid atau berbagi makanan ringan kepada tetangga di pagi hari.'),
+    (5, 'Muroja''ah Hafalan Surat Pendek', 'Mengulang hafalan surat-surat Juz 30 (Juz ''Amma) dan memperbagus tajwid serta makhrajul huruf.'),
+    (6, 'Sholat Sunnah Rawatib & Dhuha', 'Menunaikan sholat Dhuha minimal 2 rakaat di pagi hari dan menjaga sholat rawatib qabliyah maupun ba''diyah.'),
+    (7, 'Berbakti Kepada Orang Tua (Birrul Walidain)', 'Membantu orang tua menyiapkan hidangan sahur atau berbuka, serta memohon doa restu dan keridhoan mereka.'),
+    (8, 'Menuntut Ilmu Agama / Menyimak Kultum', 'Mengikuti kajian Ramadhan, mendengarkan ceramah tarawih atau kultum ba''da subuh, serta mencatat hikmahnya.'),
+    (9, 'Berbagi Takjil Buka Puasa', 'Menyiapkan dan membagikan takjil berbuka kepada orang yang berpuasa, musafir, atau jamaah di masjid terdekat.'),
+    (10, 'Muhasabah Diri di 10 Hari Pertama', 'Mengevaluasi ibadah 10 hari pertama (Fase Rahmat), memohon curahan rahmat Allah, dan memperbarui semangat ibadah.'),
+    (11, 'Menjaga Lisan & Menghindari Sia-Sia', 'Menjauhkan diri dari ghibah, dusta, kata kasar, serta membatasi waktu bermain gawai (HP/gadget) yang tidak bermanfaat.'),
+    (12, 'Silaturahmi Kerabat & Sahabat', 'Menyambung tali persaudaraan dengan menelepon, mengunjungi kakek-nenek/kerabat, atau menyapa teman yang lama tidak bertemu.'),
+    (13, 'Menjaga Kebersihan Masjid & Lingkungan', 'Membersihkan tempat wudhu, merapikan sajadah musholla/masjid, atau membersihkan kamar dan rumah demi kenyamanan ibadah.'),
+    (14, 'Meneladani Akhlak Kedermawanan Nabi SAW', 'Membaca sirah nabawiyah tentang sifat dermawan Rasulullah SAW di bulan Ramadhan dan menerapkannya dalam pergaulan.'),
+    (15, 'Berdoa Khusyuk Menjelang Berbuka', 'Memanfaatkan waktu 15 menit sebelum adzan maghrib (waktu mustajab doa) untuk memanjatkan hajat, doa orang tua, dan ampunan.'),
+    (16, 'Memperbanyak Istighfar & Dzikir Harian', 'Membasahi bibir dengan dzikir tasbih, tahmid, tahlil, takbir, dan memperbanyak Sayyidul Istighfar sepanjang hari.'),
+    (17, 'Peringatan Nuzulul Qur''an & Tadabbur', 'Merenungi keagungan malam turunnya Al-Qur''an, membaca tafsir surat favorit, dan bertekad mengamalkannya dalam hidup.'),
+    (18, 'Menolong Teman & Menebar Senyum Salam', 'Membantu teman sekolah yang sedang kesulitan belajar, menebarkan senyum ramah, serta mengucap salam kepada siapa pun.'),
+    (19, 'Membaca & Memahami Hadits Pilihan', 'Mempelajari hadits shahih tentang keutamaan puasa, adab pergaulan, dan kejujuran dalam beramal.'),
+    (20, 'Muhasabah Fase Maghfirah (10 Hari Kedua)', 'Memohon ampunan sebesar-besarnya atas segala dosa yang lalu di penghujung 10 hari kedua Ramadhan.'),
+    (21, 'Menyambut 10 Malam Terakhir Ramadhan', 'Memulai perburuan malam-malam istimewa dengan memperpanjang sholat malam (tahajjud dan witir) dengan khusyuk.'),
+    (22, 'Memburu Keutamaan Malam Lailatul Qadar', 'Melafalkan doa: ''Allahumma innaka ''afuwwun tuhibbul ''afwa fa''fu ''anni'' sebanyak-banyaknya di malam-malam ganjil.'),
+    (23, 'I''tikaf Sejenak di Masjid', 'Berdiam diri di masjid dengan niat i''tikaf, memperbanyak tilawah Qur''an, dzikir, serta merenungi makna kehidupan.'),
+    (24, 'Menunaikan Zakat Fitrah & Infak Peduli', 'Menunaikan zakat fitrah tepat waktu untuk membersihkan jiwa dan berbagi kebahagiaan menyambut hari raya dengan kaum dhuafa.'),
+    (25, 'Memperbanyak Shalawat Nabi SAW', 'Membaca shalawat kepada Rasulullah SAW minimal 100 kali sebagai wujud kecintaan mendalam kepada junjungan nabi.'),
+    (26, 'Peduli Anak Yatim & Kaum Dhuafa', 'Menyalurkan santunan atau bingkisan makanan kepada anak yatim, lansia, atau pekerja kebersihan sekitar.'),
+    (27, 'Menjaga Kebersihan Hati & Memaafkan', 'Memaafkan kesalahan orang lain sebelum diminta, membuang rasa dengki, dan melapangkan dada menyambut Idul Fitri.'),
+    (28, 'Mempersiapkan Diri Menyambut Hari Raya', 'Membersihkan rumah, menyiapkan pakaian terbaik yang rapi dan sopan, serta membantu orang tua berkemas.'),
+    (29, 'Khatam Al-Qur''an & Doa Khotmil Qur''an', 'Menuntaskan bacaan Al-Qur''an 30 Juz dan memanjatkan doa khotmil Qur''an memohon keberkahan ilmu dan petunjuk hidup.'),
+    (30, 'Refleksi Akhir Ramadhan & Malam Takbiran', 'Mengumandangkan takbir mengagungkan asma Allah SWT, bersyukur atas nikmat Ramadhan, serta bertekad istiqomah pasca Ramadhan.')
+ON CONFLICT (hari_ke) DO UPDATE SET
+    judul = EXCLUDED.judul,
+    deskripsi = EXCLUDED.deskripsi;
 
 -- B. Inisialisasi Data Siswa Kloning (Salin dari siswa lama jika ada, atau gunakan default)
 DO $$
