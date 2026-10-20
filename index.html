@@ -2114,8 +2114,16 @@
       }
     }
 
+    /* ================= MODAL HIGH-CONTRAST & CRYSTAL-CLEAR STYLING ================= */
     .modal-box {
-      background: #fff;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --card-solid: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
       width: 100%;
       max-width: 480px;
       border-radius: 26px 26px 0 0;
@@ -2123,52 +2131,173 @@
       max-height: 94vh;
       overflow-y: auto;
       animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border: 1px solid #e2e8f0;
     }
 
     .modal.center .modal-box {
       border-radius: 24px;
       margin: 0 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
     }
 
-    @keyframes slideUp {
-      from {
-        transform: translateY(40px);
-      }
-
-      to {
-        transform: translateY(0);
-      }
-    }
-
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .modal-head h3 {
-      font-size: 18px;
+    .modal-box .modal-head h3,
+    .modal-box h3,
+    .modal-box h4 {
+      color: #0f172a !important;
       font-weight: 800;
     }
 
-    .close-x {
+    .modal-box p,
+    .modal-box span,
+    .modal-box div,
+    .modal-box small,
+    .modal-box b,
+    .modal-box strong {
+      color: inherit;
+    }
+
+    .modal-box label {
+      color: #1e293b !important;
+      font-weight: 700;
+      font-size: 12.5px;
+      margin-bottom: 6px;
+    }
+
+    .modal-box .hint {
+      color: #475569 !important;
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+
+    /* Tombol Outline di dalam Modal - Font gelap kontras tinggi & latar belakang jelas */
+    .modal-box .btn-outline {
+      background: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #1e293b !important;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .modal-box .btn-outline:hover {
+      background: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+      color: #0f172a !important;
+    }
+
+    .modal-box .btn-ghost {
+      background: #f1f5f9 !important;
+      color: #334155 !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+
+    .modal-box .btn-ghost:hover {
+      background: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    /* Form Controls di dalam Modal - Putih bersih, teks gelap pekat, border tegas */
+    .modal-box input[type=text],
+    .modal-box input[type=search],
+    .modal-box input[type=password],
+    .modal-box input[type=number],
+    .modal-box input[type=month],
+    .modal-box input[type=date],
+    .modal-box select,
+    .modal-box textarea {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 12px;
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .modal-box input:focus,
+    .modal-box select:focus,
+    .modal-box textarea:focus {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22) !important;
+    }
+
+    .modal-box input::placeholder,
+    .modal-box textarea::placeholder {
+      color: #94a3b8 !important;
+    }
+
+    .modal-box select {
+      cursor: pointer;
+    }
+
+    .modal-box select option {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      padding: 6px;
+    }
+
+    .modal-box input[type=file] {
+      background: #f8fafc !important;
+      color: #1e293b !important;
+      border: 1.5px dashed #cbd5e1 !important;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .modal-box input[type=file]::-webkit-file-upload-button {
+      background: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.15s;
+    }
+
+    .modal-box input[type=file]::-webkit-file-upload-button:hover {
+      background: #cbd5e1;
+    }
+
+    .modal-box input[type=checkbox],
+    .modal-box input[type=radio] {
+      accent-color: #10b981;
+      cursor: pointer;
+    }
+
+    .modal-box .close-x {
       background: #f1f5f9;
-      border: none;
+      border: 1px solid #e2e8f0;
       width: 34px;
       height: 34px;
       border-radius: 50%;
       font-size: 18px;
       cursor: pointer;
-      color: var(--muted);
+      color: #475569;
       transition: all 0.15s;
     }
 
-    .close-x:hover {
+    .modal-box .close-x:hover {
       background: #e2e8f0;
-      color: var(--text);
+      color: #0f172a;
+    }
+
+    .modal-box .card {
+      color: #1e293b;
+    }
+
+    .modal-box .info-row {
+      background: #f8fafc !important;
+      color: #1e293b !important;
+      border: 1px solid #e2e8f0;
+    }
+
+    .modal-box .info-row .val {
+      color: #0f172a;
     }
 
     .foto-frame {
@@ -5311,9 +5440,9 @@
           <button type="button" class="btn-toggle-eye" onclick="toggleLihatPass('admPass', this)"
             title="Lihat/Sembunyikan">👁️</button>
         </div>
-        <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-          <span id="hintAdminPass">Kredensial: <b>admin</b> / <b id="hintAdminPassVal">123</b></span>
-          <button type="button" class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:11px;color:var(--admin);" onclick="isiDefaultAdmin()">Isi Otomatis</button>
+        <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;background:#f8fafc;padding:6px 10px;border-radius:8px;border:1px solid #e2e8f0;">
+          <span id="hintAdminPass" style="color:#334155;">Kredensial: <b style="color:#0f172a;">admin</b> / <b id="hintAdminPassVal" style="color:#0f172a;">123</b></span>
+          <button type="button" class="btn btn-sm" style="padding:3px 10px;font-size:11.5px;background:#e0e7ff;color:#4338ca;border:1px solid #c7d2fe;font-weight:700;" onclick="isiDefaultAdmin()">Isi Otomatis</button>
         </div>
         <button type="button" class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
       </div>
@@ -5459,25 +5588,23 @@
           <h3>📥 Import Data Siswa & Password</h3>
           <button class="close-x" onclick="tutupImport()">&times;</button>
         </div>
-        <div class="card" style="margin-top:0;background:#eef2ff;border-color:#c7d2fe;">
-          <div style="font-size:12.5px;color:var(--admin-dark);line-height:1.5;">
-            ℹ️ Kolom Excel: <b>NIS, Nama, Kelas, Jurusan, JenisKelamin(L/P), NoHP, Password</b>.<br>
-            NIS baru otomatis ditambahkan, NIS yang sudah ada akan diperbarui datanya.
+        <div class="card" style="margin-top:0;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:12px 14px;">
+          <div style="font-size:12.5px;color:#1e40af;line-height:1.5;">
+            ℹ️ Kolom Excel: <b style="color:#1d4ed8;">NIS, Nama, Kelas, Jurusan, JenisKelamin(L/P), NoHP, Password</b>.<br>
+            <span style="color:#2563eb;">NIS baru otomatis ditambahkan, NIS yang sudah ada akan diperbarui datanya.</span>
           </div>
         </div>
-        <div class="seg" style="margin-top:10px;">
-          <button class="btn btn-outline btn-sm" onclick="unduhTemplate('xlsx')">📄 Unduh Template .xlsx</button>
-          <button class="btn btn-outline btn-sm" onclick="unduhTemplate('csv')">📄 Unduh Template .csv</button>
+        <div class="seg" style="margin-top:12px;display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="unduhTemplate('xlsx')" style="flex:1;">📄 Unduh Template .xlsx</button>
+          <button class="btn btn-outline btn-sm" onclick="unduhTemplate('csv')" style="flex:1;">📄 Unduh Template .csv</button>
         </div>
 
         <!-- Opsi Pengaturan Password Global Impor -->
-        <div class="card" style="margin-top:14px;padding:14px;background:#f8fafc;border:1px solid var(--border);">
-          <label style="font-size:12.5px;font-weight:800;color:var(--text);">🔑 Pengaturan Password Siswa</label>
-          <div class="hint" style="margin-top:2px;margin-bottom:8px;">Pilih bagaimana sistem menetapkan password untuk
-            data impor ini:</div>
+        <div class="card" style="margin-top:14px;padding:14px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;">
+          <label style="font-size:13px;font-weight:800;color:#0f172a;display:block;margin-bottom:4px;">🔑 Pengaturan Password Siswa</label>
+          <div class="hint" style="margin-top:2px;margin-bottom:8px;color:#475569;">Pilih bagaimana sistem menetapkan password untuk data impor ini:</div>
           <select id="impPassMode" onchange="toggleImportPassMode()">
-            <option value="nis" selected>1. Samakan Semua ke Nomor NIS Masing-masing Siswa [Standar / Rekomendasi]
-            </option>
+            <option value="nis" selected>1. Samakan Semua ke Nomor NIS Masing-masing Siswa [Standar / Rekomendasi]</option>
             <option value="excel">2. Gunakan Kolom Password di Excel (Kosong = Otomatis Nomor NIS)</option>
             <option value="global">3. Tentukan 1 Password Serentak untuk Seluruh Siswa yang Diimpor</option>
           </select>
@@ -5485,36 +5612,35 @@
           <div id="impGenderPassWrap" class="hidden" style="margin-top:10px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
               <div>
-                <label style="font-size:11.5px;">👨 Password Laki-laki (L)</label>
+                <label style="font-size:11.5px;color:#1e293b;">👨 Password Laki-laki (L)</label>
                 <input type="text" id="impPassL" placeholder="12345" value="12345">
               </div>
               <div>
-                <label style="font-size:11.5px;">👩 Password Perempuan (P)</label>
+                <label style="font-size:11.5px;color:#1e293b;">👩 Password Perempuan (P)</label>
                 <input type="text" id="impPassP" placeholder="123456" value="123456">
               </div>
             </div>
-            <div class="hint">Standar default: <b>12345</b> (Laki-laki) dan <b>123456</b> (Perempuan).</div>
+            <div class="hint" style="color:#64748b;">Standar default: <b style="color:#0f172a;">12345</b> (Laki-laki) dan <b style="color:#0f172a;">123456</b> (Perempuan).</div>
           </div>
 
           <div id="impGlobalPassWrap" class="hidden" style="margin-top:10px;">
-            <label>Ketik Password Serentak Global</label>
+            <label style="color:#1e293b;">Ketik Password Serentak Global</label>
             <input type="text" id="impGlobalPass" placeholder="contoh: Siswa2026!">
-            <div class="hint">Minimal 4 karakter. Semua siswa impor akan diset ke password ini.</div>
+            <div class="hint" style="color:#64748b;">Minimal 4 karakter. Semua siswa impor akan diset ke password ini.</div>
           </div>
 
           <div
-            style="margin-top:12px;display:flex;align-items:center;gap:8px;background:#fff;padding:8px 10px;border-radius:10px;border:1px solid var(--border);">
+            style="margin-top:12px;display:flex;align-items:center;gap:10px;background:#ffffff;padding:10px 12px;border-radius:10px;border:1.5px solid #cbd5e1;">
             <input type="checkbox" id="impTimpaLama" style="width:18px;height:18px;margin:0;cursor:pointer;">
-            <label for="impTimpaLama" style="margin:0;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;">
+            <label for="impTimpaLama" style="margin:0;font-size:12.5px;font-weight:600;color:#0f172a;cursor:pointer;">
               Timpa/perbarui juga password untuk siswa yang sudah terdaftar
             </label>
           </div>
         </div>
 
-        <label style="margin-top:14px;">Pilih File Excel / CSV yang Ingin Diimpor</label>
+        <label style="margin-top:14px;color:#0f172a;font-weight:700;display:block;">Pilih File Excel / CSV yang Ingin Diimpor</label>
         <input type="file" id="importFile" accept=".xlsx,.csv">
-        <button class="btn btn-success btn-block-mt" id="importBtn" onclick="prosesImport()">⬆️ Mulai Import Data
-          Siswa</button>
+        <button class="btn btn-success btn-block-mt" id="importBtn" onclick="prosesImport()">⬆️ Mulai Import Data Siswa</button>
       </div>
     </div>
 
@@ -5582,8 +5708,8 @@
         </button>
 
         <!-- AKSI TERAPKAN LANGSUNG KE SISWA TERDAFTAR -->
-        <div class="card" style="margin-top:14px;padding:12px;background:#fff;border:1px solid var(--border);">
-          <b style="font-size:12.5px;color:var(--text);">⚡ Reset Terarah ke Siswa yang Terdaftar Saat Ini:</b>
+        <div class="card" style="margin-top:14px;padding:12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:12px;">
+          <b style="font-size:12.5px;color:#0f172a;">⚡ Reset Terarah ke Siswa yang Terdaftar Saat Ini:</b>
           <div class="hint" style="margin-top:2px;margin-bottom:10px;">Pilih kelompok siswa yang ingin di-reset:</div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
@@ -5651,7 +5777,7 @@
           </div>
           <div style="margin-top:8px;display:flex;align-items:center;gap:6px;">
             <input type="checkbox" id="rmSimpanDefault" checked style="width:16px;height:16px;margin:0;cursor:pointer;">
-            <label for="rmSimpanDefault" style="margin:0;font-size:11.5px;color:var(--text);cursor:pointer;">Simpan juga
+            <label for="rmSimpanDefault" style="margin:0;font-size:11.5px;color:#1e293b;cursor:pointer;">Simpan juga
               sebagai password default permanen di sistem</label>
           </div>
         </div>
