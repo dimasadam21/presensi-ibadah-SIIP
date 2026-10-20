@@ -5,7 +5,7 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Presensi Sholat & Ibadah</title>
+  <title>S I I P - Sistem Informasi Ibadah Pelajar</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="shortcut icon" href="icon-192.png">
@@ -570,6 +570,17 @@
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
     }
 
+    .header-sub-text {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      margin-top: 3px;
+      line-height: 1.35;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.15px;
+      word-break: break-word;
+    }
+
     .app-header p {
       font-size: 12px;
       margin-top: 6px;
@@ -903,13 +914,13 @@
     }
 
     .profile-greeting {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 800;
       color: #34d399;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.2px;
       margin-bottom: 2px;
       text-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+      line-height: 1.35;
     }
 
     .profile-meta .nm {
@@ -2141,6 +2152,24 @@
       box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
     }
 
+    .modal-head {
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+      margin-bottom: 16px !important;
+      position: relative !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding-right: 48px !important;
+    }
+
+    .modal-head > div:first-child,
+    .modal-head > h3:first-child {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+    }
+
     .modal-box .modal-head h3,
     .modal-box h3,
     .modal-box h4 {
@@ -2269,21 +2298,40 @@
       cursor: pointer;
     }
 
-    .modal-box .close-x {
+    .modal-box .close-x,
+    .modal-head .close-x,
+    .close-x {
+      position: absolute !important;
+      top: 0 !important;
+      right: 0 !important;
+      z-index: 10 !important;
       background: #f1f5f9;
-      border: 1px solid #e2e8f0;
-      width: 34px;
-      height: 34px;
+      border: 1px solid #cbd5e1;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      min-height: 36px;
       border-radius: 50%;
-      font-size: 18px;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       color: #475569;
-      transition: all 0.15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+      padding: 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
-    .modal-box .close-x:hover {
-      background: #e2e8f0;
-      color: #0f172a;
+    .modal-box .close-x:hover,
+    .modal-head .close-x:hover,
+    .close-x:hover {
+      background: #fee2e2;
+      color: #ef4444;
+      border-color: #fca5a5;
+      transform: scale(1.08);
     }
 
     .modal-box .card {
@@ -2836,46 +2884,57 @@
       direction: rtl;
     }
 
-    /* Tab Bar Menu Mode Al-Qur'an */
+    /* Tab Bar Menu Mode Al-Qur'an (Jelas, Tegas, & Anti-Gepeng) */
     .quran-nav-tabs {
-      display: flex;
-      gap: 6px;
-      background: #f1f5f9;
-      padding: 4px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border: 1px solid #e2e8f0;
-      overflow-x: auto;
+      display: flex !important;
+      gap: 8px !important;
+      background: #f1f5f9 !important;
+      padding: 6px !important;
+      border-radius: 14px !important;
+      margin-bottom: 12px !important;
+      border: 1.5px solid #cbd5e1 !important;
+      overflow-x: auto !important;
+      flex-shrink: 0 !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    .quran-nav-tabs::-webkit-scrollbar {
+      display: none !important;
     }
 
     .quran-tab-btn {
-      flex: 1;
-      min-width: 95px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 8px 8px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #64748b;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
+      flex: 1 !important;
+      min-width: 120px !important;
+      min-height: 42px !important;
+      height: 42px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 7px !important;
+      padding: 6px 14px !important;
+      border-radius: 10px !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      color: #334155 !important;
+      background: #ffffff !important;
+      border: 1.5px solid #cbd5e1 !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      white-space: nowrap !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
     }
 
     .quran-tab-btn:hover {
-      color: #047857;
-      background: rgba(255, 255, 255, 0.7);
+      color: #065f46 !important;
+      border-color: #10b981 !important;
+      background: #ecfdf5 !important;
     }
 
     .quran-tab-btn.active {
-      background: #ffffff;
-      color: #047857;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      background: linear-gradient(135deg, #059669, #047857) !important;
+      color: #ffffff !important;
+      border-color: #047857 !important;
+      box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35) !important;
     }
 
     .quran-surah-row {
@@ -3706,8 +3765,8 @@
           <span class="emoji-logo">🕌</span>
         </div>
         <div class="header-text-box">
-          <h1 id="titleLogin">Presensi Sholat & Ibadah</h1>
-          <p id="loginSchool">SMKN 1 Magelang</p>
+          <h1 id="titleLogin">S I I P</h1>
+          <div id="loginSchool" class="header-sub-text">Sistem Informasi Ibadah Pelajar</div>
         </div>
       </div>
       <button type="button" id="btnAdminHeader" class="admin-btn" title="Login Admin" onclick="bukaAdminLogin()">⚙️</button>
@@ -3733,7 +3792,7 @@
         <button id="loginBtn" class="btn btn-primary" style="margin-top:16px;"><span>Masuk</span></button>
       </div>
       <button type="button" id="btnPanelMasukAdmin" class="btn btn-outline btn-block-mt" onclick="bukaAdminLogin()">⚙️ Panel Masuk Admin</button>
-      <div class="foot">&copy; Sistem Presensi Sholat & Ibadah</div>
+      <div class="foot">&copy; S I I P - Sistem Informasi Ibadah Pelajar</div>
     </div>
   </div>
 
@@ -3745,7 +3804,8 @@
           <span class="emoji-logo">🕌</span>
         </div>
         <div class="header-text-box">
-          <h1 id="dashSchool">SMKN 1 Magelang</h1>
+          <h1 id="titleDash">S I I P</h1>
+          <div id="dashSchool" class="header-sub-text">Sistem Informasi Ibadah Pelajar</div>
           <p id="tglSekarang"></p>
         </div>
       </div>
@@ -3757,7 +3817,7 @@
           <div class="profile-main-row">
             <div class="avatar" id="avatar">S</div>
             <div class="profile-meta">
-              <div class="profile-greeting" id="dashGreeting">Assalamu'alaikum 👋</div>
+              <div class="profile-greeting" id="dashGreeting">Assalamu'alaikum warohmatullahi wabarokatuh 👋</div>
               <div class="nm" id="pNama">-</div>
               <div class="sub" id="pInfo">-</div>
             </div>
@@ -3821,27 +3881,6 @@
             </div>
           </div>
           <button type="button" class="btn-halangan-pill" onclick="bukaModalHalanganHarian()">Lapor Halangan</button>
-        </div>
-
-        <!-- Banner Spesial Bulan Ramadhan -->
-        <div id="bannerRamadhanCard" class="card card-ramadhan-hero" onclick="bukaModalRamadhan()">
-          <div class="ramadhan-banner-inner">
-            <div class="ramadhan-banner-left">
-              <div class="ramadhan-badge-pill">🌙 Program Ramadhan Kariim</div>
-              <div class="ramadhan-banner-title" id="bannerRamadhanJudul">Jurnal Kegiatan Ramadhan</div>
-              <div class="ramadhan-banner-sub" id="bannerRamadhanStatus">30 Hari Ibadah & Amalan • Ketuk untuk mengisi jurnal</div>
-              <div class="ramadhan-prog-row">
-                <div class="ramadhan-mini-track">
-                  <div class="ramadhan-mini-bar" id="bannerRamadhanBar" style="width: 0%;"></div>
-                </div>
-                <span class="ramadhan-prog-text" id="bannerRamadhanProgText">0/30 Hari</span>
-              </div>
-            </div>
-            <div class="ramadhan-banner-right">
-              <div class="ramadhan-moon-ic">🌙</div>
-              <span class="btn-ramadhan-go">Buka ➔</span>
-            </div>
-          </div>
         </div>
 
         <!-- 2. Container Card: Jadwal & Presensi Sholat -->
@@ -3934,7 +3973,7 @@
             <div style="display:flex; align-items:center; gap:10px;">
               <span style="font-size:24px;">🌙</span>
               <div>
-                <div style="font-size:11px; color:#fbbf24; font-weight:700;">Spesial Bulan Ramadhan</div>
+                <div style="font-size:11px; color:#fbbf24; font-weight:700;">Spesial Bulan Ramadhan 1448 H (2027)</div>
                 <div style="font-size:14px; color:#ffffff; font-weight:800;">Jurnal 30 Hari Kegiatan Ramadhan</div>
               </div>
             </div>
@@ -3943,7 +3982,17 @@
 
           <!-- 2x2 Grid Fitur Ibadah -->
           <div class="islamic-grid">
-            <!-- 1. Al-Qur'an Versi Kemenag -->
+            <!-- 1. Jurnal Ramadhan 1448 H / 2027 -->
+            <div class="islamic-card" onclick="bukaModalRamadhan()" style="border:1.5px solid #f59e0b; background:#fffbeb;">
+              <div class="ic-icon" style="background:#fef3c7; color:#d97706;">🌙</div>
+              <div class="ic-body">
+                <div class="ic-title" style="color:#78350f;">Jurnal Ramadhan</div>
+                <div class="ic-desc" style="color:#92400e;">30 Hari Ibadah & Amalan 1448 H</div>
+              </div>
+              <div class="ic-badge" style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d;">Tahun 2027</div>
+            </div>
+
+            <!-- 2. Al-Qur'an Versi Kemenag -->
             <div class="islamic-card" onclick="bukaModalQuran()">
               <div class="ic-icon" style="background:#ecfdf5; color:#059669;">📖</div>
               <div class="ic-body">
@@ -3953,7 +4002,7 @@
               <div class="ic-badge" style="background:#d1fae5; color:#065f46;">604 Halaman</div>
             </div>
 
-            <!-- 2. Kompas Kiblat (Disamping Al-Qur'an) -->
+            <!-- 3. Kompas Kiblat (Disamping Al-Qur'an) -->
             <div class="islamic-card" onclick="bukaModalKiblat()">
               <div class="ic-icon" style="background:#eff6ff; color:#2563eb;">🧭</div>
               <div class="ic-body">
@@ -3963,7 +4012,7 @@
               <div class="ic-badge" id="badgeArahKiblat" style="background:#dbeafe; color:#1e40af;">~295° Makkah</div>
             </div>
 
-            <!-- 3. Dzikir Harian -->
+            <!-- 4. Dzikir Harian -->
             <div class="islamic-card" onclick="bukaModalDzikir()">
               <div class="ic-icon" style="background:#fef3c7; color:#d97706;">📿</div>
               <div class="ic-body">
@@ -3973,7 +4022,7 @@
               <div class="ic-badge" style="background:#fef3c7; color:#92400e;">Tasbih Digital</div>
             </div>
 
-            <!-- 4. Doa Harian (Disamping Dzikir) -->
+            <!-- 5. Doa Harian (Disamping Dzikir) -->
             <div class="islamic-card" onclick="bukaModalDoa()">
               <div class="ic-icon" style="background:#fdf4ff; color:#9333ea;">🤲</div>
               <div class="ic-body">
@@ -4356,8 +4405,8 @@
                     <img id="prevLogoImg" src="" style="display:none; width:100%; height:100%; object-fit:contain;">
                   </div>
                   <div class="header-text-box" id="prevTextBox">
-                    <h1 id="prevTitle">Presensi Sholat & Ibadah</h1>
-                    <p id="prevSub">SMKN 1 Magelang</p>
+                    <h1 id="prevTitle">S I I P</h1>
+                    <div id="prevSub" class="header-sub-text">Sistem Informasi Ibadah Pelajar</div>
                   </div>
                 </div>
               </div>
@@ -4366,13 +4415,13 @@
             <div class="form-grid">
               <div>
                 <label>Judul Aplikasi</label>
-                <input type="text" id="setJudulAplikasi" placeholder="Presensi Sholat & Ibadah"
+                <input type="text" id="setJudulAplikasi" placeholder="S I I P"
                   oninput="updateLivePreview()">
                 <div class="hint">Nama utama aplikasi di header & title bar.</div>
               </div>
               <div>
                 <label>Subjudul Header (Nama Sekolah / Tagline Bebas)</label>
-                <input type="text" id="setNamaSub" placeholder="SMKN 1 Magelang" oninput="if($('setNama'))$('setNama').value=this.value; updateLivePreview();">
+                <input type="text" id="setNamaSub" placeholder="Sistem Informasi Ibadah Pelajar" oninput="if($('setNama'))$('setNama').value=this.value; updateLivePreview();">
                 <div class="hint">Ditampilkan tepat di bawah judul persis sesuai teks yang diketik.</div>
               </div>
 
@@ -5433,16 +5482,12 @@
           <button type="button" class="close-x" onclick="tutupAdminLogin()">&times;</button>
         </div>
         <label>Username</label>
-        <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin" value="admin" onkeydown="if(event.key==='Enter'){$('admPass').focus();}">
+        <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="Username admin" value="" onkeydown="if(event.key==='Enter'){$('admPass').focus();}">
         <label style="margin-top:12px;">Password</label>
         <div style="position:relative;">
           <input type="password" id="admPass" placeholder="Password admin" style="padding-right:42px;" onkeydown="if(event.key==='Enter'){doAdminLogin();}">
           <button type="button" class="btn-toggle-eye" onclick="toggleLihatPass('admPass', this)"
             title="Lihat/Sembunyikan">👁️</button>
-        </div>
-        <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;background:#f8fafc;padding:6px 10px;border-radius:8px;border:1px solid #e2e8f0;">
-          <span id="hintAdminPass" style="color:#334155;">Kredensial: <b style="color:#0f172a;">admin</b> / <b id="hintAdminPassVal" style="color:#0f172a;">123</b></span>
-          <button type="button" class="btn btn-sm" style="padding:3px 10px;font-size:11.5px;background:#e0e7ff;color:#4338ca;border:1px solid #c7d2fe;font-weight:700;" onclick="isiDefaultAdmin()">Isi Otomatis</button>
         </div>
         <button type="button" class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
       </div>
@@ -5972,14 +6017,14 @@
     </div>
     <!-- ============ MODAL AL-QUR'AN (STANDAR KHOT NASKHI KEMENAG RI) ============ -->
     <div id="modalQuran" class="modal center hidden" style="z-index: 99990;">
-      <div class="modal-box" style="max-width: 820px; width: 95%; max-height: 92vh; display: flex; flex-direction: column; padding: 18px;">
-        <div class="modal-head" style="margin-bottom: 8px;">
+      <div class="modal-box" style="max-width: 840px; width: 95%; height: 90vh; max-height: 92vh; display: flex; flex-direction: column; padding: 18px; overflow: hidden;">
+        <div class="modal-head" style="margin-bottom: 8px; flex-shrink: 0;">
           <h3 id="quranModalTitle">📖 Al-Qur'an Standar Kemenag RI</h3>
           <button class="close-x" onclick="tutupModalQuran()">&times;</button>
         </div>
 
         <!-- Timer Tracker Bar Membaca Al-Qur'an -->
-        <div style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1.5px solid #a7f3d0; border-radius: 12px; padding: 10px 14px; margin-bottom: 10px;">
+        <div style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1.5px solid #a7f3d0; border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; flex-shrink: 0;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span id="quranTimerDot" style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
@@ -6003,7 +6048,7 @@
         </div>
 
         <!-- 4 TAB MENU UTAMA AL-QUR'AN -->
-        <div class="quran-nav-tabs">
+        <div class="quran-nav-tabs" style="flex-shrink: 0;">
           <button id="btnTabQuranAyat" class="quran-tab-btn active" onclick="setModeQuran('ayat')">
             <span>📜</span> <span>Per Ayat</span>
           </button>
@@ -6022,11 +6067,11 @@
         <!-- VIEW 1: BACA PER AYAT (DAFTAR SURAT & AYAT READER)              -->
         <!-- ============================================================== -->
         <div id="quranSurahListView" style="display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden;">
-          <div style="margin-bottom:8px;">
+          <div style="margin-bottom:8px; flex-shrink:0;">
             <input type="search" id="cariSuratInput" placeholder="🔍 Cari nama surat, nomor (1-114), atau halaman (1-604)..." oninput="filterDaftarSuratQuran()" style="width:100%; box-sizing:border-box; padding:9px 12px; border-radius:10px; border:1px solid #cbd5e1; font-size:13px;">
           </div>
           <!-- Quick Filter Surat Populer -->
-          <div style="display:flex; gap:5px; overflow-x:auto; padding-bottom:6px; margin-bottom:8px;">
+          <div style="display:flex; gap:5px; overflow-x:auto; padding-bottom:6px; margin-bottom:8px; flex-shrink:0; scrollbar-width:none;">
             <button class="btn btn-outline btn-sm" onclick="filterSuratQuick('')" style="font-size:11px; padding:2px 8px; border-radius:20px;">Semua</button>
             <button class="btn btn-outline btn-sm" onclick="filterSuratQuick('1')" style="font-size:11px; padding:2px 8px; border-radius:20px;">Al-Fatihah</button>
             <button class="btn btn-outline btn-sm" onclick="filterSuratQuick('18')" style="font-size:11px; padding:2px 8px; border-radius:20px;">Al-Kahf</button>
@@ -6035,12 +6080,12 @@
             <button class="btn btn-outline btn-sm" onclick="filterSuratQuick('67')" style="font-size:11px; padding:2px 8px; border-radius:20px;">Al-Mulk</button>
             <button class="btn btn-outline btn-sm" onclick="filterSuratQuick('78')" style="font-size:11px; padding:2px 8px; border-radius:20px;">Juz 30 (An-Naba')</button>
           </div>
-          <div id="quranSurahContainer" style="flex:1; overflow-y:auto; padding-right:4px;">
+          <div id="quranSurahContainer" style="flex:1; min-height:0; overflow-y:auto; padding-right:4px;">
           </div>
         </div>
 
         <div id="quranVerseReaderView" class="hidden" style="display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:8px; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:8px; flex-wrap:wrap; gap:8px; flex-shrink:0;">
             <button class="btn btn-outline btn-sm" onclick="tampilkanViewDaftarSurat()">‹ Daftar Surat</button>
             <!-- Kontrol Font & Opsi Tampilan -->
             <div style="display:flex; align-items:center; gap:8px;">
@@ -6055,8 +6100,8 @@
               </label>
             </div>
           </div>
-          <div id="readerSurahHeader" style="margin-bottom:12px;"></div>
-          <div id="readerAyatContainer" style="flex:1; overflow-y:auto; padding-right:6px;"></div>
+          <div id="readerSurahHeader" style="margin-bottom:12px; flex-shrink:0;"></div>
+          <div id="readerAyatContainer" style="flex:1; min-height:0; overflow-y:auto; padding-right:6px;"></div>
         </div>
 
         <!-- ============================================================== -->
@@ -6962,9 +7007,9 @@
           }
           return {
             success: true,
-            namaSekolah: pengMap.nama_sekolah || 'Sistem Informasi Ibadah Peserta Didik',
+            namaSekolah: pengMap.nama_sekolah || 'Sistem Informasi Ibadah Pelajar',
             logoSekolah: pengMap.logo_sekolah || '',
-            judulAplikasi: pengMap.judul_aplikasi || 'Presensi Sholat & Ibadah',
+            judulAplikasi: pengMap.judul_aplikasi || 'S I I P',
             temaWarna: pengMap.tema_warna || '#0d9488',
             ukuranLogo: pengMap.ukuran_logo || '42',
             ukuranJudul: pengMap.ukuran_judul || '19',
@@ -7282,7 +7327,7 @@
           return {
             success: true,
             token: token,
-            namaSekolah: (pengMap && pengMap.nama_sekolah) || 'Sistem Informasi Ibadah Peserta Didik',
+            namaSekolah: (pengMap && pengMap.nama_sekolah) || 'Sistem Informasi Ibadah Pelajar',
             logoSekolah: (pengMap && pengMap.logo_sekolah) || ''
           };
         },
@@ -7986,6 +8031,10 @@
           document.title = j;
           var titleLogin = $('titleLogin');
           if (titleLogin) titleLogin.textContent = j;
+          var titleDash = $('titleDash');
+          if (titleDash) titleDash.textContent = j;
+          var prevTitle = $('prevTitle');
+          if (prevTitle) prevTitle.textContent = j;
         }
         if (c.tema_warna || c.temaWarna) {
           var col = c.tema_warna || c.temaWarna;
@@ -8028,7 +8077,7 @@
       }
 
       function updateLivePreview() {
-        var j = ($('setJudulAplikasi') && $('setJudulAplikasi').value) || 'Presensi Sholat & Ibadah';
+        var j = ($('setJudulAplikasi') && $('setJudulAplikasi').value) || 'S I I P';
         var uJudul = ($('setUkuranJudul') && $('setUkuranJudul').value) || '19';
         var uLogo = ($('setUkuranLogo') && $('setUkuranLogo').value) || '46';
         var pos = ($('setPosisiHeader') && $('setPosisiHeader').value) || 'center';
@@ -8459,9 +8508,7 @@
       }
 
       function updateAdminPassHintUI(pass) {
-        var p = (pass || getActiveAdminPass()).trim();
-        var el = $('hintAdminPassVal');
-        if (el) el.textContent = p;
+        // Dinonaktifkan demi kerahasiaan kredensial admin
       }
 
       function terapkanInfoPublikKeUI(res) {
@@ -8763,8 +8810,9 @@
             if (!PENGATURAN) PENGATURAN = {};
             PENGATURAN['pesan_sukses'] = res.pesanSukses;
           }
-          var scName = String(res.namaSekolah || 'SMKN 1 Magelang').replace(/^Aplikasi untuk Sekolah\s*/i, '').trim();
-          $('dashSchool').textContent = scName;
+          var scName = String(res.namaSekolah || 'Sistem Informasi Ibadah Pelajar').replace(/^Aplikasi untuk Sekolah\s*/i, '').trim();
+          if ($('dashSchool')) $('dashSchool').textContent = scName;
+          if (res.judulAplikasi && $('titleDash')) $('titleDash').textContent = res.judulAplikasi;
           if (res.logoSekolah !== undefined) terapkanLogoUI(res.logoSekolah);
           terapkanUI(res);
           $('passInput').value = '';
@@ -8805,12 +8853,7 @@
         var bt = siswi ? 'Perempuan' : 'Laki-laki', bc = 'badge ' + (siswi ? 'p' : 'l');
         $('pBadge').textContent = bt; $('pBadge').className = bc; $('aBadge').textContent = bt; $('aBadge').className = bc;
 
-        var jamNow = new Date().getHours();
-        var sapaan = 'Assalamu\'alaikum 👋';
-        if (jamNow >= 4 && jamNow < 11) sapaan = 'Selamat Pagi 👋';
-        else if (jamNow >= 11 && jamNow < 15) sapaan = 'Selamat Siang 👋';
-        else if (jamNow >= 15 && jamNow < 18) sapaan = 'Selamat Sore 👋';
-        else sapaan = 'Selamat Malam 👋';
+        var sapaan = "Assalamu'alaikum warohmatullahi wabarokatuh 👋";
         var elGreet = $('dashGreeting');
         if (elGreet) elGreet.textContent = sapaan;
 
@@ -9592,9 +9635,9 @@
         var m = $('adminLoginModal');
         if (!m) {
           console.error('adminLoginModal tidak ditemukan!');
-          var pPrompt = prompt('🛡️ MASUK MENU ADMIN\n\nMasukkan password admin:', getActiveAdminPass());
+          var pPrompt = prompt('🛡️ MASUK MENU ADMIN\n\nMasukkan password admin:', '');
           if (pPrompt !== null) {
-            if ($('admUser')) $('admUser').value = 'admin';
+            if ($('admUser') && !$('admUser').value) $('admUser').value = 'admin';
             if ($('admPass')) $('admPass').value = pPrompt;
             doAdminLogin();
           }
@@ -9619,12 +9662,12 @@
 
         var uInput = $('admUser');
         var pInput = $('admPass');
-        if (uInput && !uInput.value) uInput.value = 'admin';
+        if (uInput) uInput.value = '';
         if (pInput) pInput.value = '';
         setTimeout(function () {
-          if (pInput) {
-            pInput.focus();
-            try { pInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) { }
+          if (uInput) {
+            uInput.focus();
+            try { uInput.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) { }
           }
         }, 120);
       }
@@ -9639,10 +9682,7 @@
         }
       }
       function isiDefaultAdmin() {
-        var activePass = getActiveAdminPass();
-        if ($('admUser')) $('admUser').value = 'admin';
-        if ($('admPass')) $('admPass').value = activePass;
-        toast('Kredensial admin diisi otomatis: admin / ' + activePass, 'ok');
+        // Dinonaktifkan demi kerahasiaan kredensial admin
       }
       function doAdminLogin() {
         var u = (($('admUser') && $('admUser').value) || '').trim() || 'admin';

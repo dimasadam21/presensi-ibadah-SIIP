@@ -767,7 +767,7 @@ function setModeQuran(mode) {
 
   // Sembunyikan semua kontainer
   var cList = document.getElementById('quranSurahListView');
-  var cReader = document.getElementById('quranVerseReaderView');
+  var cReader = document.getElementById('quranVerseReaderView') || document.getElementById('quranAyatReaderView');
   var cPage = document.getElementById('quranPageReaderView');
   var cTafsir = document.getElementById('quranTafsirView');
   var cAsbab = document.getElementById('quranAsbabView');
@@ -832,7 +832,7 @@ function tutupModalQuran() {
 
 function tampilkanViewDaftarSurat() {
   var vList = document.getElementById('quranSurahListView');
-  var vReader = document.getElementById('quranVerseReaderView');
+  var vReader = document.getElementById('quranVerseReaderView') || document.getElementById('quranAyatReaderView');
   if (vList) vList.classList.remove('hidden');
   if (vReader) {
     vReader.classList.add('hidden');
@@ -841,6 +841,8 @@ function tampilkanViewDaftarSurat() {
   var judulModal = document.getElementById('quranModalTitle');
   if (judulModal) judulModal.textContent = '📖 Al-Qur\'an Standar Kemenag (Per Ayat)';
   hentikanAudioAyat();
+  // Jeda timer saat kembali ke daftar surat (karena bacaan tidak sedang tampil)
+  jedaTimerQuran();
 }
 
 // Quick filter chips
@@ -904,10 +906,22 @@ async function fetchSurahAyatOnline(nomorSurat) {
   var sNum = parseInt(nomorSurat, 10);
   if (isNaN(sNum) || sNum < 1 || sNum > 114) sNum = 1;
 
-  // 1. Cek cache
+  // 1. Cek memory cache
   if (QURAN_AYAT_CACHE[sNum] && QURAN_AYAT_CACHE[sNum].ayatList && QURAN_AYAT_CACHE[sNum].ayatList.length > 0) {
     return QURAN_AYAT_CACHE[sNum].ayatList;
   }
+
+  // 1.5 Cek persistent local storage
+  try {
+    var stored = (window.klonStorage || localStorage).getItem('quran_surah_' + sNum);
+    if (stored) {
+      var parsed = JSON.parse(stored);
+      if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+        QURAN_AYAT_CACHE[sNum] = { ayatList: parsed };
+        return parsed;
+      }
+    }
+  } catch (errStorage) {}
 
   // 2. Server 1: equran.id (Kemenag Official Indonesia, tercepat)
   try {
@@ -915,6 +929,7 @@ async function fetchSurahAyatOnline(nomorSurat) {
     if (res1.ok) {
       var j1 = await res1.json();
       if (j1 && j1.data && j1.data.ayat && j1.data.ayat.length > 0) {
+        try { (window.klonStorage || localStorage).setItem('quran_surah_' + sNum, JSON.stringify(j1.data.ayat)); } catch(e){}
         return j1.data.ayat;
       }
     }
@@ -928,7 +943,7 @@ async function fetchSurahAyatOnline(nomorSurat) {
     if (res2.ok) {
       var j2 = await res2.json();
       if (j2 && j2.data && j2.data.verses && j2.data.verses.length > 0) {
-        return j2.data.verses.map(function(v) {
+        var mapped2 = j2.data.verses.map(function(v) {
           return {
             nomorAyat: v.number.inSurah,
             teksArab: v.text.arab,
@@ -937,6 +952,8 @@ async function fetchSurahAyatOnline(nomorSurat) {
             audio: (v.audio && v.audio.primary) ? { '05': v.audio.primary } : {}
           };
         });
+        try { (window.klonStorage || localStorage).setItem('quran_surah_' + sNum, JSON.stringify(mapped2)); } catch(e){}
+        return mapped2;
       }
     }
   } catch (e2) {
@@ -951,7 +968,7 @@ async function fetchSurahAyatOnline(nomorSurat) {
       if (j3 && j3.data && j3.data.length >= 2) {
         var arabAyahs = j3.data[0].ayahs;
         var indoAyahs = j3.data[1].ayahs;
-        return arabAyahs.map(function(a, idx) {
+        var mapped3 = arabAyahs.map(function(a, idx) {
           return {
             nomorAyat: a.numberInSurah,
             teksArab: a.text,
@@ -960,6 +977,8 @@ async function fetchSurahAyatOnline(nomorSurat) {
             audio: {}
           };
         });
+        try { (window.klonStorage || localStorage).setItem('quran_surah_' + sNum, JSON.stringify(mapped3)); } catch(e){}
+        return mapped3;
       }
     }
   } catch (e3) {
@@ -973,16 +992,17 @@ async function bacaSuratQuran(nomorSurat, targetAyat) {
   var meta = QURAN_SURAHS.find(function (s) { return s.no === nomorSurat; });
   if (!meta) return;
 
+  var vList = document.getElementById('quranSurahListView');
+  var vReader = document.getElementById('quranVerseReaderView') || document.getElementById('quranAyatReaderView');
+  if (vReader) {
+    vReader.dataset.surahAktif = nomorSurat;
+  }
+
   // Pastikan mode adalah 'ayat'
   setModeQuran('ayat');
 
-  var vList = document.getElementById('quranSurahListView');
-  var vReader = document.getElementById('quranAyatReaderView');
-  if (vList && vReader) {
-    vList.classList.add('hidden');
-    vReader.classList.remove('hidden');
-    vReader.dataset.surahAktif = nomorSurat;
-  }
+  if (vList) vList.classList.add('hidden');
+  if (vReader) vReader.classList.remove('hidden');
 
   var judulModal = document.getElementById('quranModalTitle');
   if (judulModal) judulModal.textContent = '📖 Surat ' + meta.nama + ' (' + meta.arab + ')';
@@ -1002,8 +1022,8 @@ async function bacaSuratQuran(nomorSurat, targetAyat) {
     '</div>';
   }
 
-  // Mulai pelacak timer membaca
-  mulaiTimerQuran(meta.no, meta.nama);
+  // Jeda timer selama proses memuat ayat (waktu baca baru mulai saat bacaan ayat sudah tampil di layar)
+  jedaTimerQuran();
 
   var container = document.getElementById('readerAyatContainer');
   container.innerHTML = '<div style="text-align:center;padding:40px 10px;color:var(--muted);"><span class="spin">⏳</span> Memuat ayat-ayat Surat ' + meta.nama + ' versi Kemenag RI...</div>';
@@ -1088,6 +1108,9 @@ function renderAyatList(ayatList, meta, targetAyat) {
 
   container.innerHTML = html;
   toggleTampilanAyatOpsi();
+
+  // WAKTU BACA MULAI KETIKA SUDAH TAMPIL BACAAN AL-QUR'AN NYA
+  mulaiTimerQuran(meta.no, meta.nama);
 
   if (targetAyat) {
     setTimeout(function () {
@@ -1266,8 +1289,8 @@ async function bacaHalamanQuran(pageNum) {
   var inpHal = document.getElementById('inputHalJumper');
   if (inpHal) inpHal.value = p;
 
-  // Timer membaca aktif
-  mulaiTimerQuran(surah.no, 'Halaman ' + p);
+  // Jeda timer selama memuat halaman mushaf
+  jedaTimerQuran();
 
   // 1. Mode Visual Mushaf Gambar (Dengan Multi-CDN Auto Fallback)
   var imgEl = document.getElementById('mushafPageImage');
@@ -1295,6 +1318,10 @@ function onMushafImgLoaded() {
   var imgEl = document.getElementById('mushafPageImage');
   if (loader) loader.style.display = 'none';
   if (imgEl) imgEl.style.display = 'block';
+
+  // Waktu baca mulai saat gambar halaman mushaf sudah berhasil tampil
+  var surah = getSurahFromPage(CURRENT_PAGE_LOADING);
+  mulaiTimerQuran(surah.no, 'Halaman ' + CURRENT_PAGE_LOADING);
 }
 
 function onMushafImgError() {
@@ -1439,6 +1466,10 @@ function renderHalamanTeks(verses, pageNum) {
     }
 
     textContainer.innerHTML = flowHtml;
+
+    // Waktu baca mulai saat teks ayat mushaf sudah tampil di layar
+    var surah = getSurahFromPage(pageNum);
+    mulaiTimerQuran(surah.no, 'Halaman ' + pageNum);
   }
 }
 
@@ -1534,8 +1565,8 @@ async function bukaTafsirSurat(nomorSurat, targetAyat) {
 
   container.innerHTML = '<div style="text-align:center;padding:40px 10px;color:var(--muted);"><span class="spin">⏳</span> Memuat Tafsir Resmi Kemenag RI untuk Surat ' + meta.nama + '...</div>';
 
-  // Mulai timer membaca saat menelaah tafsir
-  mulaiTimerQuran(meta.no, 'Tafsir ' + meta.nama);
+  // Jeda timer selama memuat data tafsir
+  jedaTimerQuran();
 
   // Ambil data tafsir dari cache atau fetch equran.id
   var tafsirData = QURAN_TAFSIR_CACHE[sNum];
@@ -1672,6 +1703,9 @@ function renderTafsirView(tafsirData, sNum, targetAyat, searchKw) {
   }
 
   container.innerHTML = html;
+
+  // Waktu baca mulai saat teks tafsir sudah tampil di layar
+  mulaiTimerQuran(sNum, 'Tafsir ' + meta.nama);
 
   if (targetAyat) {
     setTimeout(function() {

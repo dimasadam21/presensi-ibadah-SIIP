@@ -65,7 +65,7 @@ window.APP_CONFIG = {
   SUPABASE_STORAGE_BUCKET: "foto_absen_kloning",
 
   // Identitas Aplikasi Edisi Kloning
-  APP_NAME: "Presensi Sholat & Ibadah (Kloning)",
+  APP_NAME: "S I I P - Sistem Informasi Ibadah Pelajar (Kloning)",
   APP_EDITION: "Kloning Mandiri",
   APP_VERSION: "2.1.0-clone"
 };

@@ -310,7 +310,7 @@ VALUES
     ('wa_template_pesan', 'Assalamu''alaikum *{nama}*,\n\nWaktu sholat *{sholat}* sedang berlangsung.\nSegera laksanakan sholat dan lakukan absen di aplikasi {sekolah}.\n\n_(Pesan otomatis pengingat ibadah)_', 'Template broadcast WA'),
 
     -- Pengaturan Fitur Bulan Ramadhan
-    ('ramadhan_tgl_mulai', '2026-02-18', 'Tanggal mulai 1 Ramadhan'),
+    ('ramadhan_tgl_mulai', '2027-02-08', 'Tanggal mulai 1 Ramadhan 1448 H'),
     ('ramadhan_aktif', 'YA', 'Status aktif fitur Ramadhan (YA / TIDAK)'),
     ('ramadhan_judul', 'Jurnal Kegiatan Ramadhan', 'Judul utama agenda kegiatan Ramadhan')
 ON CONFLICT (parameter) DO NOTHING;

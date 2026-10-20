@@ -174,9 +174,9 @@ var DEFAULT_RAMADHAN_KEGIATAN = [
   }
 ];
 
-// Default Ramadhan Config
+// Default Ramadhan Config (Tahun 2027 / 1448 H)
 var DEFAULT_RAMADHAN_CONFIG = {
-  tgl_mulai: "2026-02-18", // Default 1 Ramadhan 1447 H / disesuaikan admin
+  tgl_mulai: "2027-02-08", // Default 1 Ramadhan 1448 H (Senin, 8 Februari 2027)
   aktif: "YA",
   judul: "Jurnal Kegiatan Ramadhan"
 };
@@ -251,16 +251,22 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
     .ramadhan-badge-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 10px;
+      gap: 6px;
+      padding: 4px 12px;
       border-radius: 20px;
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid rgba(245, 158, 11, 0.5);
-      color: #fbbf24;
-      font-size: 11px;
+      background: #fef3c7;
+      border: 1.5px solid #f59e0b;
+      color: #92400e;
+      font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.2px;
       margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.12);
+    }
+    .card-ramadhan-hero .ramadhan-badge-pill {
+      background: rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      color: #fef08a;
     }
     .ramadhan-banner-title {
       font-size: 16px;
@@ -328,7 +334,59 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
-    /* Kalender 30 Hari Ramadhan Siswa */
+    /* Modal Head & Close Button Familiar Layout (Pojok Kanan Atas) */
+    .modal-head {
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      padding-right: 48px !important;
+    }
+    .modal-head > div:first-child,
+    .modal-head > h3:first-child {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      width: auto !important;
+    }
+    .close-x,
+    .modal-head .close-x,
+    .modal-box .close-x {
+      position: absolute !important;
+      top: 0 !important;
+      right: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      min-height: 36px !important;
+      border-radius: 50% !important;
+      background: #f1f5f9 !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #475569 !important;
+      font-size: 20px !important;
+      line-height: 1 !important;
+      cursor: pointer !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      flex-shrink: 0 !important;
+      padding: 0 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+      z-index: 10 !important;
+    }
+    .close-x:hover,
+    .modal-head .close-x:hover,
+    .modal-box .close-x:hover {
+      background: #fee2e2 !important;
+      color: #ef4444 !important;
+      border-color: #fca5a5 !important;
+      transform: scale(1.08) !important;
+    }
+
+    /* Kalender 30 Hari Ramadhan Siswa - High Contrast Clean Styling */
     .ramadhan-days-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -341,8 +399,8 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       }
     }
     .ramadhan-day-card {
-      background: rgba(13, 22, 40, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
       border-radius: 16px;
       padding: 14px 16px;
       display: flex;
@@ -351,21 +409,24 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       gap: 10px;
       cursor: pointer;
       position: relative;
-      transition: all 0.22s ease;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     .ramadhan-day-card:hover {
-      background: rgba(18, 30, 56, 0.95);
-      border-color: rgba(16, 185, 129, 0.4);
+      background: #f8fafc;
+      border-color: #10b981;
       transform: translateY(-2px);
+      box-shadow: 0 6px 18px -3px rgba(16, 185, 129, 0.18);
     }
     .ramadhan-day-card.is-today {
-      border: 1.8px solid #f59e0b;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(6, 78, 59, 0.2));
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
+      border: 2px solid #f59e0b;
+      background: #fffbeb;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
     }
     .ramadhan-day-card.is-done {
-      border-color: rgba(16, 185, 129, 0.5);
-      background: linear-gradient(135deg, rgba(6, 78, 59, 0.35), rgba(13, 22, 40, 0.85));
+      border: 1.5px solid #10b981;
+      background: #f0fdf4;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
     }
     .day-card-head {
       display: flex;
@@ -379,25 +440,27 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       gap: 5px;
       font-size: 11.5px;
       font-weight: 800;
-      color: #a7f3d0;
-      background: rgba(16, 185, 129, 0.16);
+      color: #065f46;
+      background: #d1fae5;
       padding: 3px 10px;
       border-radius: 12px;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid #a7f3d0;
     }
     .day-card-status {
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 8px;
     }
     .status-badge-done {
       background: #059669;
-      color: #ecfdf5;
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
     }
     .status-badge-today {
       background: #f59e0b;
       color: #78350f;
+      font-weight: 800;
       animation: pulseBadge 2s infinite alternate;
     }
     @keyframes pulseBadge {
@@ -405,30 +468,38 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       100% { opacity: 1; transform: scale(1.02); }
     }
     .status-badge-pending {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--muted);
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+    .status-badge-missed {
+      background: #fee2e2 !important;
+      color: #dc2626 !important;
+      border: 1px solid #fca5a5 !important;
     }
     .day-card-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0f172a;
       line-height: 1.35;
       margin: 2px 0;
     }
     .day-card-date {
-      font-size: 11px;
-      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
     .day-card-preview {
-      font-size: 11.5px;
-      color: #6ee7b7;
-      background: rgba(5, 150, 105, 0.12);
+      font-size: 12px;
+      color: #065f46;
+      background: #d1fae5;
       border-radius: 8px;
       padding: 6px 10px;
-      border-left: 2px solid #10b981;
+      border-left: 3px solid #10b981;
+      font-weight: 600;
     }
 
     /* Modal Form Pengisian Siswa */
@@ -437,9 +508,9 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
     }
     .ramadhan-form-group label {
       display: block;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 700;
-      color: var(--text);
+      color: #0f172a;
       margin-bottom: 6px;
     }
     .ramadhan-chips {
@@ -449,36 +520,36 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       margin-top: 6px;
     }
     .ramadhan-chip {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 20px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--muted);
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
       cursor: pointer;
       transition: all 0.15s ease;
     }
     .ramadhan-chip:hover {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border-color: rgba(52, 211, 153, 0.4);
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #10b981;
     }
 
     /* Upload Box Bukti Gambar/PDF */
     .ramadhan-upload-box {
-      border: 2px dashed rgba(52, 211, 153, 0.4);
+      border: 2px dashed #10b981;
       border-radius: 14px;
       padding: 18px;
       text-align: center;
-      background: rgba(6, 78, 59, 0.12);
+      background: #f0fdf4;
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
     }
     .ramadhan-upload-box:hover {
-      background: rgba(6, 78, 59, 0.22);
-      border-color: #34d399;
+      background: #dcfce7;
+      border-color: #059669;
     }
     .ramadhan-preview-zone {
       margin-top: 10px;
@@ -558,13 +629,14 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
       margin-bottom: 16px;
     }
     .ramadhan-kpi-card {
-      background: rgba(13, 21, 38, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
       border-radius: 14px;
       padding: 12px 14px;
       display: flex;
       align-items: center;
       gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     .ramadhan-kpi-icon {
       width: 40px;
@@ -578,12 +650,13 @@ var RAMADHAN_TEMP_FILE = null; // { blob, base64, type: 'image'|'pdf', name, siz
     .ramadhan-kpi-val {
       font-size: 20px;
       font-weight: 800;
-      color: var(--text);
+      color: #0f172a;
       line-height: 1.1;
     }
     .ramadhan-kpi-label {
-      font-size: 11px;
-      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
       margin-top: 2px;
     }
   `;
@@ -625,21 +698,50 @@ function formatDateISO(dateObj) {
   return y + '-' + m + '-' + d;
 }
 
-function getHariRamadhanSaatIni() {
+function getRamadhanPeriodeStatus() {
   var today = new Date();
   today.setHours(0, 0, 0, 0);
   var start = getRamadhanStartDate();
   start.setHours(0, 0, 0, 0);
   var diffDays = Math.floor((today.getTime() - start.getTime()) / 86400000) + 1;
-  if (diffDays >= 1 && diffDays <= 30) return diffDays;
-  if (diffDays < 1) return 1; // Belum mulai, default sorot hari 1
-  return 30; // Sudah lewat, default sorot hari 30
+  if (diffDays < 1) {
+    var hariMenuju = Math.ceil((start.getTime() - today.getTime()) / 86400000);
+    return {
+      status: 'BELUM_MULAI',
+      hariKe: 1,
+      diffDays: diffDays,
+      hariMenuju: Math.max(1, hariMenuju),
+      label: 'Mulai dalam ' + Math.max(1, hariMenuju) + ' hari lagi (' + formatTanggalIndo(start) + ')'
+    };
+  } else if (diffDays <= 30) {
+    return {
+      status: 'BERLANGSUNG',
+      hariKe: diffDays,
+      diffDays: diffDays,
+      hariMenuju: 0,
+      label: 'Hari ke-' + diffDays + ' Ramadhan (' + formatTanggalIndo(new Date(start.getTime() + (diffDays - 1) * 86400000)) + ')'
+    };
+  } else {
+    return {
+      status: 'SELESAI',
+      hariKe: 30,
+      diffDays: diffDays,
+      hariMenuju: 0,
+      label: 'Ramadhan telah selesai (Hari ke-30: ' + formatTanggalIndo(new Date(start.getTime() + 29 * 86400000)) + ')'
+    };
+  }
+}
+
+function getHariRamadhanSaatIni() {
+  var p = getRamadhanPeriodeStatus();
+  return p.hariKe;
 }
 
 // ==============================================================================
 // 4. SINKRONISASI DATA KEGIATAN & PENGATURAN RAMADHAN
 // ==============================================================================
 async function muatPengaturanRamadhan() {
+  var needsMigration = false;
   try {
     if (typeof sbFetch === 'function') {
       var res = await sbFetch('pengaturan?select=parameter,nilai');
@@ -647,6 +749,11 @@ async function muatPengaturanRamadhan() {
       if (Array.isArray(list)) {
         list.forEach(function (row) {
           if (row.parameter === 'ramadhan_tgl_mulai' && row.nilai) {
+            // Migrasi otomatis ke 2027 jika masih tersimpan 2026
+            if (row.nilai.indexOf('2026') !== -1) {
+              row.nilai = '2027-02-08';
+              needsMigration = true;
+            }
             RAMADHAN_CONFIG.tgl_mulai = row.nilai;
           } else if (row.parameter === 'ramadhan_aktif' && row.nilai) {
             RAMADHAN_CONFIG.aktif = row.nilai;
@@ -658,9 +765,40 @@ async function muatPengaturanRamadhan() {
     }
   } catch (e) {
     console.warn('Gagal membaca pengaturan Ramadhan dari Supabase, menggunakan lokal:', e);
-    var localCfg = klonStorage.getItem('ramadhan_config');
-    if (localCfg) {
-      try { RAMADHAN_CONFIG = Object.assign(RAMADHAN_CONFIG, JSON.parse(localCfg)); } catch (err) {}
+  }
+
+  var localCfg = klonStorage.getItem('ramadhan_config');
+  if (localCfg) {
+    try {
+      var parsedCfg = JSON.parse(localCfg);
+      if (parsedCfg && parsedCfg.tgl_mulai && parsedCfg.tgl_mulai.indexOf('2026') !== -1) {
+        parsedCfg.tgl_mulai = '2027-02-08';
+        needsMigration = true;
+      }
+      RAMADHAN_CONFIG = Object.assign(RAMADHAN_CONFIG, parsedCfg);
+    } catch (err) {}
+  }
+
+  // Fallback jika masih 2026 atau belum ada
+  if (!RAMADHAN_CONFIG.tgl_mulai || RAMADHAN_CONFIG.tgl_mulai.indexOf('2026') !== -1) {
+    RAMADHAN_CONFIG.tgl_mulai = '2027-02-08';
+    needsMigration = true;
+  }
+
+  if (needsMigration) {
+    klonStorage.setItem('ramadhan_config', JSON.stringify(RAMADHAN_CONFIG));
+    if (typeof sbFetch === 'function') {
+      try {
+        sbFetch('pengaturan', {
+          method: 'POST',
+          headers: { 'Prefer': 'resolution=merge-duplicates' },
+          body: JSON.stringify({
+            parameter: 'ramadhan_tgl_mulai',
+            nilai: '2027-02-08',
+            deskripsi: 'Tanggal mulai 1 Ramadhan 1448 H'
+          })
+        }).catch(function(){});
+      } catch (err) {}
     }
   }
 }
@@ -899,7 +1037,8 @@ function renderKalenderRamadhanSiswa() {
   var container = document.getElementById('ramadhanDaysListContainer');
   if (!container) return;
 
-  var hariAktifIni = getHariRamadhanSaatIni();
+  var periode = getRamadhanPeriodeStatus();
+  var hariAktifIni = periode.hariKe;
   var totalSelesai = Object.keys(RAMADHAN_SISWA_SUBMISSIONS).length;
   var persen = Math.round((totalSelesai / 30) * 100);
 
@@ -911,7 +1050,13 @@ function renderKalenderRamadhanSiswa() {
   if (elBar) elBar.style.width = persen + '%';
   if (elSub) {
     var startTgl = getTanggalRamadhanByHari(1);
-    elSub.textContent = '1 Ramadhan Dimulai: ' + formatTanggalIndo(startTgl);
+    if (periode.status === 'BELUM_MULAI') {
+      elSub.textContent = '🌙 1 Ramadhan 1448 H Dimulai: ' + formatTanggalIndo(startTgl) + ' (' + periode.hariMenuju + ' hari lagi)';
+    } else if (periode.status === 'BERLANGSUNG') {
+      elSub.textContent = '⚡ Sedang Berlangsung: Hari ke-' + periode.hariKe + ' (' + formatTanggalIndo(new Date()) + ')';
+    } else {
+      elSub.textContent = '✓ Periode Ramadhan 1448 H Selesai • Dimulai: ' + formatTanggalIndo(startTgl);
+    }
   }
 
   var html = '';
@@ -924,7 +1069,7 @@ function renderKalenderRamadhanSiswa() {
     var tgl = getTanggalRamadhanByHari(i);
     var sub = RAMADHAN_SISWA_SUBMISSIONS[i];
     var isDone = !!sub;
-    var isToday = (i === hariAktifIni);
+    var isToday = (periode.status === 'BERLANGSUNG' && i === hariAktifIni);
 
     var cardCls = 'ramadhan-day-card' + (isDone ? ' is-done' : '') + (isToday ? ' is-today' : '');
     var badgeStatusHtml = '';
@@ -933,8 +1078,10 @@ function renderKalenderRamadhanSiswa() {
       badgeStatusHtml = '<span class="day-card-status status-badge-done">✓ Selesai</span>';
     } else if (isToday) {
       badgeStatusHtml = '<span class="day-card-status status-badge-today">⚡ Hari Ini</span>';
-    } else if (i < hariAktifIni) {
-      badgeStatusHtml = '<span class="day-card-status status-badge-pending" style="color:#f87171;background:rgba(239,68,68,0.15);">⚠️ Terlewat</span>';
+    } else if (periode.status === 'BERLANGSUNG' && i < hariAktifIni) {
+      badgeStatusHtml = '<span class="day-card-status status-badge-pending status-badge-missed">⚠️ Terlewat</span>';
+    } else if (periode.status === 'SELESAI') {
+      badgeStatusHtml = '<span class="day-card-status status-badge-pending status-badge-missed">⚠️ Terlewat</span>';
     } else {
       badgeStatusHtml = '<span class="day-card-status status-badge-pending">🕒 Akan Datang</span>';
     }
@@ -944,10 +1091,10 @@ function renderKalenderRamadhanSiswa() {
       var iconBukti = (sub.file_type === 'pdf' ? '📄 PDF' : '📷 Foto');
       previewHtml = '<div class="day-card-preview">' +
         '📍 <b>' + escHtml(sub.dimana || 'Lokasi') + '</b> • ' + iconBukti +
-        (sub.status_verifikasi ? ' • <span style="color:#fde047;">' + escHtml(sub.status_verifikasi) + '</span>' : '') +
+        (sub.status_verifikasi ? ' • <span style="color:#065f46;font-weight:800;">' + escHtml(sub.status_verifikasi) + '</span>' : '') +
       '</div>';
     } else {
-      previewHtml = '<div style="font-size:11.5px;color:var(--muted);">' + escHtml(k.deskripsi ? (k.deskripsi.substring(0, 75) + '...') : 'Ketuk untuk mengisi jurnal.') + '</div>';
+      previewHtml = '<div style="font-size:12px;color:#475569;line-height:1.45;">' + escHtml(k.deskripsi ? (k.deskripsi.substring(0, 75) + '...') : 'Ketuk untuk mengisi jurnal.') + '</div>';
     }
 
     html += '<div class="' + cardCls + '" onclick="bukaFormJurnalRamadhan(' + i + ')">' +
@@ -966,6 +1113,14 @@ function renderKalenderRamadhanSiswa() {
 
 function updateBannerRamadhanSiswa() {
   var banner = document.getElementById('bannerRamadhanCard');
+  var bannerIbadah = document.getElementById('bannerRamadhanIbadah');
+  if (bannerIbadah) {
+    if (RAMADHAN_CONFIG.aktif === 'TIDAK') {
+      bannerIbadah.classList.add('hidden');
+    } else {
+      bannerIbadah.classList.remove('hidden');
+    }
+  }
   if (!banner) return;
 
   if (RAMADHAN_CONFIG.aktif === 'TIDAK') {
@@ -974,7 +1129,8 @@ function updateBannerRamadhanSiswa() {
   }
   banner.classList.remove('hidden');
 
-  var hariIni = getHariRamadhanSaatIni();
+  var periode = getRamadhanPeriodeStatus();
+  var hariIni = periode.hariKe;
   var tglHariIni = getTanggalRamadhanByHari(hariIni);
   var totalSelesai = Object.keys(RAMADHAN_SISWA_SUBMISSIONS).length;
   var persen = Math.round((totalSelesai / 30) * 100);
@@ -988,7 +1144,13 @@ function updateBannerRamadhanSiswa() {
   var elProgText = document.getElementById('bannerRamadhanProgText');
 
   if (elTitle) elTitle.textContent = RAMADHAN_CONFIG.judul || 'Jurnal Kegiatan Ramadhan';
-  if (elStatus) elStatus.textContent = 'Hari ke-' + hariIni + ' (' + formatTanggalIndo(tglHariIni) + ') • ' + judulHariIni;
+  if (elStatus) {
+    if (periode.status === 'BELUM_MULAI') {
+      elStatus.textContent = 'Dimulai: ' + formatTanggalIndo(tglHariIni) + ' (' + periode.hariMenuju + ' hari lagi) • ' + judulHariIni;
+    } else {
+      elStatus.textContent = 'Hari ke-' + hariIni + ' (' + formatTanggalIndo(tglHariIni) + ') • ' + judulHariIni;
+    }
+  }
   if (elBar) elBar.style.width = persen + '%';
   if (elProgText) elProgText.textContent = totalSelesai + '/30 Hari (' + persen + '%)';
 }
@@ -1487,8 +1649,11 @@ function renderAdminKpiRamadhan() {
   var totalSiswa = (typeof SISWA_ADMIN !== 'undefined' && Array.isArray(SISWA_ADMIN) && SISWA_ADMIN.length) ? SISWA_ADMIN.length : 182;
   var totalJurnal = RAMADHAN_ADMIN_SUBMISSIONS.length;
 
-  var hariIni = getHariRamadhanSaatIni();
-  var submitHariIni = RAMADHAN_ADMIN_SUBMISSIONS.filter(function (r) { return r.hari_ke === hariIni; }).length;
+  var periode = getRamadhanPeriodeStatus();
+  var submitHariIni = 0;
+  if (periode.status === 'BERLANGSUNG') {
+    submitHariIni = RAMADHAN_ADMIN_SUBMISSIONS.filter(function (r) { return r.hari_ke === periode.hariKe; }).length;
+  }
 
   var uniqueSiswa = [];
   RAMADHAN_ADMIN_SUBMISSIONS.forEach(function (r) {
@@ -1503,7 +1668,13 @@ function renderAdminKpiRamadhan() {
 
   if (elTotSiswa) elTotSiswa.textContent = totalSiswa;
   if (elTotJurnal) elTotJurnal.textContent = totalJurnal;
-  if (elHariIni) elHariIni.textContent = submitHariIni + ' Siswa';
+  if (elHariIni) {
+    if (periode.status === 'BELUM_MULAI') {
+      elHariIni.textContent = 'Mulai ' + periode.hariMenuju + ' hari lagi';
+    } else {
+      elHariIni.textContent = submitHariIni + ' Siswa';
+    }
+  }
   if (elPartisipasi) elPartisipasi.textContent = partisipasi + '%';
 }
 
@@ -1846,7 +2017,7 @@ function unduhTemplateExcelKegiatanRamadhan() {
   ];
 
   XLSX.utils.book_append_sheet(wb, ws, 'Agenda_Ramadhan');
-  var fileName = 'Template_30_Kegiatan_Ramadhan_' + (startStr || '2026') + '.xlsx';
+  var fileName = 'Template_30_Kegiatan_Ramadhan_' + (startStr || '2027') + '.xlsx';
   XLSX.writeFile(wb, fileName);
 
   if (typeof toast === 'function') {
@@ -2157,32 +2328,32 @@ function buatElemenModalRamadhan() {
   wrapper.innerHTML = `
     <!-- ============ MODAL UTAMA BULAN RAMADHAN (SISWA) ============ -->
     <div id="modalRamadhan" class="modal center hidden" style="z-index: 99990;">
-      <div class="modal-box" style="max-width: 760px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 20px;">
-        <div class="modal-head" style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-          <div>
-            <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:17px; color:#f59e0b;">
+      <div class="modal-box" style="max-width: 760px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 22px;">
+        <div class="modal-head" style="margin-bottom: 14px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 12px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; position: relative; padding-right: 48px;">
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:18px; font-weight:800; color:#0f172a;">
               <span>🌙</span>
               <span>Jurnal Ibadah Bulan Ramadhan</span>
             </h3>
-            <div id="ramadhanModalSub" style="font-size:12px; color:var(--muted); margin-top:2px;">
+            <div id="ramadhanModalSub" style="font-size:12.5px; font-weight:600; color:#475569; margin-top:3px;">
               Catatan harian 30 hari ibadah & amalan Ramadhan
             </div>
           </div>
-          <button class="close-x" onclick="tutupModalRamadhan()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupModalRamadhan()" title="Tutup" aria-label="Tutup" style="position: absolute; top: 0; right: 0;">&times;</button>
         </div>
 
         <!-- Progress Capaian Siswa -->
-        <div style="background:rgba(6,78,59,0.3); border:1px solid rgba(16,185,129,0.3); border-radius:14px; padding:12px 14px; margin-bottom:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <span style="font-size:12px; font-weight:700; color:#a7f3d0;">✨ Progres Jurnal Ramadhan Kamu:</span>
-            <span id="ramadhanProgCountText" style="font-size:12px; font-weight:800; color:#fbbf24;">0 dari 30 Hari Selesai (0%)</span>
+        <div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:14px; padding:14px 16px; margin-bottom:14px; box-shadow:0 1px 3px rgba(16,185,129,0.08);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:12.5px; font-weight:800; color:#065f46;">✨ Progres Jurnal Ramadhan Kamu:</span>
+            <span id="ramadhanProgCountText" style="font-size:12.5px; font-weight:800; color:#b45309;">0 dari 30 Hari Selesai (0%)</span>
           </div>
-          <div style="height:8px; border-radius:10px; background:rgba(0,0,0,0.3); overflow:hidden;">
+          <div style="height:10px; border-radius:10px; background:#e2e8f0; overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.1);">
             <div id="ramadhanProgBarFill" style="height:100%; border-radius:10px; background:linear-gradient(90deg, #10b981, #f59e0b); width:0%; transition:width 0.4s ease;"></div>
           </div>
         </div>
 
-        <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">
+        <div style="font-size:12.5px; font-weight:600; color:#475569; margin-bottom:8px;">
           Ketuk kartu hari di bawah ini untuk mengisi judul kegiatan, lokasi, dampak & bukti (foto/PDF):
         </div>
 
@@ -2194,25 +2365,25 @@ function buatElemenModalRamadhan() {
 
     <!-- ============ MODAL FORM JURNAL RAMADHAN SISWA ============ -->
     <div id="modalFormJurnalRamadhan" class="modal center hidden" style="z-index: 99995;">
-      <div class="modal-box" style="max-width: 540px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 20px;">
-        <div class="modal-head" style="margin-bottom: 12px;">
-          <div>
+      <div class="modal-box" style="max-width: 540px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 22px;">
+        <div class="modal-head" style="margin-bottom: 14px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position: relative; padding-right: 48px;">
+          <div style="flex: 1 1 auto; min-width: 0;">
             <div id="formRamadhanHariBadge" class="ramadhan-badge-pill">🌙 Hari ke-1</div>
-            <div id="formRamadhanTanggalText" style="font-size:12px; color:var(--muted);">📅 Tanggal</div>
+            <div id="formRamadhanTanggalText" style="font-size:12.5px; font-weight:600; color:#475569; margin-top:2px;">📅 Tanggal</div>
           </div>
-          <button class="close-x" onclick="tutupFormJurnalRamadhan()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupFormJurnalRamadhan()" title="Tutup" aria-label="Tutup" style="position: absolute; top: 0; right: 0;">&times;</button>
         </div>
 
         <!-- Info Judul Kegiatan dari Admin -->
-        <div style="background:rgba(245,158,11,0.1); border:1.5px solid rgba(245,158,11,0.35); border-radius:14px; padding:12px 14px; margin-bottom:16px;">
-          <div style="font-size:11px; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px;">Judul Agenda Kegiatan:</div>
-          <div id="formRamadhanJudulKegiatan" style="font-size:15px; font-weight:800; color:#ffffff; margin:4px 0 2px;">-</div>
-          <div id="formRamadhanDeskripsi" style="font-size:12px; color:#fde68a; line-height:1.4;">-</div>
+        <div style="background:#fffbeb; border:1.5px solid #fcd34d; border-radius:14px; padding:14px 16px; margin-bottom:16px; box-shadow:0 1px 3px rgba(245,158,11,0.08);">
+          <div style="font-size:11.5px; font-weight:800; color:#b45309; text-transform:uppercase; letter-spacing:0.5px;">📌 JUDUL AGENDA KEGIATAN:</div>
+          <div id="formRamadhanJudulKegiatan" style="font-size:16px; font-weight:800; color:#78350f; margin:4px 0 3px; line-height:1.35;">-</div>
+          <div id="formRamadhanDeskripsi" style="font-size:12.5px; color:#92400e; line-height:1.5; font-weight:500;">-</div>
         </div>
 
         <!-- Input 1: Dimana (Lokasi) -->
         <div class="ramadhan-form-group">
-          <label for="ramadhanInputLokasi">📍 Dimana kegiatan ini dilaksanakan?</label>
+          <label for="ramadhanInputLokasi" style="color:#0f172a; font-weight:700; font-size:13px;">📍 Dimana kegiatan ini dilaksanakan?</label>
           <input type="text" id="ramadhanInputLokasi" placeholder="Contoh: Masjid Jami' Baiturrahim / Rumah..." style="width:100%; box-sizing:border-box;">
           <div class="ramadhan-chips">
             <span class="ramadhan-chip" onclick="setChipLokasi('Masjid')">🕌 Masjid</span>
@@ -2225,17 +2396,17 @@ function buatElemenModalRamadhan() {
 
         <!-- Input 2: Dampak (Hikmah & Refleksi) -->
         <div class="ramadhan-form-group">
-          <label for="ramadhanInputDampak">💡 Dampak, hikmah & perasaan setelah berkegiatan:</label>
+          <label for="ramadhanInputDampak" style="color:#0f172a; font-weight:700; font-size:13px;">💡 Dampak, hikmah & perasaan setelah berkegiatan:</label>
           <textarea id="ramadhanInputDampak" rows="3" placeholder="Ceritakan dampak positif, hikmah, atau perasaan yang kamu rasakan setelah melaksanakan kegiatan ini..." style="width:100%; box-sizing:border-box; border-radius:10px; font-family:inherit; font-size:13px;"></textarea>
         </div>
 
         <!-- Input 3: Bukti (Gambar Foto atau Dokumen PDF) -->
         <div class="ramadhan-form-group">
-          <label>📎 Bukti Pelaksanaan (Foto Gambar / Dokumen PDF):</label>
+          <label style="color:#0f172a; font-weight:700; font-size:13px;">📎 Bukti Pelaksanaan (Foto Gambar / Dokumen PDF):</label>
           <div class="ramadhan-upload-box" onclick="document.getElementById('ramadhanFileInput').click()">
             <div style="font-size:28px; margin-bottom:4px;">📷 / 📄</div>
-            <div style="font-weight:700; font-size:13px; color:var(--text);">Ketuk untuk Pilih Foto atau File PDF</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:2px;">Format yang didukung: JPG, PNG, WEBP, atau PDF (Maks. 10MB)</div>
+            <div style="font-weight:700; font-size:13.5px; color:#0f172a;">Ketuk untuk Pilih Foto atau File PDF</div>
+            <div style="font-size:11.5px; color:#475569; margin-top:2px;">Format yang didukung: JPG, PNG, WEBP, atau PDF (Maks. 10MB)</div>
           </div>
           <input type="file" id="ramadhanFileInput" accept="image/*,application/pdf" style="display:none;" onchange="handlePilihFileBukti(this)">
 
@@ -2251,23 +2422,23 @@ function buatElemenModalRamadhan() {
 
     <!-- ============ MODAL EDIT KEGIATAN RAMADHAN (ADMIN) ============ -->
     <div id="modalEditKegiatanRamadhan" class="modal center hidden" style="z-index: 99996;">
-      <div class="modal-box" style="max-width: 520px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 20px;">
-        <div class="modal-head" style="margin-bottom: 12px;">
-          <div>
-            <h3 id="editKegiatanModalTitle" style="margin:0; font-size:16px;">Edit Kegiatan Ramadhan</h3>
-            <div id="editKegiatanTglText" style="font-size:12px; color:var(--muted); margin-top:2px;">-</div>
+      <div class="modal-box" style="max-width: 520px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 22px;">
+        <div class="modal-head" style="margin-bottom: 14px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position: relative; padding-right: 48px;">
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <h3 id="editKegiatanModalTitle" style="margin:0; font-size:17px; font-weight:800; color:#0f172a;">Edit Kegiatan Ramadhan</h3>
+            <div id="editKegiatanTglText" style="font-size:12.5px; color:#475569; font-weight:600; margin-top:2px;">-</div>
           </div>
-          <button class="close-x" onclick="tutupModalEditKegiatanRamadhan()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupModalEditKegiatanRamadhan()" title="Tutup" aria-label="Tutup" style="position: absolute; top: 0; right: 0;">&times;</button>
         </div>
         <input type="hidden" id="editKegiatanHariKe">
 
         <div style="margin-bottom:12px;">
-          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">Judul Kegiatan Ramadhan</label>
+          <label style="display:block; font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:4px;">Judul Kegiatan Ramadhan</label>
           <input type="text" id="editKegiatanJudul" placeholder="Contoh: Tadarus Al-Qur'an & Target Khatam" style="width:100%; box-sizing:border-box;">
         </div>
 
         <div style="margin-bottom:16px;">
-          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">Deskripsi / Panduan Pelaksanaan untuk Siswa</label>
+          <label style="display:block; font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:4px;">Deskripsi / Panduan Pelaksanaan untuk Siswa</label>
           <textarea id="editKegiatanDeskripsi" rows="3" placeholder="Tuliskan panduan atau instruksi kegiatan untuk siswa..." style="width:100%; box-sizing:border-box; border-radius:10px; font-family:inherit; font-size:13px;"></textarea>
         </div>
 
@@ -2281,32 +2452,32 @@ function buatElemenModalRamadhan() {
     <!-- ============ MODAL IMPOR KEGIATAN RAMADHAN DARI EXCEL (ADMIN) ============ -->
     <div id="modalImporKegiatanRamadhan" class="modal center hidden" style="z-index: 99998;">
       <div class="modal-box" style="max-width: 740px; width: 95%; max-height: 92vh; overflow-y: auto; padding: 22px;">
-        <div class="modal-head" style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-          <div>
-            <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:16.5px; color:#f59e0b;">
+        <div class="modal-head" style="margin-bottom: 14px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 12px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position: relative; padding-right: 48px;">
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:17px; font-weight:800; color:#0f172a;">
               <span>📤</span>
               <span>Impor 30 Agenda Kegiatan Ramadhan dari Excel</span>
             </h3>
-            <div style="font-size:12px; color:var(--muted); margin-top:3px;">
+            <div style="font-size:12.5px; color:#475569; margin-top:3px;">
               Unggah file Excel (.xlsx / .xls / .csv) untuk memperbarui 30 judul & panduan kegiatan Ramadhan sekaligus.
             </div>
           </div>
-          <button class="close-x" onclick="tutupModalImporKegiatanRamadhan()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupModalImporKegiatanRamadhan()" title="Tutup" aria-label="Tutup" style="position: absolute; top: 0; right: 0;">&times;</button>
         </div>
 
         <!-- Langkah 1: Download Template yang Hari & Tanggalnya Sudah Otomatis Ada -->
-        <div style="background:rgba(245,158,11,0.08); border:1.5px solid rgba(245,158,11,0.3); border-radius:12px; padding:12px 14px; margin-bottom:14px;">
+        <div style="background:#fffbeb; border:1.5px solid #fcd34d; border-radius:12px; padding:12px 14px; margin-bottom:14px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <div>
-              <div style="font-weight:800; font-size:13px; color:#fbbf24; display:flex; align-items:center; gap:6px;">
+              <div style="font-weight:800; font-size:13px; color:#b45309; display:flex; align-items:center; gap:6px;">
                 <span>💡</span>
                 <span>Format Template Sudah Otomatis Lengkap dengan Hari & Tanggal</span>
               </div>
-              <div style="font-size:12px; color:var(--text); margin-top:2px;">
+              <div style="font-size:12px; color:#78350f; margin-top:2px;">
                 Hari ke-1 s/d 30 dan tanggal pelaksanaan otomatis dihitung dari <b>1 Ramadhan (<span id="infoTglMulaiImporRamadhan">-</span>)</b>.
               </div>
             </div>
-            <button type="button" class="btn btn-outline btn-sm" onclick="unduhTemplateExcelKegiatanRamadhan()" style="background:rgba(255,255,255,0.08); border-color:#f59e0b; color:#fbbf24; font-weight:700; white-space:nowrap;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="unduhTemplateExcelKegiatanRamadhan()" style="background:#ffffff; border:1.5px solid #d97706; color:#92400e; font-weight:700; white-space:nowrap;">
               📥 Unduh Template Excel (.xlsx)
             </button>
           </div>
@@ -2314,11 +2485,11 @@ function buatElemenModalRamadhan() {
 
         <!-- Langkah 2: Area Upload File Excel -->
         <div style="margin-bottom:14px;">
-          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">📁 Pilih File Excel yang Sudah Diisi / Diedit:</label>
-          <div id="dropZoneImporKegiatanRamadhan" class="ramadhan-upload-box" style="border:2px dashed rgba(255,255,255,0.25); border-radius:14px; padding:22px; text-align:center; cursor:pointer; background:rgba(255,255,255,0.02); transition:all 0.2s;" onclick="document.getElementById('fileInputImporKegiatanRamadhan').click()">
+          <label style="display:block; font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:6px;">📁 Pilih File Excel yang Sudah Diisi / Diedit:</label>
+          <div id="dropZoneImporKegiatanRamadhan" class="ramadhan-upload-box" style="border:2px dashed #cbd5e1; border-radius:14px; padding:22px; text-align:center; cursor:pointer; background:#f8fafc; transition:all 0.2s;" onclick="document.getElementById('fileInputImporKegiatanRamadhan').click()">
             <div style="font-size:32px; margin-bottom:6px;">📊</div>
-            <div style="font-weight:700; font-size:13.5px; color:var(--text);">Klik di sini atau Tarik (Drag & Drop) File Excel ke Sini</div>
-            <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">Mendukung format Microsoft Excel (.xlsx, .xls) atau CSV</div>
+            <div style="font-weight:700; font-size:13.5px; color:#0f172a;">Klik di sini atau Tarik (Drag & Drop) File Excel ke Sini</div>
+            <div style="font-size:11.5px; color:#475569; margin-top:4px;">Mendukung format Microsoft Excel (.xlsx, .xls) atau CSV</div>
           </div>
           <input type="file" id="fileInputImporKegiatanRamadhan" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleFileImporKegiatanRamadhan(this)">
         </div>
@@ -2327,7 +2498,7 @@ function buatElemenModalRamadhan() {
         <div id="previewImporKegiatanRamadhan" class="hidden" style="margin-bottom:16px;"></div>
 
         <!-- Aksi Tombol -->
-        <div style="display:flex; justify-content:flex-end; gap:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+        <div style="display:flex; justify-content:flex-end; gap:8px; border-top:1.5px solid #e2e8f0; padding-top:12px;">
           <button type="button" class="btn btn-ghost" onclick="tutupModalImporKegiatanRamadhan()">Batal</button>
           <button type="button" id="btnSimpanImporKegiatanRamadhan" class="btn btn-admin" onclick="simpanHasilImporKegiatanRamadhan()" disabled style="background:#059669; border-color:#047857; font-weight:800; padding:8px 18px;">
             💾 Simpan & Terapkan 30 Kegiatan
@@ -2338,52 +2509,52 @@ function buatElemenModalRamadhan() {
 
     <!-- ============ MODAL PERIKSA & VERIFIKASI HASIL SISWA (ADMIN) ============ -->
     <div id="modalDetailHasilRamadhanAdmin" class="modal center hidden" style="z-index: 99997;">
-      <div class="modal-box" style="max-width: 620px; width: 95%; max-height: 92vh; overflow-y: auto; padding: 20px;">
-        <div class="modal-head" style="margin-bottom: 12px;">
-          <div>
-            <h3 style="margin:0; font-size:16px;">🔍 Periksa Jurnal Ramadhan Siswa</h3>
-            <div id="detailAdminNama" style="font-size:13px; font-weight:700; color:var(--text); margin-top:2px;">-</div>
+      <div class="modal-box" style="max-width: 620px; width: 95%; max-height: 92vh; overflow-y: auto; padding: 22px;">
+        <div class="modal-head" style="margin-bottom: 14px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 12px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position: relative; padding-right: 48px;">
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <h3 style="margin:0; font-size:17px; font-weight:800; color:#0f172a;">🔍 Periksa Jurnal Ramadhan Siswa</h3>
+            <div id="detailAdminNama" style="font-size:13px; font-weight:700; color:#475569; margin-top:2px;">-</div>
           </div>
-          <button class="close-x" onclick="tutupModalPeriksaHasilRamadhan()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupModalPeriksaHasilRamadhan()" title="Tutup" aria-label="Tutup" style="position: absolute; top: 0; right: 0;">&times;</button>
         </div>
         <input type="hidden" id="detailAdminId">
 
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px; margin-bottom:14px; font-size:12.5px; line-height:1.6;">
+        <div style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:12px; padding:12px 14px; margin-bottom:14px; font-size:12.5px; line-height:1.6; color:#0f172a;">
           <div><b>Kelas:</b> <span id="detailAdminKelas">-</span></div>
           <div><b>Hari Pelaksanaan:</b> <span id="detailAdminHari">-</span></div>
-          <div><b>Judul Kegiatan:</b> <span id="detailAdminJudul" style="color:#fbbf24; font-weight:700;">-</span></div>
-          <div><b>Dimana (Lokasi):</b> <span id="detailAdminLokasi" style="color:#34d399; font-weight:700;">-</span></div>
+          <div><b>Judul Kegiatan:</b> <span id="detailAdminJudul" style="color:#b45309; font-weight:700;">-</span></div>
+          <div><b>Dimana (Lokasi):</b> <span id="detailAdminLokasi" style="color:#047857; font-weight:700;">-</span></div>
         </div>
 
         <div style="margin-bottom:14px;">
-          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">💡 Dampak / Hikmah / Refleksi Siswa:</label>
-          <div id="detailAdminDampak" style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px; font-size:13px; line-height:1.45; color:var(--text); white-space:pre-wrap;">-</div>
+          <label style="display:block; font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:4px;">💡 Dampak / Hikmah / Refleksi Siswa:</label>
+          <div id="detailAdminDampak" style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:10px; padding:12px; font-size:13px; line-height:1.45; color:#0f172a; white-space:pre-wrap;">-</div>
         </div>
 
         <!-- Lampiran Bukti File (Foto/PDF) -->
         <div style="margin-bottom:16px;">
-          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">📎 Bukti Pelaksanaan (Foto / Dokumen PDF):</label>
+          <label style="display:block; font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:4px;">📎 Bukti Pelaksanaan (Foto / Dokumen PDF):</label>
           <div id="detailAdminBuktiContainer"></div>
         </div>
 
         <!-- Form Verifikasi Guru -->
-        <div style="background:rgba(67,56,202,0.12); border:1.5px solid rgba(99,102,241,0.3); border-radius:14px; padding:14px; margin-bottom:14px;">
-          <label style="display:block; font-size:12.5px; font-weight:800; color:#a5b4fc; margin-bottom:8px;">⚖️ Status Verifikasi & Catatan Penilai:</label>
+        <div style="background:#f5f3ff; border:1.5px solid #c4b5fd; border-radius:14px; padding:14px; margin-bottom:14px;">
+          <label style="display:block; font-size:12.5px; font-weight:800; color:#5b21b6; margin-bottom:8px;">⚖️ Status Verifikasi & Catatan Penilai:</label>
           <div style="display:flex; gap:16px; margin-bottom:10px; font-size:13px;">
             <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
               <input type="radio" name="verifStatus" value="Disetujui">
-              <span style="color:#34d399; font-weight:700;">✅ Disetujui</span>
+              <span style="color:#059669; font-weight:700;">✅ Disetujui</span>
             </label>
             <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
               <input type="radio" name="verifStatus" value="Perlu Revisi">
-              <span style="color:#f87171; font-weight:700;">⚠️ Perlu Revisi</span>
+              <span style="color:#dc2626; font-weight:700;">⚠️ Perlu Revisi</span>
             </label>
             <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
               <input type="radio" name="verifStatus" value="Menunggu">
-              <span style="color:#fbbf24; font-weight:700;">⏳ Menunggu</span>
+              <span style="color:#d97706; font-weight:700;">⏳ Menunggu</span>
             </label>
           </div>
-          <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:var(--muted);">Catatan / Masukan Guru untuk Siswa:</label>
+          <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#475569;">Catatan / Masukan Guru untuk Siswa:</label>
           <textarea id="detailAdminCatatan" rows="2" placeholder="Tuliskan catatan apresiasi atau perbaikan untuk siswa..." style="width:100%; box-sizing:border-box; border-radius:8px; font-family:inherit; font-size:12.5px;"></textarea>
         </div>
 
@@ -2396,13 +2567,13 @@ function buatElemenModalRamadhan() {
 
     <!-- ============ MODAL SALIN SQL RAMADHAN ============ -->
     <div id="modalSqlRamadhan" class="modal center hidden" style="z-index: 99998;">
-      <div class="modal-box" style="max-width: 620px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 20px;">
-        <div class="modal-head" style="margin-bottom: 12px;">
-          <div>
-            <h3 style="margin:0; font-size:16px;">📋 Skrip SQL Database Ramadhan</h3>
-            <div style="font-size:12px; color:var(--muted); margin-top:2px;">Jalankan query ini di Supabase SQL Editor jika belum tersedia</div>
+      <div class="modal-box" style="max-width: 620px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 22px;">
+        <div class="modal-head" style="margin-bottom: 14px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position: relative; padding-right: 48px;">
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <h3 style="margin:0; font-size:17px; font-weight:800; color:#0f172a;">📋 Skrip SQL Database Ramadhan</h3>
+            <div style="font-size:12.5px; color:#475569; margin-top:2px;">Jalankan query ini di Supabase SQL Editor jika belum tersedia</div>
           </div>
-          <button class="close-x" onclick="tutupModalSqlRamadhan()">&times;</button>
+          <button type="button" class="close-x" onclick="tutupModalSqlRamadhan()" title="Tutup" aria-label="Tutup" style="position: absolute; top: 0; right: 0;">&times;</button>
         </div>
         <textarea id="teksSqlRamadhan" readonly style="width:100%; height:280px; font-family:monospace; font-size:11.5px; background:#0f172a; color:#38bdf8; border:1px solid rgba(255,255,255,0.15); border-radius:10px; padding:12px; box-sizing:border-box;">-- ==============================================================================
 -- SKRIP TABEL FITUR BULAN RAMADHAN (KLONING)
