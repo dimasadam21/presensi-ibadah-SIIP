@@ -5307,12 +5307,12 @@
         <input type="text" id="admUser" name="admin_username" autocomplete="off" inputmode="text" placeholder="admin" value="admin" onkeydown="if(event.key==='Enter'){$('admPass').focus();}">
         <label style="margin-top:12px;">Password</label>
         <div style="position:relative;">
-          <input type="password" id="admPass" placeholder="Password admin (123 / admin123)" style="padding-right:42px;" onkeydown="if(event.key==='Enter'){doAdminLogin();}">
+          <input type="password" id="admPass" placeholder="Password admin" style="padding-right:42px;" onkeydown="if(event.key==='Enter'){doAdminLogin();}">
           <button type="button" class="btn-toggle-eye" onclick="toggleLihatPass('admPass', this)"
             title="Lihat/Sembunyikan">👁️</button>
         </div>
         <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-          <span>Default: <b>admin</b> / <b>123</b> (atau <b>admin123</b>)</span>
+          <span id="hintAdminPass">Kredensial: <b>admin</b> / <b id="hintAdminPassVal">123</b></span>
           <button type="button" class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:11px;color:var(--admin);" onclick="isiDefaultAdmin()">Isi Otomatis</button>
         </div>
         <button type="button" class="btn btn-admin btn-block-mt" id="admLoginBtn" onclick="doAdminLogin()">Masuk Panel Admin</button>
@@ -6786,8 +6786,8 @@
       var SB_PENGATURAN_CACHE = null;
       var SB_PENGATURAN_TS = 0;
 
-      async function getSbPengaturanMap() {
-        if (SB_PENGATURAN_CACHE && (Date.now() - SB_PENGATURAN_TS < 60000)) return SB_PENGATURAN_CACHE;
+      async function getSbPengaturanMap(forceFresh) {
+        if (!forceFresh && SB_PENGATURAN_CACHE && (Date.now() - SB_PENGATURAN_TS < 60000)) return SB_PENGATURAN_CACHE;
         try {
           var res = await sbFetch('pengaturan?select=parameter,nilai');
           var rows = await res.json();
@@ -6797,6 +6797,9 @@
           }
           SB_PENGATURAN_CACHE = map;
           SB_PENGATURAN_TS = Date.now();
+          if (map.admin_pass) {
+            try { klonStorage.setItem('admin_active_pass', String(map.admin_pass).trim()); } catch(e){}
+          }
           return map;
         } catch (e) {
           console.warn('Gagal membaca pengaturan dari Supabase, gunakan default/cache:', e);
@@ -6852,7 +6855,8 @@
             jendelaSholat: j,
             sholatSaatIni: sholatNow,
             daftarSholatAktif: aktifList,
-            wajibDalamRadius: pengMap.wajib_dalam_radius || 'TIDAK'
+            wajibDalamRadius: pengMap.wajib_dalam_radius || 'TIDAK',
+            adminPass: pengMap.admin_pass || klonStorage.getItem('admin_active_pass') || '123'
           };
         },
 
@@ -7130,24 +7134,22 @@
         adminLogin: async function(user, pass) {
           var pengMap = {};
           try {
-            pengMap = await getSbPengaturanMap();
+            // Selalu ambil pengaturan fresh dari Supabase agar sinkron langsung dengan password baru
+            pengMap = await getSbPengaturanMap(true);
           } catch(e) {
             console.warn('Gagal membaca pengaturan dari Supabase, gunakan default:', e);
           }
           var u = String((pengMap && pengMap.admin_user) || 'admin').trim();
-          var p = String((pengMap && pengMap.admin_pass) || 'admin123').trim();
-          var pin = String((pengMap && pengMap.admin_pin) || '1234').trim();
+          var p = String((pengMap && pengMap.admin_pass) || klonStorage.getItem('admin_active_pass') || '123').trim();
 
           var userIn = String(user || '').trim().toLowerCase();
           var passIn = String(pass || '').trim();
 
-          var validUsers = [u.toLowerCase(), 'admin'];
-          // Menerima password dari database, pin, serta password bawaan admin: 123, admin123, 1234, admin, madas4m1d
-          var validPasses = [p, pin, '123', 'admin123', '1234', 'admin', 'madas4m1d'];
-
-          if (!validUsers.includes(userIn) || !validPasses.includes(passIn)) {
-            return { success: false, message: 'Username atau password admin salah. (Default: admin / 123 atau admin123)' };
+          // TIDAK ADA DOUBLE PASSWORD: Hanya satu password aktif yang sah diterima
+          if (userIn !== u.toLowerCase() || passIn !== p) {
+            return { success: false, message: 'Username atau password admin salah.' };
           }
+          try { klonStorage.setItem('admin_active_pass', p); } catch(e){}
           var token = 'admTok_' + Date.now() + '_' + Math.random().toString(36).substring(2);
           try { klonStorage.setItem('supabase_admin_token', token); } catch(e){}
 
@@ -7162,7 +7164,7 @@
         getPengaturan: async function(token) {
           var m = await getSbPengaturanMap();
           var out = {};
-          ['nama_sekolah', 'logo_sekolah', 'lat_sekolah', 'lng_sekolah', 'radius_meter', 'wajib_dalam_radius', 'admin_user', 'judul_aplikasi', 'tema_warna', 'ukuran_logo', 'ukuran_judul', 'posisi_header', 'tata_letak_header', 'wa_token', 'wa_aktif', 'wa_interval', 'wa_max_kirim', 'wa_template_pesan', 'wa_target_mode', 'wa_target_kelas', 'wa_target_nomor', 'pesan_sukses', 'pesan_sukses_subuh', 'pesan_sukses_dhuha', 'pesan_sukses_dzuhur', 'pesan_sukses_ashar', 'pesan_sukses_maghrib', 'pesan_sukses_isya', 'pass_default_l', 'pass_default_p', 'mode_pass_default'].forEach(function (k) {
+          ['nama_sekolah', 'logo_sekolah', 'lat_sekolah', 'lng_sekolah', 'radius_meter', 'wajib_dalam_radius', 'admin_user', 'admin_pass', 'judul_aplikasi', 'tema_warna', 'ukuran_logo', 'ukuran_judul', 'posisi_header', 'tata_letak_header', 'wa_token', 'wa_aktif', 'wa_interval', 'wa_max_kirim', 'wa_template_pesan', 'wa_target_mode', 'wa_target_kelas', 'wa_target_nomor', 'pesan_sukses', 'pesan_sukses_subuh', 'pesan_sukses_dhuha', 'pesan_sukses_dzuhur', 'pesan_sukses_ashar', 'pesan_sukses_maghrib', 'pesan_sukses_isya', 'pass_default_l', 'pass_default_p', 'mode_pass_default'].forEach(function (k) {
             out[k] = String(m[k] == null ? '' : m[k]).trim();
           });
           ['subuh_mulai', 'subuh_selesai', 'dhuha_mulai', 'dhuha_selesai', 'dzuhur_mulai', 'dzuhur_selesai', 'ashar_mulai', 'ashar_selesai',
@@ -7182,6 +7184,7 @@
           }
           if (payload.admin_pass && String(payload.admin_pass).trim()) {
             map['admin_pass'] = String(payload.admin_pass).trim();
+            try { klonStorage.setItem('admin_active_pass', map['admin_pass']); } catch(e){}
           } else if (map.hasOwnProperty('admin_pass') && !map['admin_pass']) {
             // Jangan simpan admin_pass jika nilainya kosong (agar password lama tidak terhapus)
             delete map['admin_pass'];
@@ -7201,7 +7204,10 @@
           }
           SB_PENGATURAN_CACHE = null;
           SB_PENGATURAN_TS = 0;
-          var newMap = await getSbPengaturanMap();
+          var newMap = await getSbPengaturanMap(true);
+          if (newMap && newMap.admin_pass) {
+            try { klonStorage.setItem('admin_active_pass', newMap.admin_pass); } catch(e){}
+          }
           return {
             success: true,
             message: 'Pengaturan berhasil disimpan di Supabase.',
@@ -8316,6 +8322,22 @@
       }
       function bulanIni() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
 
+      function getActiveAdminPass() {
+        var local = '';
+        try { local = klonStorage.getItem('admin_active_pass'); } catch (e) { }
+        if (local && local.trim()) return local.trim();
+        if (window.SB_PENGATURAN_CACHE && window.SB_PENGATURAN_CACHE.admin_pass) {
+          return String(window.SB_PENGATURAN_CACHE.admin_pass).trim();
+        }
+        return '123';
+      }
+
+      function updateAdminPassHintUI(pass) {
+        var p = (pass || getActiveAdminPass()).trim();
+        var el = $('hintAdminPassVal');
+        if (el) el.textContent = p;
+      }
+
       function terapkanInfoPublikKeUI(res) {
         if (!res) return;
         INFO_PUBLIK = res;
@@ -8327,6 +8349,10 @@
         if (res.logoSekolah !== undefined) terapkanLogoUI(res.logoSekolah);
         terapkanUI(res);
         if (res.jendelaSholat) updateJendelaSholat(res.jendelaSholat);
+        if (res.adminPass) {
+          try { klonStorage.setItem('admin_active_pass', res.adminPass); } catch (e) { }
+          updateAdminPassHintUI(res.adminPass);
+        }
       }
 
       function muatDaftarSiswaJikaPerlu(skipJikaSudahLogin) {
@@ -8413,6 +8439,7 @@
           bHdr.addEventListener('click', function (e) { bukaAdminLogin(e); });
         }
 
+        updateAdminPassHintUI();
         cekDeteksiWhatsApp();
 
         setTimeout(function () {
@@ -8525,7 +8552,7 @@
           var hintEl = $('loginPassHint');
           if (hintEl) {
             if (val === 'admin') {
-              hintEl.innerHTML = '🛡️ <b style="color:var(--admin, #4f46e5);">Mode Admin Terdeteksi:</b> Masukkan password admin (default: <b>admin123</b>) lalu klik Masuk.';
+              hintEl.innerHTML = '🛡️ <b style="color:var(--admin, #4f46e5);">Mode Admin Terdeteksi:</b> Masukkan password admin (<b>' + esc(getActiveAdminPass()) + '</b>) lalu klik Masuk.';
             } else {
               hintEl.innerHTML = 'Password default = <b>Nomor NIS</b> masing-masing siswa. Segera ganti setelah masuk.';
             }
@@ -9439,13 +9466,23 @@
         var m = $('adminLoginModal');
         if (!m) {
           console.error('adminLoginModal tidak ditemukan!');
-          var pPrompt = prompt('🛡️ MASUK MENU ADMIN\n\nMasukkan password admin (default: admin123):', 'admin123');
+          var pPrompt = prompt('🛡️ MASUK MENU ADMIN\n\nMasukkan password admin:', getActiveAdminPass());
           if (pPrompt !== null) {
             if ($('admUser')) $('admUser').value = 'admin';
             if ($('admPass')) $('admPass').value = pPrompt;
             doAdminLogin();
           }
           return;
+        }
+
+        updateAdminPassHintUI();
+        if (typeof getSbPengaturanMap === 'function') {
+          getSbPengaturanMap().then(function (pengMap) {
+            if (pengMap && pengMap.admin_pass) {
+              try { klonStorage.setItem('admin_active_pass', pengMap.admin_pass); } catch (e) { }
+              updateAdminPassHintUI(pengMap.admin_pass);
+            }
+          }).catch(function () { });
         }
 
         m.classList.remove('hidden');
@@ -9476,15 +9513,16 @@
         }
       }
       function isiDefaultAdmin() {
+        var activePass = getActiveAdminPass();
         if ($('admUser')) $('admUser').value = 'admin';
-        if ($('admPass')) $('admPass').value = '123';
-        toast('Kredensial admin diisi otomatis: admin / 123', 'ok');
+        if ($('admPass')) $('admPass').value = activePass;
+        toast('Kredensial admin diisi otomatis: admin / ' + activePass, 'ok');
       }
       function doAdminLogin() {
         var u = (($('admUser') && $('admUser').value) || '').trim() || 'admin';
         var p = (($('admPass') && $('admPass').value) || '').trim();
         if (!p) {
-          toast('Masukkan password admin (default: 123 atau admin123).', 'err');
+          toast('Masukkan password admin.', 'err');
           if ($('admPass')) $('admPass').focus();
           return;
         }
@@ -9499,6 +9537,8 @@
           ADMIN_TOKEN = res.token;
           if ($('adminSchool')) $('adminSchool').textContent = res.namaSekolah || 'Panel Admin';
           try { klonStorage.setItem('admin_sess', JSON.stringify({ u: u, p: p })); } catch (e) { }
+          try { klonStorage.setItem('admin_active_pass', p); } catch (e) { }
+          updateAdminPassHintUI(p);
           if (res.logoSekolah !== undefined) {
             try { terapkanLogoUI(res.logoSekolah); } catch (e) { }
           }
@@ -9513,12 +9553,14 @@
           toast('Berhasil masuk ke Panel Admin!', 'ok');
         }).withFailureHandler(function (err) {
           if (btn) { btn.disabled = false; btn.innerHTML = old; }
-          // Fallback darurat jika ada kendala koneksi atau offline
+          // Fallback darurat jika ada kendala koneksi atau offline: HANYA terima active password yang sah
           var uLower = u.toLowerCase();
-          var isDefaultMatch = (uLower === 'admin' && (p === '123' || p === 'admin123' || p === '1234' || p === 'admin' || p === 'madas4m1d'));
+          var activePass = getActiveAdminPass();
+          var isDefaultMatch = (uLower === 'admin' && p === activePass);
           if (isDefaultMatch) {
             ADMIN_TOKEN = 'admTok_offline_' + Date.now();
             try { klonStorage.setItem('admin_sess', JSON.stringify({ u: u, p: p })); } catch (e) { }
+            try { klonStorage.setItem('admin_active_pass', p); } catch (e) { }
             tutupAdminLogin();
             if ($('loginView')) $('loginView').classList.add('hidden');
             if ($('appView')) $('appView').classList.add('hidden');
@@ -9758,6 +9800,10 @@
             }
           });
           if ($('setAdminPass')) $('setAdminPass').value = '';
+          if (PENGATURAN && PENGATURAN.admin_pass) {
+            try { klonStorage.setItem('admin_active_pass', PENGATURAN.admin_pass); } catch (e) { }
+            updateAdminPassHintUI(PENGATURAN.admin_pass);
+          }
           if ($('setNamaSub') && $('setNama')) $('setNamaSub').value = $('setNama').value;
           updateSupabaseConfigDisplay();
           updateWaIntervalHint();
@@ -9821,6 +9867,18 @@
           });
           updateJendelaSholat(newWindows);
           if ($('setAdminPass')) $('setAdminPass').value = '';
+          if (pass) {
+            try { klonStorage.setItem('admin_active_pass', pass); } catch (e) { }
+            try {
+              var as = klonStorage.getItem('admin_sess');
+              if (as) {
+                var asObj = JSON.parse(as);
+                asObj.p = pass;
+                klonStorage.setItem('admin_sess', JSON.stringify(asObj));
+              }
+            } catch (e) { }
+            updateAdminPassHintUI(pass);
+          }
           toast(res.message || 'Pengaturan tersimpan.', 'ok');
         }).withFailureHandler(function (err) { btn.disabled = false; btn.innerHTML = old; toast('Gagal terhubung: ' + err.message, 'err'); }).simpanPengaturan(ADMIN_TOKEN, payload);
       }
