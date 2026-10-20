@@ -1792,6 +1792,327 @@ function eksporRekapRamadhanKeExcel() {
 }
 
 // ==============================================================================
+// 10B. FITUR TEMPLATE & IMPOR 30 AGENDA KEGIATAN RAMADHAN DARI EXCEL
+// ==============================================================================
+var PARSED_IMPORT_RAMADHAN = [];
+
+function unduhTemplateExcelKegiatanRamadhan() {
+  if (typeof XLSX === 'undefined') {
+    alert('Library Excel (XLSX) sedang dimuat. Silakan tunggu sesaat atau muat ulang halaman.');
+    return;
+  }
+
+  var startTgl = getRamadhanStartDate();
+  var startStr = RAMADHAN_CONFIG.tgl_mulai || DEFAULT_RAMADHAN_CONFIG.tgl_mulai;
+  var hariArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  var bulanArr = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
+
+  var rows = [
+    ['Hari Ke', 'Nama Hari', 'Tanggal Pelaksanaan', 'Tanggal Lengkap', 'Judul Kegiatan Ramadhan', 'Deskripsi / Panduan Pelaksanaan']
+  ];
+
+  for (var i = 1; i <= 30; i++) {
+    var d = getTanggalRamadhanByHari(i);
+    var namaHari = hariArr[d.getDay()];
+    var tglISO = formatDateISO(d);
+    var tglLengkap = namaHari + ', ' + d.getDate() + ' ' + bulanArr[d.getMonth()] + ' ' + d.getFullYear();
+
+    var existing = (RAMADHAN_KEGIATAN_LIST && RAMADHAN_KEGIATAN_LIST.find(function (k) { return k.hari_ke === i; })) ||
+                   (DEFAULT_RAMADHAN_KEGIATAN.find(function (k) { return k.hari_ke === i; })) || { judul: '', deskripsi: '' };
+
+    rows.push([
+      i,
+      namaHari,
+      tglISO,
+      tglLengkap,
+      existing.judul || ('Agenda Kegiatan Ramadhan Hari Ke-' + i),
+      existing.deskripsi || ''
+    ]);
+  }
+
+  var wb = XLSX.utils.book_new();
+  var ws = XLSX.utils.aoa_to_sheet(rows);
+
+  ws['!cols'] = [
+    { wch: 10 }, // Hari Ke
+    { wch: 12 }, // Nama Hari
+    { wch: 20 }, // Tanggal Pelaksanaan (YYYY-MM-DD)
+    { wch: 28 }, // Tanggal Lengkap
+    { wch: 38 }, // Judul Kegiatan Ramadhan
+    { wch: 70 }  // Deskripsi / Panduan Pelaksanaan
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Agenda_Ramadhan');
+  var fileName = 'Template_30_Kegiatan_Ramadhan_' + (startStr || '2026') + '.xlsx';
+  XLSX.writeFile(wb, fileName);
+
+  if (typeof toast === 'function') {
+    toast('Template Excel 30 Hari Kegiatan Ramadhan berhasil diunduh! Tanggal sudah otomatis terisi. 📥', 'ok');
+  }
+}
+
+function bukaModalImporKegiatanRamadhan() {
+  buatElemenModalRamadhan();
+  var modal = document.getElementById('modalImporKegiatanRamadhan');
+  if (modal) modal.classList.remove('hidden');
+
+  PARSED_IMPORT_RAMADHAN = [];
+  var fileInput = document.getElementById('fileInputImporKegiatanRamadhan');
+  if (fileInput) fileInput.value = '';
+
+  var previewBox = document.getElementById('previewImporKegiatanRamadhan');
+  if (previewBox) {
+    previewBox.classList.add('hidden');
+    previewBox.innerHTML = '';
+  }
+
+  var btnSimpan = document.getElementById('btnSimpanImporKegiatanRamadhan');
+  if (btnSimpan) btnSimpan.disabled = true;
+
+  var infoTglMulai = document.getElementById('infoTglMulaiImporRamadhan');
+  if (infoTglMulai) {
+    var startTgl = getRamadhanStartDate();
+    infoTglMulai.textContent = formatTanggalIndo(startTgl);
+  }
+
+  // Set drag and drop listeners
+  var dropZone = document.getElementById('dropZoneImporKegiatanRamadhan');
+  if (dropZone && !dropZone._hasDropListener) {
+    dropZone._hasDropListener = true;
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.style.borderColor = '#10b981';
+      dropZone.style.background = 'rgba(16,185,129,0.1)';
+    });
+    dropZone.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.style.borderColor = 'rgba(255,255,255,0.25)';
+      dropZone.style.background = 'rgba(255,255,255,0.02)';
+    });
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.style.borderColor = 'rgba(255,255,255,0.25)';
+      dropZone.style.background = 'rgba(255,255,255,0.02)';
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleFileImporKegiatanRamadhan({ files: e.dataTransfer.files });
+      }
+    });
+  }
+}
+
+function tutupModalImporKegiatanRamadhan() {
+  var modal = document.getElementById('modalImporKegiatanRamadhan');
+  if (modal) modal.classList.add('hidden');
+}
+
+function handleFileImporKegiatanRamadhan(inputEl) {
+  var file = inputEl && inputEl.files && inputEl.files[0];
+  if (!file) return;
+
+  if (typeof XLSX === 'undefined') {
+    alert('Library Excel (XLSX) belum siap. Silakan muat ulang halaman.');
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = new Uint8Array(e.target.result);
+      var workbook = XLSX.read(data, { type: 'array' });
+      var firstSheetName = workbook.SheetNames[0];
+      var worksheet = workbook.Sheets[firstSheetName];
+      var jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+
+      if (!jsonRows || jsonRows.length < 2) {
+        alert('File Excel kosong atau tidak memiliki baris data kegiatan.');
+        return;
+      }
+
+      // Deteksi header kolom
+      var headerRow = jsonRows[0].map(function(h) { return String(h || '').trim().toLowerCase(); });
+      var colHariKe = -1;
+      var colJudul = -1;
+      var colDeskripsi = -1;
+
+      for (var c = 0; c < headerRow.length; c++) {
+        var colName = headerRow[c];
+        if (colHariKe === -1 && (colName.indexOf('hari ke') !== -1 || colName === 'hari' || colName === 'no' || colName === 'day')) {
+          colHariKe = c;
+        } else if (colJudul === -1 && (colName.indexOf('judul') !== -1 || colName.indexOf('kegiatan') !== -1 || colName.indexOf('agenda') !== -1 || colName.indexOf('tema') !== -1)) {
+          colJudul = c;
+        } else if (colDeskripsi === -1 && (colName.indexOf('deskripsi') !== -1 || colName.indexOf('panduan') !== -1 || colName.indexOf('uraian') !== -1 || colName.indexOf('keterangan') !== -1 || colName.indexOf('rincian') !== -1)) {
+          colDeskripsi = c;
+        }
+      }
+
+      if (colJudul === -1) {
+        colJudul = headerRow.length > 4 ? 4 : (headerRow.length > 3 ? 3 : (headerRow.length > 1 ? 1 : 0));
+      }
+      if (colDeskripsi === -1) {
+        colDeskripsi = headerRow.length > 5 ? 5 : (headerRow.length > 2 ? 2 : -1);
+      }
+      if (colHariKe === -1) colHariKe = 0;
+
+      var parsedList = [];
+      var seenHari = {};
+
+      for (var r = 1; r < jsonRows.length; r++) {
+        var row = jsonRows[r];
+        if (!row || row.length === 0) continue;
+
+        var rawHari = row[colHariKe];
+        var hariNum = parseInt(String(rawHari).replace(/\D/g, ''), 10);
+        if (isNaN(hariNum) || hariNum < 1 || hariNum > 30) {
+          if (parsedList.length < 30) {
+            hariNum = parsedList.length + 1;
+          } else {
+            continue;
+          }
+        }
+
+        var judul = String(row[colJudul] || '').trim();
+        var deskripsi = colDeskripsi !== -1 ? String(row[colDeskripsi] || '').trim() : '';
+
+        if (!judul && !deskripsi) continue;
+
+        if (!seenHari[hariNum]) {
+          seenHari[hariNum] = true;
+          parsedList.push({
+            hari_ke: hariNum,
+            judul: judul || ('Agenda Kegiatan Ramadhan Hari Ke-' + hariNum),
+            deskripsi: deskripsi
+          });
+        }
+      }
+
+      parsedList.sort(function(a, b) { return a.hari_ke - b.hari_ke; });
+
+      if (parsedList.length === 0) {
+        alert('Gagal membaca data kegiatan dari file Excel. Pastikan file sesuai format template.');
+        return;
+      }
+
+      // Pastikan genap 30 hari
+      var final30 = [];
+      for (var d = 1; d <= 30; d++) {
+        var item = parsedList.find(function(p) { return p.hari_ke === d; });
+        if (!item) {
+          var defItem = (RAMADHAN_KEGIATAN_LIST && RAMADHAN_KEGIATAN_LIST.find(function(k) { return k.hari_ke === d; })) ||
+                         DEFAULT_RAMADHAN_KEGIATAN.find(function(def) { return def.hari_ke === d; });
+          item = {
+            hari_ke: d,
+            judul: defItem ? defItem.judul : ('Agenda Kegiatan Hari Ke-' + d),
+            deskripsi: defItem ? defItem.deskripsi : ''
+          };
+        }
+        final30.push(item);
+      }
+
+      PARSED_IMPORT_RAMADHAN = final30;
+      tampilkanPreviewImporKegiatan(final30, parsedList.length, file.name);
+
+      var btnSimpan = document.getElementById('btnSimpanImporKegiatanRamadhan');
+      if (btnSimpan) btnSimpan.disabled = false;
+
+    } catch (err) {
+      console.error('Error membaca file Excel:', err);
+      alert('Terjadi kesalahan saat memproses file Excel: ' + (err.message || err));
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function tampilkanPreviewImporKegiatan(list, countFound, fileName) {
+  var previewBox = document.getElementById('previewImporKegiatanRamadhan');
+  if (!previewBox) return;
+
+  previewBox.classList.remove('hidden');
+
+  var html =
+    '<div style="background:rgba(16,185,129,0.12); border:1.5px solid #10b981; border-radius:12px; padding:12px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
+      '<div>' +
+        '<div style="font-weight:800; font-size:13.5px; color:#10b981; display:flex; align-items:center; gap:6px;">' +
+          '<span>✅</span>' +
+          '<span>Berhasil Membaca ' + countFound + ' Kegiatan dari File: "' + escHtml(fileName || 'Excel') + '"</span>' +
+        '</div>' +
+        '<div style="font-size:12px; color:var(--text); margin-top:2px;">' +
+          'Hari ke-1 s/d 30 dan tanggal pelaksanaan sudah otomatis disinkronkan. Klik <b>"Simpan & Terapkan"</b> di bawah untuk menyimpan.' +
+        '</div>' +
+      '</div>' +
+      '<span class="badge l" style="font-weight:700; font-size:12px; background:#059669; color:#fff; padding:4px 10px; border-radius:10px;">30 Hari Lengkap</span>' +
+    '</div>' +
+    '<div style="max-height:280px; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); border-radius:10px;">' +
+      '<table style="width:100%; border-collapse:collapse; font-size:12px; text-align:left;">' +
+        '<thead>' +
+          '<tr style="background:rgba(255,255,255,0.06); position:sticky; top:0; z-index:2; border-bottom:1.5px solid rgba(255,255,255,0.1);">' +
+            '<th style="padding:8px 10px; width:45px; text-align:center;">Hari</th>' +
+            '<th style="padding:8px 10px; width:150px;">Tanggal Pelaksanaan</th>' +
+            '<th style="padding:8px 10px; width:200px;">Judul Kegiatan</th>' +
+            '<th style="padding:8px 10px;">Panduan / Deskripsi</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+  list.forEach(function(item) {
+    var tgl = getTanggalRamadhanByHari(item.hari_ke);
+    html +=
+      '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">' +
+        '<td style="padding:8px 10px; text-align:center; font-weight:800; color:#f59e0b;">' + item.hari_ke + '</td>' +
+        '<td style="padding:8px 10px; color:var(--muted); font-size:11.5px; white-space:nowrap;">' + escHtml(formatTanggalIndo(tgl)) + '</td>' +
+        '<td style="padding:8px 10px; font-weight:700; color:var(--text);">' + escHtml(item.judul) + '</td>' +
+        '<td style="padding:8px 10px; color:var(--muted); font-size:11.5px; line-height:1.35;">' + escHtml(item.deskripsi || '-') + '</td>' +
+      '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  previewBox.innerHTML = html;
+}
+
+async function simpanHasilImporKegiatanRamadhan() {
+  if (!PARSED_IMPORT_RAMADHAN || PARSED_IMPORT_RAMADHAN.length !== 30) {
+    alert('Data kegiatan belum siap untuk disimpan.');
+    return;
+  }
+
+  var btn = document.getElementById('btnSimpanImporKegiatanRamadhan');
+  var oldText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Menyimpan 30 Kegiatan...';
+  }
+
+  try {
+    RAMADHAN_KEGIATAN_LIST = JSON.parse(JSON.stringify(PARSED_IMPORT_RAMADHAN));
+    klonStorage.setItem('ramadhan_kegiatan_30', JSON.stringify(RAMADHAN_KEGIATAN_LIST));
+
+    await seedKegiatanRamadhanKeSupabase();
+
+    tutupModalImporKegiatanRamadhan();
+    renderAdminTabelKegiatan30();
+
+    if (typeof toast === 'function') {
+      toast('Alhamdulillah! 30 kegiatan Ramadhan dari Excel berhasil diimpor & diterapkan!', 'ok');
+    } else {
+      alert('30 kegiatan Ramadhan dari Excel berhasil diimpor & diterapkan!');
+    }
+  } catch (err) {
+    console.error('Gagal menyimpan hasil impor:', err);
+    alert('Terjadi kesalahan saat menyimpan: ' + (err.message || err));
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = oldText;
+    }
+  }
+}
+
+// ==============================================================================
 // 11. MODAL PRATINJAU GAMBAR & SALIN QUERY SQL
 // ==============================================================================
 function bukaModalPratinjauGambar(url) {
@@ -1953,6 +2274,64 @@ function buatElemenModalRamadhan() {
         <div style="display:flex; justify-content:flex-end; gap:8px;">
           <button type="button" class="btn btn-ghost" onclick="tutupModalEditKegiatanRamadhan()">Batal</button>
           <button type="button" class="btn btn-admin" onclick="simpanEditKegiatanRamadhan()">💾 Simpan Perubahan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL IMPOR KEGIATAN RAMADHAN DARI EXCEL (ADMIN) ============ -->
+    <div id="modalImporKegiatanRamadhan" class="modal center hidden" style="z-index: 99998;">
+      <div class="modal-box" style="max-width: 740px; width: 95%; max-height: 92vh; overflow-y: auto; padding: 22px;">
+        <div class="modal-head" style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+          <div>
+            <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:16.5px; color:#f59e0b;">
+              <span>📤</span>
+              <span>Impor 30 Agenda Kegiatan Ramadhan dari Excel</span>
+            </h3>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">
+              Unggah file Excel (.xlsx / .xls / .csv) untuk memperbarui 30 judul & panduan kegiatan Ramadhan sekaligus.
+            </div>
+          </div>
+          <button class="close-x" onclick="tutupModalImporKegiatanRamadhan()">&times;</button>
+        </div>
+
+        <!-- Langkah 1: Download Template yang Hari & Tanggalnya Sudah Otomatis Ada -->
+        <div style="background:rgba(245,158,11,0.08); border:1.5px solid rgba(245,158,11,0.3); border-radius:12px; padding:12px 14px; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-weight:800; font-size:13px; color:#fbbf24; display:flex; align-items:center; gap:6px;">
+                <span>💡</span>
+                <span>Format Template Sudah Otomatis Lengkap dengan Hari & Tanggal</span>
+              </div>
+              <div style="font-size:12px; color:var(--text); margin-top:2px;">
+                Hari ke-1 s/d 30 dan tanggal pelaksanaan otomatis dihitung dari <b>1 Ramadhan (<span id="infoTglMulaiImporRamadhan">-</span>)</b>.
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="unduhTemplateExcelKegiatanRamadhan()" style="background:rgba(255,255,255,0.08); border-color:#f59e0b; color:#fbbf24; font-weight:700; white-space:nowrap;">
+              📥 Unduh Template Excel (.xlsx)
+            </button>
+          </div>
+        </div>
+
+        <!-- Langkah 2: Area Upload File Excel -->
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">📁 Pilih File Excel yang Sudah Diisi / Diedit:</label>
+          <div id="dropZoneImporKegiatanRamadhan" class="ramadhan-upload-box" style="border:2px dashed rgba(255,255,255,0.25); border-radius:14px; padding:22px; text-align:center; cursor:pointer; background:rgba(255,255,255,0.02); transition:all 0.2s;" onclick="document.getElementById('fileInputImporKegiatanRamadhan').click()">
+            <div style="font-size:32px; margin-bottom:6px;">📊</div>
+            <div style="font-weight:700; font-size:13.5px; color:var(--text);">Klik di sini atau Tarik (Drag & Drop) File Excel ke Sini</div>
+            <div style="font-size:11.5px; color:var(--muted); margin-top:4px;">Mendukung format Microsoft Excel (.xlsx, .xls) atau CSV</div>
+          </div>
+          <input type="file" id="fileInputImporKegiatanRamadhan" accept=".xlsx, .xls, .csv" style="display:none;" onchange="handleFileImporKegiatanRamadhan(this)">
+        </div>
+
+        <!-- Langkah 3: Pratinjau / Preview Data -->
+        <div id="previewImporKegiatanRamadhan" class="hidden" style="margin-bottom:16px;"></div>
+
+        <!-- Aksi Tombol -->
+        <div style="display:flex; justify-content:flex-end; gap:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+          <button type="button" class="btn btn-ghost" onclick="tutupModalImporKegiatanRamadhan()">Batal</button>
+          <button type="button" id="btnSimpanImporKegiatanRamadhan" class="btn btn-admin" onclick="simpanHasilImporKegiatanRamadhan()" disabled style="background:#059669; border-color:#047857; font-weight:800; padding:8px 18px;">
+            💾 Simpan & Terapkan 30 Kegiatan
+          </button>
         </div>
       </div>
     </div>
