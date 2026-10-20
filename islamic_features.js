@@ -781,27 +781,31 @@ function setModeQuran(mode) {
   var modalTitle = document.getElementById('quranModalTitle');
 
   if (mode === 'ayat') {
-    if (modalTitle) modalTitle.textContent = '📖 Al-Qur\'an Standar Kemenag (Per Ayat)';
+    if (modalTitle) modalTitle.textContent = "QUR'AN PER AYAT";
     // Jika sedang di dalam surah reader, tetap di reader; jika tidak, buka list
     if (cReader && cReader.dataset.surahAktif) {
       cReader.classList.remove('hidden');
+      var sAktif = parseInt(cReader.dataset.surahAktif, 10) || 1;
+      renderHorizontalSurahBar(sAktif);
     } else if (cList) {
       cList.classList.remove('hidden');
+      renderDaftarSuratQuran(QURAN_SURAHS);
     }
   } else if (mode === 'halaman') {
-    if (modalTitle) modalTitle.textContent = '📄 Mushaf Al-Qur\'an Standar Kemenag (Per Halaman)';
+    if (modalTitle) modalTitle.textContent = "QUR'AN PER HALAMAN";
     if (cPage) cPage.classList.remove('hidden');
     initJuzSelectDropdown();
     var lastHal = parseInt((window.klonStorage || localStorage).getItem('quran_last_page'), 10) || QURAN_PAGE_STATE.currentPage || 1;
     bacaHalamanQuran(lastHal);
+    initMushafSwipeGestures();
   } else if (mode === 'tafsir') {
-    if (modalTitle) modalTitle.textContent = '📚 Tafsir Al-Qur\'an Kemenag RI';
+    if (modalTitle) modalTitle.textContent = "TAFSIR KEMENAG";
     if (cTafsir) cTafsir.classList.remove('hidden');
     initTafsirDropdowns();
     var sVal = parseInt(document.getElementById('tafsirSelectSurat').value, 10) || 1;
     bukaTafsirSurat(sVal);
   } else if (mode === 'asbab') {
-    if (modalTitle) modalTitle.textContent = '💡 Asbabun Nuzul (Sebab Turunnya Ayat Al-Qur\'an)';
+    if (modalTitle) modalTitle.textContent = "ASBABUN NUZUL";
     if (cAsbab) cAsbab.classList.remove('hidden');
     initAsbabDropdowns();
     muatAsbabunNuzul('all', '');
@@ -817,17 +821,33 @@ function bukaModalQuran() {
   renderDaftarSuratQuran(QURAN_SURAHS);
   updateTampilanDurasiQuranSemua();
 
-  // Buka mode terakhir atau default 'ayat'
-  setModeQuran(QURAN_CURRENT_MODE || 'ayat');
+  // Buka mode terakhir atau default 'halaman' sesuai aplikasi Kemenag
+  setModeQuran(QURAN_CURRENT_MODE || 'halaman');
+  initMushafSwipeGestures();
 }
 
 function tutupModalQuran() {
   jedaTimerQuran();
   hentikanAudioAyat();
+  if (typeof KEMENAG_AUDIO_OBJ !== 'undefined' && KEMENAG_AUDIO_OBJ) {
+    try { KEMENAG_AUDIO_OBJ.pause(); } catch(e) {}
+    if (typeof KEMENAG_AUDIO_STATE !== 'undefined') KEMENAG_AUDIO_STATE.playing = false;
+  }
   var m = document.getElementById('modalQuran');
   if (m) m.classList.add('hidden');
   document.body.style.overflow = '';
   updateTampilanDurasiQuranSemua();
+}
+
+function kembaliDariKemenagView() {
+  if (QURAN_CURRENT_MODE === 'ayat') {
+    var vReader = document.getElementById('quranVerseReaderView') || document.getElementById('quranAyatReaderView');
+    if (vReader && !vReader.classList.contains('hidden')) {
+      tampilkanViewDaftarSurat();
+      return;
+    }
+  }
+  tutupModalQuran();
 }
 
 function tampilkanViewDaftarSurat() {
@@ -839,9 +859,8 @@ function tampilkanViewDaftarSurat() {
     delete vReader.dataset.surahAktif;
   }
   var judulModal = document.getElementById('quranModalTitle');
-  if (judulModal) judulModal.textContent = '📖 Al-Qur\'an Standar Kemenag (Per Ayat)';
+  if (judulModal) judulModal.textContent = "QUR'AN PER AYAT";
   hentikanAudioAyat();
-  // Jeda timer saat kembali ke daftar surat (karena bacaan tidak sedang tampil)
   jedaTimerQuran();
 }
 
@@ -1005,24 +1024,37 @@ async function bacaSuratQuran(nomorSurat, targetAyat) {
   if (vReader) vReader.classList.remove('hidden');
 
   var judulModal = document.getElementById('quranModalTitle');
-  if (judulModal) judulModal.textContent = '📖 Surat ' + meta.nama + ' (' + meta.arab + ')';
+  if (judulModal) judulModal.textContent = "QUR'AN PER AYAT";
 
-  // Set reader header info dengan tombol cepat ke Tafsir & Asbabun Nuzul
+  // Render Horizontal Strip 114 Surat di bagian atas (Mirip apk Kemenag)
+  renderHorizontalSurahBar(nomorSurat);
+
+  // Set reader header info dengan ornamen bingkai resmi Kemenag
   var hdr = document.getElementById('readerSurahHeader');
   if (hdr) {
-    hdr.innerHTML = '<div style="text-align:center; background:linear-gradient(135deg, #f0fdf4, #ecfdf5); border:1.5px solid #a7f3d0; border-radius:14px; padding:14px;">' +
-      '<h2 style="font-family: \'LPMQ Isep Misbah\', \'Amiri\', serif; font-size:34px; color:#047857; margin:0; direction:rtl;">' + meta.arab + '</h2>' +
-      '<h3 style="font-size:18px; font-weight:800; color:var(--text); margin-top:4px;">' + meta.no + '. ' + meta.nama + ' (' + meta.arti + ')</h3>' +
-      '<div style="font-size:12px; color:var(--muted); margin-top:2px;">' + meta.turun + ' • ' + meta.ayat + ' Ayat • <b>Halaman ' + meta.hal + '</b></div>' +
-      '<div style="display:flex; justify-content:center; gap:6px; margin-top:10px; flex-wrap:wrap;">' +
-        '<button class="btn btn-outline btn-sm" onclick="lompatKeHalamanQuranDariSurat(' + meta.hal + ')" style="font-size:11.5px; padding:3px 10px;">📄 Buka Hal. ' + meta.hal + '</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="bukaTafsirDariAyat(' + meta.no + ')" style="font-size:11.5px; padding:3px 10px; border-color:#059669; color:#047857;">📚 Tafsir Kemenag</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="bukaAsbabDariAyat(' + meta.no + ')" style="font-size:11.5px; padding:3px 10px; border-color:#ea580c; color:#c2410c;">💡 Asbabun Nuzul</button>' +
+    hdr.innerHTML = '<div class="kemenag-surah-header-card">' +
+      '<div class="kemenag-surah-header-top">' +
+        '<span class="kemenag-surah-info-tag">آيَاتُهَا ' + toArabicDigits(meta.ayat) + '</span>' +
+        '<div class="kemenag-surah-calligraphy">' + meta.arab + '</div>' +
+        '<span class="kemenag-surah-info-tag">' + (meta.turun === 'Madaniyah' ? 'مَدَنِيَّة' : 'مَكِّيَّة') + '</span>' +
+      '</div>' +
+      '<div style="font-size:13px; font-weight:800; color:#334155; margin-bottom:6px;">' +
+        meta.no + '. ' + meta.nama + ' (' + meta.arti + ') • ' + meta.turun + ' • ' + meta.ayat + ' Ayat' +
+      '</div>' +
+      (meta.no !== 1 && meta.no !== 9 ? '<div class="kemenag-basmalah-line">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>' : '') +
+      '<div style="display:flex; justify-content:center; gap:6px; margin-top:8px; flex-wrap:wrap;">' +
+        '<button class="kemenag-act-btn" onclick="lompatKeHalamanQuranDariSurat(' + meta.hal + ')">📄 Halaman ' + meta.hal + '</button>' +
+        '<button class="kemenag-act-btn" onclick="bukaTafsirDariAyat(' + meta.no + ')">📚 Tafsir Kemenag</button>' +
+        '<button class="kemenag-act-btn" onclick="bukaAsbabDariAyat(' + meta.no + ')" style="border-color:#fdba74;color:#c2410c;">💡 Asbabun Nuzul</button>' +
       '</div>' +
     '</div>';
   }
 
-  // Jeda timer selama proses memuat ayat (waktu baca baru mulai saat bacaan ayat sudah tampil di layar)
+  // Update info qari / surah di bottom player bar
+  var bInfo = document.getElementById('surahBottomReciterInfo');
+  if (bInfo) bInfo.textContent = meta.no + '. ' + meta.nama + ' (' + meta.ayat + ' Ayat)';
+
+  // Jeda timer selama proses memuat ayat
   jedaTimerQuran();
 
   var container = document.getElementById('readerAyatContainer');
@@ -1047,19 +1079,33 @@ async function bacaSuratQuran(nomorSurat, targetAyat) {
   }
 }
 
+function renderHorizontalSurahBar(activeNo) {
+  var bar = document.getElementById('kemenagHorizontalSurahBar');
+  if (!bar) return;
+
+  var html = '';
+  for (var i = 0; i < QURAN_SURAHS.length; i++) {
+    var s = QURAN_SURAHS[i];
+    var isActive = (s.no === activeNo);
+    html += '<div class="kemenag-strip-chip ' + (isActive ? 'active' : '') + '" id="chipSurah_' + s.no + '" onclick="bacaSuratQuran(' + s.no + ')">' +
+      s.no + '. ' + s.nama +
+    '</div>';
+  }
+  bar.innerHTML = html;
+
+  setTimeout(function() {
+    var activeEl = document.getElementById('chipSurah_' + activeNo);
+    if (activeEl) {
+      activeEl.scrollIntoView({ inline: 'center', behavior: 'smooth', block: 'nearest' });
+    }
+  }, 100);
+}
+
 function renderAyatList(ayatList, meta, targetAyat) {
   var container = document.getElementById('readerAyatContainer');
   if (!container) return;
 
   var html = '';
-
-  // Banner Bismillah (Kecuali Al-Fatihah dan At-Taubah)
-  if (meta.no !== 1 && meta.no !== 9) {
-    html += '<div class="bismillah-banner">' +
-      '<div class="bismillah-text">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</div>' +
-      '<div class="bismillah-trans">Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang</div>' +
-    '</div>';
-  }
 
   for (var i = 0; i < ayatList.length; i++) {
     var a = ayatList[i];
@@ -1067,7 +1113,6 @@ function renderAyatList(ayatList, meta, targetAyat) {
     var arab = a.teksArab || '';
     var latin = a.teksLatin || '';
     var arti = a.teksIndonesia || '';
-    var audioUrl = (a.audio && (a.audio['05'] || a.audio['01'])) || '';
 
     // Cek apakah ada asbabun nuzul untuk surat dan ayat ini
     var hasAsbab = ASBABUN_NUZUL_DATABASE.some(function (item) {
@@ -1080,29 +1125,31 @@ function renderAyatList(ayatList, meta, targetAyat) {
       return false;
     });
 
-    html += '<div class="ayat-card" id="cardAyat_' + meta.no + '_' + noAyat + '">' +
-      '<div class="ayat-header-bar">' +
-        '<span class="ayat-badge-pill">QS. ' + meta.nama + ': ' + noAyat + '</span>' +
-        '<div class="ayat-actions-bar">' +
-          '<button class="ayat-action-btn" id="btnAudio_' + meta.no + '_' + noAyat + '" onclick="putarAudioAyat(' + meta.no + ',' + noAyat + ', this)">🔊 Putar</button>' +
-          '<button class="ayat-action-btn" onclick="bukaTafsirDariAyat(' + meta.no + ',' + noAyat + ')">📚 Tafsir</button>' +
-          (hasAsbab ? '<button class="ayat-action-btn" style="border-color:#fdba74;color:#c2410c;background:#fff7ed;font-weight:700;" onclick="bukaAsbabDariAyat(' + meta.no + ',' + noAyat + ')">💡 Asbab</button>' : '') +
-          '<button class="ayat-action-btn" onclick="salinTeksAyat(' + meta.no + ',' + noAyat + ', this)">📋 Salin</button>' +
+    html += '<div class="kemenag-ayat-card" id="cardAyat_' + meta.no + '_' + noAyat + '">' +
+      '<div class="kemenag-ayah-circle-col">' +
+        '<div class="kemenag-ayah-circle" title="Ayat ' + noAyat + '">' + noAyat + '</div>' +
+      '</div>' +
+      '<div class="kemenag-ayat-body-col">' +
+        '<div class="kemenag-arabic-text" style="font-size:' + QURAN_ARABIC_FONT_SIZE + 'px;">' + arab + '</div>' +
+        (latin ? '<div class="kemenag-latin-text">' + escHtml(latin) + '</div>' : '') +
+        (arti ? '<div class="kemenag-indo-text">' + escHtml(arti) + '</div>' : '') +
+        '<div class="kemenag-ayat-actions">' +
+          '<button class="kemenag-act-btn" id="btnAudio_' + meta.no + '_' + noAyat + '" onclick="putarAudioAyat(' + meta.no + ',' + noAyat + ', this)">▶ Putar</button>' +
+          '<button class="kemenag-act-btn" onclick="bukaTafsirDariAyat(' + meta.no + ',' + noAyat + ')">📚 Tafsir</button>' +
+          (hasAsbab ? '<button class="kemenag-act-btn" style="border-color:#fdba74;color:#c2410c;background:#fff7ed;" onclick="bukaAsbabDariAyat(' + meta.no + ',' + noAyat + ')">💡 Asbab</button>' : '') +
+          '<button class="kemenag-act-btn" onclick="salinTeksAyat(' + meta.no + ',' + noAyat + ', this)">📋 Salin</button>' +
         '</div>' +
       '</div>' +
-      '<div class="ayat-arabic-text" style="font-size:' + QURAN_ARABIC_FONT_SIZE + 'px;">' + arab + ' <span class="ayat-end-number">۝' + toArabicDigits(noAyat) + '</span></div>' +
-      '<div class="ayat-latin-text">' + escHtml(latin) + '</div>' +
-      '<div class="ayat-indo-text">' + escHtml(arti) + '</div>' +
     '</div>';
   }
 
   // Footer navigasi surat sebelumnya / selanjutnya
-  html += '<div style="display:flex;gap:10px;margin-top:20px;padding-bottom:30px;">';
+  html += '<div style="display:flex; gap:10px; margin:20px 14px 40px 14px;">';
   if (meta.no > 1) {
-    html += '<button class="btn btn-outline" style="flex:1;" onclick="bacaSuratQuran(' + (meta.no - 1) + ')">‹ Surat ' + QURAN_SURAHS[meta.no - 2].nama + '</button>';
+    html += '<button class="btn btn-outline" style="flex:1;" onclick="bacaSuratQuran(' + (meta.no - 1) + ')">‹ ' + QURAN_SURAHS[meta.no - 2].nama + '</button>';
   }
   if (meta.no < 114) {
-    html += '<button class="btn btn-primary" style="flex:1;" onclick="bacaSuratQuran(' + (meta.no + 1) + ')">Surat ' + QURAN_SURAHS[meta.no].nama + ' ›</button>';
+    html += '<button class="btn btn-primary" style="flex:1;" onclick="bacaSuratQuran(' + (meta.no + 1) + ')">' + QURAN_SURAHS[meta.no].nama + ' ›</button>';
   }
   html += '</div>';
 
@@ -1117,29 +1164,31 @@ function renderAyatList(ayatList, meta, targetAyat) {
       var el = document.getElementById('cardAyat_' + meta.no + '_' + targetAyat);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.classList.add('ayat-highlighted');
-        setTimeout(function () { el.classList.remove('ayat-highlighted'); }, 3000);
+        el.classList.add('active-audio');
       }
-    }, 200);
+    }, 300);
   } else {
     container.scrollTop = 0;
   }
 }
 
 function ubahUkuranFontArab(delta) {
-  QURAN_ARABIC_FONT_SIZE = Math.max(20, Math.min(44, QURAN_ARABIC_FONT_SIZE + delta));
-  var els = document.querySelectorAll('.ayat-arabic-text');
+  QURAN_ARABIC_FONT_SIZE = Math.max(20, Math.min(46, QURAN_ARABIC_FONT_SIZE + delta));
+  var els = document.querySelectorAll('.ayat-arabic-text, .kemenag-arabic-text');
   els.forEach(function (el) { el.style.fontSize = QURAN_ARABIC_FONT_SIZE + 'px'; });
+
+  var dispSize = document.getElementById('dispCurrentFontSize');
+  if (dispSize) dispSize.textContent = QURAN_ARABIC_FONT_SIZE + ' px';
 }
 
 function toggleTampilanAyatOpsi() {
   var showLatin = document.getElementById('chkShowLatin') ? document.getElementById('chkShowLatin').checked : true;
   var showArti = document.getElementById('chkShowArti') ? document.getElementById('chkShowArti').checked : true;
 
-  document.querySelectorAll('.ayat-latin-text').forEach(function (el) {
+  document.querySelectorAll('.ayat-latin-text, .kemenag-latin-text').forEach(function (el) {
     el.style.display = showLatin ? 'block' : 'none';
   });
-  document.querySelectorAll('.ayat-indo-text').forEach(function (el) {
+  document.querySelectorAll('.ayat-indo-text, .kemenag-indo-text').forEach(function (el) {
     el.style.display = showArti ? 'block' : 'none';
   });
 }
@@ -1235,16 +1284,16 @@ function bukaAsbabDariAyat(nomorSurat, nomorAyat) {
 // 3.3 FITUR BACA PER HALAMAN (MUSHAF STANDAR KEMENAG RI 604 HALAMAN)
 // ==============================================================================
 var MUSHAF_IMAGE_CDNS = [
-  // 1. Android Quran Global CDN (PNG 1024, cepat dan stabil)
-  function (p) { return 'https://android.quran.com/data/width_1024/page' + String(p).padStart(3, '0') + '.png'; },
-  // 2. Quran.ws Vector SVG CDN (Vector SVG standar resmi, selalu jernih dan anti-blokir)
+  // 1. Resmi Kemenag RI Tajweed Mushaf (Khat Standar Indonesia resmi LPMQ Kemenag)
+  function (p) { return 'https://media.qurankemenag.net/khat2/QK_' + String(p).padStart(3, '0') + '.webp'; },
+  // 2. Vector SVG CDN (Paling jernih, tajam 100% vector SVG)
   function (p) { return 'https://cdn.quran.ws/svg/pages/v1.1.1/hafs-kfqc/' + p + '.svg'; },
-  // 3. Quran App Madani CDN
+  // 3. Quran App High-Res PNG CDN
   function (p) { return 'https://files.quran.app/hafs/madani/width_1024/page' + String(p).padStart(3, '0') + '.png'; },
   // 4. MP3Quran Vector SVG CDN
   function (p) { return 'https://www.mp3quran.net/api/quran_pages_svg/' + String(p).padStart(3, '0') + '.svg'; },
-  // 5. MyQuran JPEG CDN
-  function (p) { return 'https://www.myquran.us/content/quran/arabic/' + String(p).padStart(4, '0') + '.jpg'; }
+  // 5. GitHub High-Res Mushaf PNG CDN
+  function (p) { return 'https://raw.githubusercontent.com/GovarJabbar/Quran-PNG/master/' + p + '.png'; }
 ];
 
 var CURRENT_MUSHAF_CDN_INDEX = 0;
@@ -1275,15 +1324,21 @@ async function bacaHalamanQuran(pageNum) {
   var juz = getJuzFromPage(p);
   var surah = getSurahFromPage(p);
 
-  // Update Ribbon Header
+  // Update Ribbon Header Kemenag
   var dispJuz = document.getElementById('mushafJuzText');
   var dispHal = document.getElementById('mushafPageNumberText');
   var dispSurah = document.getElementById('mushafSurahText');
   if (dispJuz) dispJuz.textContent = 'JUZ ' + juz;
-  if (dispHal) dispHal.textContent = 'HALAMAN ' + p + ' / 604';
+  if (dispHal) dispHal.textContent = p;
   if (dispSurah) dispSurah.textContent = surah.no + '. ' + surah.nama;
 
-  // Update Jumper Inputs
+  // Update Bottom Player & Nav Bar
+  var bCounter = document.getElementById('dispBottomHalCounter');
+  if (bCounter) bCounter.textContent = 'Hal ' + p;
+  var bInfo = document.getElementById('mushafBottomInfo');
+  if (bInfo) bInfo.textContent = surah.no + '. ' + surah.nama + ' • Juz ' + juz;
+
+  // Update Jumper Inputs jika ada
   var selJuz = document.getElementById('selectJuzJumper');
   if (selJuz) selJuz.value = juz;
   var inpHal = document.getElementById('inputHalJumper');
@@ -1523,6 +1578,342 @@ function bukaHalamanIniDiTafsir() {
   var sel = document.getElementById('tafsirSelectSurat');
   if (sel) sel.value = surah.no;
   bukaTafsirSurat(surah.no);
+}
+
+// ==============================================================================
+// 3.3.5 CONTROLLER MODAL POPUP & FITUR STANDAR APK QUR'AN KEMENAG
+// Indeks Surat, 30 Juz, 604 Halaman, Pengaturan Audio/Font & Gesture Swipe
+// ==============================================================================
+var CURRENT_INDEKS_TAB = 'surat';
+var KEMENAG_AUDIO_OBJ = null;
+var KEMENAG_AUDIO_STATE = { playing: false, type: null, targetId: null };
+
+function bukaModalIndeksQuran() {
+  var m = document.getElementById('modalKemenagIndeks');
+  if (m) m.classList.remove('hidden');
+  switchIndeksTab(CURRENT_INDEKS_TAB || 'surat');
+}
+
+function bukaModalIndeksTab(tab) {
+  var m = document.getElementById('modalKemenagIndeks');
+  if (m) m.classList.remove('hidden');
+  switchIndeksTab(tab);
+}
+
+function tutupModalIndeksQuran() {
+  var m = document.getElementById('modalKemenagIndeks');
+  if (m) m.classList.add('hidden');
+}
+
+function switchIndeksTab(tab) {
+  CURRENT_INDEKS_TAB = tab;
+  ['tabIndeksSurat', 'tabIndeksJuz', 'tabIndeksHal'].forEach(function(id) {
+    var b = document.getElementById(id);
+    if (b) {
+      b.classList.remove('active-indeks-tab');
+      b.style.background = '';
+      b.style.color = '';
+    }
+  });
+
+  var activeBtn = document.getElementById(tab === 'surat' ? 'tabIndeksSurat' : tab === 'juz' ? 'tabIndeksJuz' : 'tabIndeksHal');
+  if (activeBtn) {
+    activeBtn.classList.add('active-indeks-tab');
+    activeBtn.style.background = '#0b6644';
+    activeBtn.style.color = '#fff';
+  }
+
+  var container = document.getElementById('indeksContentArea');
+  if (!container) return;
+
+  if (tab === 'surat') {
+    renderIndeksSurat(container);
+  } else if (tab === 'juz') {
+    renderIndeksJuz(container);
+  } else {
+    renderIndeksHalaman(container);
+  }
+}
+
+function renderIndeksSurat(container) {
+  var html = '<div style="margin-bottom:10px;">' +
+    '<input type="search" id="indeksCariSuratInput" placeholder="🔍 Cari nama surat, nomor (1-114), atau arti..." oninput="filterIndeksSurat(this.value)" style="width:100%; box-sizing:border-box; padding:9px 12px; border-radius:10px; border:1.5px solid #cbd5e1; font-size:13px; outline:none;">' +
+  '</div>' +
+  '<div id="indeksSuratListArea" style="display:flex; flex-direction:column; gap:6px;">';
+
+  QURAN_SURAHS.forEach(function(s) {
+    html += '<div class="kemenag-indeks-item" onclick="pilihSuratDariIndeks(' + s.no + ')" style="display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; cursor:pointer; transition:all 0.15s ease;">' +
+      '<div style="display:flex; align-items:center; gap:10px;">' +
+        '<div style="width:30px; height:30px; border-radius:50%; background:#ecfdf5; border:1.5px solid #059669; color:#047857; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11.5px; flex-shrink:0;">' + s.no + '</div>' +
+        '<div>' +
+          '<div style="font-weight:700; font-size:13.5px; color:#1e293b;">' + s.nama + '</div>' +
+          '<div style="font-size:11px; color:#64748b;">' + s.arti + ' • ' + s.turun + ' • ' + s.ayat + ' Ayat • Hal. ' + s.hal + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-family:\'LPMQ Isep Misbah\', serif; font-size:22px; color:#0b6644; font-weight:700;">' + s.arab + '</div>' +
+    '</div>';
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function filterIndeksSurat(q) {
+  var term = (q || '').toLowerCase().trim();
+  var items = document.querySelectorAll('#indeksSuratListArea .kemenag-indeks-item');
+  items.forEach(function(item, idx) {
+    var s = QURAN_SURAHS[idx];
+    if (!s) return;
+    var match = !term ||
+      s.nama.toLowerCase().includes(term) ||
+      s.arti.toLowerCase().includes(term) ||
+      String(s.no) === term ||
+      String(s.hal) === term;
+    item.style.display = match ? 'flex' : 'none';
+  });
+}
+
+function pilihSuratDariIndeks(no) {
+  tutupModalIndeksQuran();
+  var s = QURAN_SURAHS.find(function(item) { return item.no === no; });
+  if (!s) return;
+
+  if (QURAN_CURRENT_MODE === 'halaman') {
+    bacaHalamanQuran(s.hal || 1);
+  } else {
+    setModeQuran('ayat');
+    bacaSuratQuran(no);
+  }
+}
+
+function renderIndeksJuz(container) {
+  var juzNames = [
+    'Alif-Lam-Mim', 'Sayaqulu', 'Tilka-r-Rusul', 'Lan Tanalu', 'Wal-Muhsanat',
+    'La Yuhibbullah', 'Wa Iza Samiu', 'Wa Lau Annana', 'Qalal-Malao', 'Wa\'lamu',
+    'Ya\'tazirun', 'Wa Ma Min Dabbah', 'Wa Ma Ubri-u', 'Rubama', 'Subhanallazi',
+    'Qal Alam', 'Iqtaraba lin-Nas', 'Qad Aflaha', 'Wa Qalal-Ladhina', 'Amman Khalaq',
+    'Utlu Ma Uhiya', 'Wa Man Yaqnut', 'Wa Maliya', 'Fa-Man Azlam', 'Ilaihi Yuraddu',
+    'Ha-Mim', 'Qala Fama Khatbukum', 'Qadd Sami\'allahu', 'Tabarakallazi', '\'Amma Yatasa\'alun'
+  ];
+
+  var html = '<div style="display:flex; flex-direction:column; gap:8px;">';
+
+  for (var j = 1; j <= 30; j++) {
+    var page = JUZ_START_PAGES[j - 1] || 1;
+    var surahObj = getSurahFromPage(page);
+    var jName = juzNames[j - 1] || ('Juz ' + j);
+
+    html += '<div class="kemenag-indeks-item" onclick="pilihJuzDariIndeks(' + j + ')" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; cursor:pointer; transition:all 0.15s ease;">' +
+      '<div style="display:flex; align-items:center; gap:12px;">' +
+        '<div style="width:34px; height:34px; border-radius:50%; background:#0b6644; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; flex-shrink:0;">' + j + '</div>' +
+        '<div>' +
+          '<div style="font-weight:700; font-size:13.5px; color:#1e293b;">JUZ ' + j + ' — ' + jName + '</div>' +
+          '<div style="font-size:11px; color:#64748b;">Mulai QS. ' + surahObj.nama + ' • Halaman ' + page + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:11.5px; font-weight:700; color:#0b6644; background:#ecfdf5; padding:4px 8px; border-radius:6px; border:1px solid #a7f3d0;">Hal ' + page + ' ›</div>' +
+    '</div>';
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function pilihJuzDariIndeks(j) {
+  tutupModalIndeksQuran();
+  var page = JUZ_START_PAGES[j - 1] || 1;
+  if (QURAN_CURRENT_MODE === 'ayat') {
+    var surahObj = getSurahFromPage(page);
+    bacaSuratQuran(surahObj.no);
+  } else {
+    setModeQuran('halaman');
+    bacaHalamanQuran(page);
+  }
+}
+
+function renderIndeksHalaman(container) {
+  var curPage = QURAN_PAGE_STATE.currentPage || 1;
+
+  var html = '<div style="background:#f0fdf4; border:1.5px solid #a7f3d0; border-radius:12px; padding:14px; margin-bottom:14px; text-align:center;">' +
+    '<label style="font-size:12px; font-weight:700; color:#065f46; display:block; margin-bottom:8px;">LOMPAT LANGSUNG KE HALAMAN (1 - 604):</label>' +
+    '<div style="display:flex; gap:8px; justify-content:center; align-items:center;">' +
+      '<input type="number" id="inputHalIndeksDirect" min="1" max="604" value="' + curPage + '" style="width:110px; text-align:center; padding:8px 10px; font-size:16px; font-weight:800; border-radius:10px; border:1.5px solid #059669; outline:none;">' +
+      '<button class="btn btn-primary" onclick="submitLompatHalIndeks()" style="padding:8px 18px; font-weight:700; border-radius:10px; background:#0b6644; border-color:#0b6644;">Buka Halaman ➔</button>' +
+    '</div>' +
+  '</div>' +
+  '<div style="font-size:11.5px; font-weight:700; color:#475569; margin-bottom:8px;">📌 AWAL TIAP JUZ (1 - 30):</div>' +
+  '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(85px, 1fr)); gap:6px; max-height:260px; overflow-y:auto; padding-right:4px;">';
+
+  for (var i = 0; i < JUZ_START_PAGES.length; i++) {
+    var pNum = JUZ_START_PAGES[i];
+    var jNum = i + 1;
+    var isActive = (pNum === curPage);
+    html += '<button onclick="pilihHalamanDariIndeks(' + pNum + ')" style="padding:8px 4px; border-radius:8px; font-size:11.5px; border:1px solid ' + (isActive ? '#0b6644' : '#cbd5e1') + '; background:' + (isActive ? '#0b6644' : '#ffffff') + '; color:' + (isActive ? '#ffffff' : '#1e293b') + '; font-weight:' + (isActive ? '800' : '600') + '; cursor:pointer; text-align:center; transition:background 0.1s;">' +
+      '<div>Juz ' + jNum + '</div>' +
+      '<div style="font-size:10px; opacity:0.85;">Hal ' + pNum + '</div>' +
+    '</button>';
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function submitLompatHalIndeks() {
+  var inp = document.getElementById('inputHalIndeksDirect');
+  var p = inp ? parseInt(inp.value, 10) : 1;
+  pilihHalamanDariIndeks(p);
+}
+
+function pilihHalamanDariIndeks(p) {
+  var pNum = Math.max(1, Math.min(604, parseInt(p, 10) || 1));
+  tutupModalIndeksQuran();
+  setModeQuran('halaman');
+  bacaHalamanQuran(pNum);
+}
+
+function bukaModalKemenagSettings() {
+  var m = document.getElementById('modalKemenagSettings');
+  if (m) m.classList.remove('hidden');
+}
+
+function tutupModalKemenagSettings() {
+  var m = document.getElementById('modalKemenagSettings');
+  if (m) m.classList.add('hidden');
+}
+
+function bukaModalTargetBaca() {
+  var m = document.getElementById('modalKemenagTargetBaca');
+  if (m) m.classList.remove('hidden');
+  updateTampilanDurasiQuranSemua();
+}
+
+function tutupModalTargetBaca() {
+  var m = document.getElementById('modalKemenagTargetBaca');
+  if (m) m.classList.add('hidden');
+}
+
+function toggleAudioHalamanIni() {
+  var p = QURAN_PAGE_STATE.currentPage || 1;
+  var surah = getSurahFromPage(p);
+  var btn = document.getElementById('btnPlayPageAudio');
+
+  if (KEMENAG_AUDIO_STATE.playing && KEMENAG_AUDIO_STATE.type === 'page' && KEMENAG_AUDIO_STATE.targetId === p) {
+    if (KEMENAG_AUDIO_OBJ) KEMENAG_AUDIO_OBJ.pause();
+    KEMENAG_AUDIO_STATE.playing = false;
+    if (btn) btn.innerHTML = '▶';
+    return;
+  }
+
+  if (KEMENAG_AUDIO_OBJ) {
+    try { KEMENAG_AUDIO_OBJ.pause(); } catch(e) {}
+    KEMENAG_AUDIO_OBJ = null;
+  }
+
+  var padSurah = String(surah.no).padStart(3, '0');
+  var url = 'https://cdn.equran.id/audio-full/Misyari-Rasyid-Al-Afasi/' + padSurah + '.mp3';
+
+  KEMENAG_AUDIO_OBJ = new Audio(url);
+  KEMENAG_AUDIO_STATE = { playing: true, type: 'page', targetId: p };
+
+  if (btn) btn.innerHTML = '⏸';
+  var info = document.getElementById('mushafBottomInfo');
+  if (info) info.textContent = 'Memutar QS. ' + surah.nama;
+
+  KEMENAG_AUDIO_OBJ.play().catch(function(err) {
+    console.warn('Audio play error:', err);
+    if (btn) btn.innerHTML = '▶';
+    KEMENAG_AUDIO_STATE.playing = false;
+  });
+
+  KEMENAG_AUDIO_OBJ.onended = function() {
+    if (btn) btn.innerHTML = '▶';
+    KEMENAG_AUDIO_STATE.playing = false;
+  };
+}
+
+function toggleAudioSurahIni() {
+  var sNo = (CURRENT_ACTIVE_SURAH && CURRENT_ACTIVE_SURAH.no) || 1;
+  var meta = QURAN_SURAHS.find(function(s) { return s.no === sNo; }) || { no: 1, nama: 'Al-Fatihah' };
+  var btn = document.getElementById('btnPlaySurahAudio');
+
+  if (KEMENAG_AUDIO_STATE.playing && KEMENAG_AUDIO_STATE.type === 'surah' && KEMENAG_AUDIO_STATE.targetId === sNo) {
+    if (KEMENAG_AUDIO_OBJ) KEMENAG_AUDIO_OBJ.pause();
+    KEMENAG_AUDIO_STATE.playing = false;
+    if (btn) btn.innerHTML = '▶';
+    return;
+  }
+
+  if (KEMENAG_AUDIO_OBJ) {
+    try { KEMENAG_AUDIO_OBJ.pause(); } catch(e) {}
+    KEMENAG_AUDIO_OBJ = null;
+  }
+
+  var padSurah = String(sNo).padStart(3, '0');
+  var url = 'https://cdn.equran.id/audio-full/Misyari-Rasyid-Al-Afasi/' + padSurah + '.mp3';
+
+  KEMENAG_AUDIO_OBJ = new Audio(url);
+  KEMENAG_AUDIO_STATE = { playing: true, type: 'surah', targetId: sNo };
+
+  if (btn) btn.innerHTML = '⏸';
+  var info = document.getElementById('surahBottomReciterInfo');
+  if (info) info.textContent = 'Memutar QS. ' + meta.nama;
+
+  KEMENAG_AUDIO_OBJ.play().catch(function(err) {
+    console.warn('Audio play error:', err);
+    if (btn) btn.innerHTML = '▶';
+    KEMENAG_AUDIO_STATE.playing = false;
+  });
+
+  KEMENAG_AUDIO_OBJ.onended = function() {
+    if (btn) btn.innerHTML = '▶';
+    KEMENAG_AUDIO_STATE.playing = false;
+  };
+}
+
+function toggleTampilanHalamanMushaf() {
+  var nextMode = (QURAN_PAGE_STATE.viewMode === 'visual') ? 'teks' : 'visual';
+  setModeTampilanHalaman(nextMode);
+}
+
+function bukaHalamanIniDiPerAyatQuick() {
+  var sNo = (CURRENT_ACTIVE_SURAH && CURRENT_ACTIVE_SURAH.no) || 1;
+  var meta = QURAN_SURAHS.find(function(s) { return s.no === sNo; }) || { hal: 1 };
+  setModeQuran('halaman');
+  bacaHalamanQuran(meta.hal || 1);
+}
+
+function initMushafSwipeGestures() {
+  var vp = document.getElementById('mushafVisualContainer');
+  if (!vp || vp._swipeBound) return;
+  vp._swipeBound = true;
+
+  var touchStartX = 0;
+  var touchStartY = 0;
+  var touchEndX = 0;
+  var touchEndY = 0;
+
+  vp.addEventListener('touchstart', function(e) {
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+    }
+  }, { passive: true });
+
+  vp.addEventListener('touchend', function(e) {
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      touchEndX = e.changedTouches[0].clientX;
+      touchEndY = e.changedTouches[0].clientY;
+      var diffX = touchEndX - touchStartX;
+      var diffY = touchEndY - touchStartY;
+      if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX < 0) {
+          navigasiHalamanQuran(1);
+        } else {
+          navigasiHalamanQuran(-1);
+        }
+      }
+    }
+  }, { passive: true });
 }
 
 // ==============================================================================
