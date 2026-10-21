@@ -305,7 +305,7 @@ function mulaiTimerQuran(surahNo, surahName) {
   var btn = document.getElementById('btnToggleTimerQuran');
   if (btn) {
     btn.innerHTML = '⏸️ Jeda Baca';
-    btn.className = 'btn btn-sm btn-outline';
+    btn.className = 'btn btn-sm btn-timer-pause';
   }
 
   var dot = document.getElementById('quranTimerDot');

@@ -3482,6 +3482,67 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.25) !important;
     }
 
+    /* Tombol-tombol di dalam Popover Kemenag dengan latar warna kontras & teks tebal jelas */
+    .kemenag-popup-box .btn {
+      font-weight: 800 !important;
+      font-size: 13px !important;
+      border-radius: 10px !important;
+      padding: 9px 18px !important;
+      cursor: pointer !important;
+      transition: all 0.15s ease !important;
+      text-decoration: none !important;
+    }
+
+    .kemenag-popup-box .btn-outline {
+      background: #f1f5f9 !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .kemenag-popup-box .btn-outline:hover {
+      background: #e2e8f0 !important;
+      border-color: #94a3b8 !important;
+      color: #000000 !important;
+    }
+
+    .kemenag-popup-box .btn-primary {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      color: #ffffff !important;
+      border: 1px solid #047857 !important;
+      box-shadow: 0 3px 8px rgba(5, 150, 105, 0.35) !important;
+    }
+
+    .kemenag-popup-box .btn-primary:hover {
+      background: linear-gradient(135deg, #047857 0%, #065f46 100%) !important;
+    }
+
+    .kemenag-popup-box .btn-warning,
+    .kemenag-popup-box .btn-timer-pause {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+      color: #ffffff !important;
+      border: 1px solid #b45309 !important;
+      box-shadow: 0 3px 8px rgba(217, 119, 6, 0.35) !important;
+    }
+
+    .kemenag-popup-box .btn-warning:hover,
+    .kemenag-popup-box .btn-timer-pause:hover {
+      background: linear-gradient(135deg, #b45309 0%, #92400e 100%) !important;
+    }
+
+    .kemenag-popup-box .btn-close-popup {
+      background: #e2e8f0 !important;
+      color: #1e293b !important;
+      border: 1.5px solid #cbd5e1 !important;
+      font-weight: 800 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .kemenag-popup-box .btn-close-popup:hover {
+      background: #cbd5e1 !important;
+      color: #000000 !important;
+    }
+
     /* ============================================================== */
     /* FITUR 2: TAFSIR AL-QUR'AN KEMENAG RI                           */
     /* ============================================================== */
@@ -6525,9 +6586,9 @@
               </div>
             </div>
 
-            <div style="display:flex; gap:8px; justify-content:center; margin-top:14px;">
-              <button id="btnToggleTimerQuran" class="btn btn-sm btn-primary" onclick="toggleTimerQuran()" style="padding:6px 16px; font-weight:700;">▶️ Mulai Baca</button>
-              <button class="btn btn-sm btn-outline" onclick="tutupModalTargetBaca()">Tutup</button>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
+              <button id="btnToggleTimerQuran" class="btn btn-sm btn-primary" onclick="toggleTimerQuran()" style="padding:9px 22px; font-weight:800; border-radius:10px; min-width:135px;">▶️ Mulai Baca</button>
+              <button class="btn btn-sm btn-close-popup" onclick="tutupModalTargetBaca()" style="padding:9px 22px; font-weight:800; border-radius:10px; min-width:90px;">Tutup</button>
             </div>
           </div>
         </div>
