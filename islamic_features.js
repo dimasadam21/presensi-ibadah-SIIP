@@ -868,9 +868,17 @@ function tampilkanViewDaftarSurat() {
 }
 
 // Quick filter chips
-function filterSuratQuick(noStr) {
+function filterSuratQuick(noStr, btnEl) {
   var inp = document.getElementById('cariSuratInput');
   if (inp) inp.value = noStr;
+
+  if (btnEl) {
+    document.querySelectorAll('.surah-quick-pill').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    btnEl.classList.add('active');
+  }
+
   filterDaftarSuratQuran();
 }
 
@@ -879,27 +887,37 @@ function renderDaftarSuratQuran(list) {
   if (!c) return;
 
   if (!list || list.length === 0) {
-    c.innerHTML = '<div style="text-align:center;padding:30px 10px;color:var(--muted);font-size:13px;">Surat tidak ditemukan.</div>';
+    c.innerHTML = '<div style="text-align:center;padding:40px 16px;color:#64748b;font-size:13.5px;background:#f8fafc;border-radius:14px;border:1px dashed #cbd5e1;margin-top:10px;">' +
+      '<div style="font-size:28px;margin-bottom:6px;">🔍</div>' +
+      '<b>Surat tidak ditemukan</b><br><span style="font-size:12px;opacity:0.8;">Coba kata kunci nama lain, nomor surat (1-114), atau halaman.</span>' +
+    '</div>';
     return;
   }
 
   var html = '';
   for (var i = 0; i < list.length; i++) {
     var s = list[i];
-    html += '<div class="quran-surah-row" onclick="bacaSuratQuran(' + s.no + ')">' +
-      '<div class="surah-num-box">' + s.no + '</div>' +
-      '<div class="surah-info-box">' +
-        '<div class="surah-title-row">' +
-          '<span class="surah-latin-name">' + escHtml(s.nama) + '</span>' +
-          '<span class="surah-arabic-name">' + s.arab + '</span>' +
-        '</div>' +
-        '<div class="surah-meta-row">' +
-          '<span class="surah-type-badge ' + (s.turun === 'Makkiyah' ? 'type-makkiyah' : 'type-madaniyah') + '">' + s.turun + '</span>' +
-          '<span class="surah-ayat-count">' + s.ayat + ' Ayat</span>' +
-          '<span class="surah-page-badge">📄 Hal. ' + s.hal + '</span>' +
+    var isMakkiyah = (s.turun === 'Makkiyah');
+
+    html += '<div class="quran-surah-row" onclick="bacaSuratQuran(' + s.no + ')" title="Buka QS. ' + escHtml(s.nama) + ' (' + s.no + ')">' +
+      '<div class="surah-left-col">' +
+        '<div class="surah-num-box">' + s.no + '</div>' +
+        '<div class="surah-info-box">' +
+          '<div class="surah-title-row">' +
+            '<span class="surah-latin-name">' + escHtml(s.nama) + '</span>' +
+            '<span class="surah-arti-text">(' + escHtml(s.arti) + ')</span>' +
+          '</div>' +
+          '<div class="surah-meta-row">' +
+            '<span class="surah-type-badge ' + (isMakkiyah ? 'type-makkiyah' : 'type-madaniyah') + '">' + s.turun + '</span>' +
+            '<span class="surah-ayat-count">• ' + s.ayat + ' Ayat</span>' +
+            '<span class="surah-page-badge">📄 Hal. ' + s.hal + '</span>' +
+          '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="surah-action-arrow">›</div>' +
+      '<div class="surah-right-box">' +
+        '<span class="surah-arabic-name">' + s.arab + '</span>' +
+        '<div class="surah-action-arrow">›</div>' +
+      '</div>' +
     '</div>';
   }
   c.innerHTML = html;

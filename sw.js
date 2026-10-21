@@ -1,5 +1,5 @@
 // Service Worker untuk Presensi Sholat & Ibadah PWA / WebAPK Cache (Edisi Kloning)
-const CACHE_NAME = 'presensi-kloning-v17';
+const CACHE_NAME = 'presensi-kloning-v18';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
