@@ -3466,6 +3466,10 @@
       backdrop-filter: blur(2px) !important;
     }
 
+    .kemenag-popup-overlay.hidden {
+      display: none !important;
+    }
+
     .kemenag-popup-box {
       background: #ffffff !important;
       border-radius: 16px !important;
@@ -6445,89 +6449,90 @@
         </div>
 
       </div>
-    </div>
 
-    <!-- ============ MODAL INDEKS CEPAT (SURAT, JUZ, HALAMAN) ============ -->
-    <div id="modalKemenagIndeks" class="kemenag-popup-overlay hidden" onclick="if(event.target===this) tutupModalIndeksQuran()">
-      <div class="kemenag-popup-box">
-        <div style="background:#0b6644; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
-          <h4 style="margin:0; font-size:14px; font-weight:800; letter-spacing:0.5px;">📋 INDEKS AL-QUR'AN</h4>
-          <button class="kemenag-icon-btn" onclick="tutupModalIndeksQuran()" style="font-size:18px;">✕</button>
-        </div>
-        <div style="display:flex; background:#f1f5f9; border-bottom:1px solid #cbd5e1; padding:4px 8px; gap:4px;">
-          <button class="btn btn-sm btn-outline active-indeks-tab" id="tabIndeksSurat" onclick="switchIndeksTab('surat')" style="flex:1; font-size:11.5px; font-weight:700;">114 Surat</button>
-          <button class="btn btn-sm btn-outline" id="tabIndeksJuz" onclick="switchIndeksTab('juz')" style="flex:1; font-size:11.5px; font-weight:700;">30 Juz</button>
-          <button class="btn btn-sm btn-outline" id="tabIndeksHal" onclick="switchIndeksTab('halaman')" style="flex:1; font-size:11.5px; font-weight:700;">604 Halaman</button>
-        </div>
-        <div id="indeksContentArea" style="flex:1; min-height:0; overflow-y:auto; padding:10px 14px;"></div>
-      </div>
-    </div>
-
-    <!-- ============ MODAL PENGATURAN FONT & TAMPILAN ============ -->
-    <div id="modalKemenagSettings" class="kemenag-popup-overlay hidden" onclick="if(event.target===this) tutupModalKemenagSettings()">
-      <div class="kemenag-popup-box">
-        <div style="background:#0b6644; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
-          <h4 style="margin:0; font-size:14px; font-weight:800;">⚙️ PENGATURAN TAMPILAN & AUDIO</h4>
-          <button class="kemenag-icon-btn" onclick="tutupModalKemenagSettings()" style="font-size:18px;">✕</button>
-        </div>
-        <div style="padding:16px; overflow-y:auto; display:flex; flex-direction:column; gap:14px;">
-          <div>
-            <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Ukuran Font Teks Arab:</label>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <button class="btn btn-outline btn-sm" onclick="ubahUkuranFontArab(-2)" style="padding:4px 12px; font-weight:800;">A- (Kecil)</button>
-              <span id="dispCurrentFontSize" style="font-size:13px; font-weight:800; color:#065f46;">28 px</span>
-              <button class="btn btn-outline btn-sm" onclick="ubahUkuranFontArab(2)" style="padding:4px 12px; font-weight:800;">A+ (Besar)</button>
-            </div>
+      <!-- ============ MODAL INDEKS CEPAT (SURAT, JUZ, HALAMAN) ============ -->
+      <div id="modalKemenagIndeks" class="kemenag-popup-overlay hidden" onclick="if(event.target===this) tutupModalIndeksQuran()">
+        <div class="kemenag-popup-box">
+          <div style="background:#0b6644; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="margin:0; font-size:14px; font-weight:800; letter-spacing:0.5px;">📋 INDEKS AL-QUR'AN</h4>
+            <button class="kemenag-icon-btn" onclick="tutupModalIndeksQuran()" style="font-size:18px;">✕</button>
           </div>
-          <div style="border-top:1px solid #e2e8f0; padding-top:10px;">
-            <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Opsi Bacaan Per Ayat:</label>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label style="font-size:12.5px; color:#334155; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="chkShowLatin" checked onchange="toggleTampilanAyatOpsi()"> Tampilkan Teks Transliterasi Latin
-              </label>
-              <label style="font-size:12.5px; color:#334155; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
-                <input type="checkbox" id="chkShowArti" checked onchange="toggleTampilanAyatOpsi()"> Tampilkan Arti / Terjemahan Bahasa Indonesia
-              </label>
-            </div>
+          <div style="display:flex; background:#f1f5f9; border-bottom:1px solid #cbd5e1; padding:4px 8px; gap:4px;">
+            <button class="btn btn-sm btn-outline active-indeks-tab" id="tabIndeksSurat" onclick="switchIndeksTab('surat')" style="flex:1; font-size:11.5px; font-weight:700;">114 Surat</button>
+            <button class="btn btn-sm btn-outline" id="tabIndeksJuz" onclick="switchIndeksTab('juz')" style="flex:1; font-size:11.5px; font-weight:700;">30 Juz</button>
+            <button class="btn btn-sm btn-outline" id="tabIndeksHal" onclick="switchIndeksTab('halaman')" style="flex:1; font-size:11.5px; font-weight:700;">604 Halaman</button>
           </div>
-          <div style="border-top:1px solid #e2e8f0; padding-top:10px;">
-            <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Mode Tampilan Per Halaman:</label>
-            <div style="display:flex; gap:8px;">
-              <button id="btnViewMushafVisual" class="btn btn-sm btn-primary" onclick="setModeTampilanHalaman('visual')" style="flex:1;">🖼️ Gambar Mushaf Resmi</button>
-              <button id="btnViewMushafTeks" class="btn btn-sm btn-outline" onclick="setModeTampilanHalaman('teks')" style="flex:1;">📝 Khot Naskhi Digital</button>
-            </div>
-          </div>
+          <div id="indeksContentArea" style="flex:1; min-height:0; overflow-y:auto; padding:10px 14px;"></div>
         </div>
       </div>
-    </div>
 
-    <!-- ============ MODAL TARGET WAKTU BACA HARI INI ============ -->
-    <div id="modalKemenagTargetBaca" class="kemenag-popup-overlay hidden" onclick="if(event.target===this) tutupModalTargetBaca()">
-      <div class="kemenag-popup-box">
-        <div style="background:#0b6644; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
-          <h4 style="margin:0; font-size:14px; font-weight:800;">⏱️ TARGET BACA AL-QUR'AN</h4>
-          <button class="kemenag-icon-btn" onclick="tutupModalTargetBaca()" style="font-size:18px;">✕</button>
-        </div>
-        <div style="padding:18px; text-align:center;">
-          <div style="font-size:12px; color:#065f46; font-weight:700; text-transform:uppercase;">Waktu Membaca Hari Ini</div>
-          <div id="dispDurasiQuranModalLengkap" style="font-size:26px; font-weight:900; color:#047857; margin:6px 0; font-family:monospace;">00:00</div>
-          
-          <div style="margin:16px 0;">
-            <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#065f46; margin-bottom:4px;">
-              <span>Target Harian: 15 Menit</span>
-              <span id="quranProgressText">0% tercapai</span>
-            </div>
-            <div style="width:100%; height:8px; background:#d1fae5; border-radius:10px; overflow:hidden;">
-              <div id="quranProgressBar" style="width:0%; height:100%; background:linear-gradient(90deg, #10b981, #059669); border-radius:10px; transition:width 0.3s;"></div>
-            </div>
+      <!-- ============ MODAL PENGATURAN FONT & TAMPILAN ============ -->
+      <div id="modalKemenagSettings" class="kemenag-popup-overlay hidden" onclick="if(event.target===this) tutupModalKemenagSettings()">
+        <div class="kemenag-popup-box">
+          <div style="background:#0b6644; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="margin:0; font-size:14px; font-weight:800;">⚙️ PENGATURAN TAMPILAN & AUDIO</h4>
+            <button class="kemenag-icon-btn" onclick="tutupModalKemenagSettings()" style="font-size:18px;">✕</button>
           </div>
-
-          <div style="display:flex; gap:8px; justify-content:center; margin-top:14px;">
-            <button id="btnToggleTimerQuran" class="btn btn-sm btn-primary" onclick="toggleTimerQuran()" style="padding:6px 16px; font-weight:700;">▶️ Mulai Baca</button>
-            <button class="btn btn-sm btn-outline" onclick="tutupModalTargetBaca()">Tutup</button>
+          <div style="padding:16px; overflow-y:auto; display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Ukuran Font Teks Arab:</label>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <button class="btn btn-outline btn-sm" onclick="ubahUkuranFontArab(-2)" style="padding:4px 12px; font-weight:800;">A- (Kecil)</button>
+                <span id="dispCurrentFontSize" style="font-size:13px; font-weight:800; color:#065f46;">28 px</span>
+                <button class="btn btn-outline btn-sm" onclick="ubahUkuranFontArab(2)" style="padding:4px 12px; font-weight:800;">A+ (Besar)</button>
+              </div>
+            </div>
+            <div style="border-top:1px solid #e2e8f0; padding-top:10px;">
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Opsi Bacaan Per Ayat:</label>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:12.5px; color:#334155; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="chkShowLatin" checked onchange="toggleTampilanAyatOpsi()"> Tampilkan Teks Transliterasi Latin
+                </label>
+                <label style="font-size:12.5px; color:#334155; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="chkShowArti" checked onchange="toggleTampilanAyatOpsi()"> Tampilkan Arti / Terjemahan Bahasa Indonesia
+                </label>
+              </div>
+            </div>
+            <div style="border-top:1px solid #e2e8f0; padding-top:10px;">
+              <label style="font-size:12px; font-weight:700; color:#334155; display:block; margin-bottom:6px;">Mode Tampilan Per Halaman:</label>
+              <div style="display:flex; gap:8px;">
+                <button id="btnViewMushafVisual" class="btn btn-sm btn-primary" onclick="setModeTampilanHalaman('visual')" style="flex:1;">🖼️ Gambar Mushaf Resmi</button>
+                <button id="btnViewMushafTeks" class="btn btn-sm btn-outline" onclick="setModeTampilanHalaman('teks')" style="flex:1;">📝 Khot Naskhi Digital</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- ============ MODAL TARGET WAKTU BACA HARI INI ============ -->
+      <div id="modalKemenagTargetBaca" class="kemenag-popup-overlay hidden" onclick="if(event.target===this) tutupModalTargetBaca()">
+        <div class="kemenag-popup-box">
+          <div style="background:#0b6644; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="margin:0; font-size:14px; font-weight:800;">⏱️ TARGET BACA AL-QUR'AN</h4>
+            <button class="kemenag-icon-btn" onclick="tutupModalTargetBaca()" style="font-size:18px;">✕</button>
+          </div>
+          <div style="padding:18px; text-align:center;">
+            <div style="font-size:12px; color:#065f46; font-weight:700; text-transform:uppercase;">Waktu Membaca Hari Ini</div>
+            <div id="dispDurasiQuranModalLengkap" style="font-size:26px; font-weight:900; color:#047857; margin:6px 0; font-family:monospace;">00:00</div>
+            
+            <div style="margin:16px 0;">
+              <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:#065f46; margin-bottom:4px;">
+                <span>Target Harian: 15 Menit</span>
+                <span id="quranProgressText">0% tercapai</span>
+              </div>
+              <div style="width:100%; height:8px; background:#d1fae5; border-radius:10px; overflow:hidden;">
+                <div id="quranProgressBar" style="width:0%; height:100%; background:linear-gradient(90deg, #10b981, #059669); border-radius:10px; transition:width 0.3s;"></div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px; justify-content:center; margin-top:14px;">
+              <button id="btnToggleTimerQuran" class="btn btn-sm btn-primary" onclick="toggleTimerQuran()" style="padding:6px 16px; font-weight:700;">▶️ Mulai Baca</button>
+              <button class="btn btn-sm btn-outline" onclick="tutupModalTargetBaca()">Tutup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ============ MODAL KOMPAS KIBLAT ============ -->

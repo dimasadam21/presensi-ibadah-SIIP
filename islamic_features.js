@@ -833,6 +833,9 @@ function tutupModalQuran() {
     try { KEMENAG_AUDIO_OBJ.pause(); } catch(e) {}
     if (typeof KEMENAG_AUDIO_STATE !== 'undefined') KEMENAG_AUDIO_STATE.playing = false;
   }
+  if (typeof tutupModalIndeksQuran === 'function') tutupModalIndeksQuran();
+  if (typeof tutupModalKemenagSettings === 'function') tutupModalKemenagSettings();
+  if (typeof tutupModalTargetBaca === 'function') tutupModalTargetBaca();
   var m = document.getElementById('modalQuran');
   if (m) m.classList.add('hidden');
   document.body.style.overflow = '';
