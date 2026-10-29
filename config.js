@@ -61,8 +61,11 @@ window.APP_CONFIG = {
   // Anda dapat mengubahnya menjadi "kloning_" untuk isolasi tabel penuh.
   TABLE_PREFIX: "",
 
-  // Nama Storage Bucket khusus untuk foto selfie presensi kloning
-  SUPABASE_STORAGE_BUCKET: "foto_absen_kloning",
+  // Nama Storage Bucket untuk foto selfie presensi
+  // Secara default menggunakan "foto_absen" yang sudah aktif di Supabase.
+  // Jika skrip setup_database_kloning_terpisah.sql dijalankan dan bucket foto_absen_kloning dibuat,
+  // sistem juga memiliki auto-fallback otomatis.
+  SUPABASE_STORAGE_BUCKET: "foto_absen",
 
   // Identitas Aplikasi Edisi Kloning
   APP_NAME: "S I I P - Sistem Informasi Ibadah Pelajar (Kloning)",

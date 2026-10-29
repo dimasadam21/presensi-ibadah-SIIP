@@ -959,23 +959,47 @@ async function uploadFileRamadhanKeStorage(fileOrBlob, fileName, mimeType) {
     throw new Error('Konfigurasi Supabase tidak ditemukan.');
   }
 
-  var uploadUrl = SUPABASE_URL + '/storage/v1/object/' + SUPABASE_STORAGE_BUCKET + '/' + fileName;
-  var res = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-      'Content-Type': mimeType || 'application/octet-stream'
-    },
-    body: fileOrBlob
-  });
+  var candidateBuckets = [SUPABASE_STORAGE_BUCKET];
+  if (SUPABASE_STORAGE_BUCKET !== 'foto_absen') candidateBuckets.push('foto_absen');
+  if (SUPABASE_STORAGE_BUCKET !== 'foto_absen_kloning') candidateBuckets.push('foto_absen_kloning');
+  var tried = [];
+  var lastErr = '';
 
-  if (!res.ok) {
-    var err = await res.text();
-    throw new Error('Gagal mengunggah file ke cloud: ' + err);
+  for (var bIdx = 0; bIdx < candidateBuckets.length; bIdx++) {
+    var curBucket = (candidateBuckets[bIdx] || '').trim();
+    if (!curBucket || tried.indexOf(curBucket) !== -1) continue;
+    tried.push(curBucket);
+
+    var uploadUrl = SUPABASE_URL + '/storage/v1/object/' + curBucket + '/' + fileName;
+    try {
+      var res = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': mimeType || 'application/octet-stream'
+        },
+        body: fileOrBlob
+      });
+
+      if (res.ok) {
+        if (SUPABASE_STORAGE_BUCKET !== curBucket) {
+          SUPABASE_STORAGE_BUCKET = curBucket;
+          try { klonStorage.setItem('sb_custom_bucket', curBucket); } catch(e){}
+        }
+        return SUPABASE_URL + '/storage/v1/object/public/' + curBucket + '/' + fileName;
+      }
+      var err = await res.text();
+      lastErr = err;
+      if (err.indexOf('NoSuchBucket') === -1 && err.indexOf('Bucket not found') === -1) {
+        break;
+      }
+    } catch (e) {
+      lastErr = e.message;
+    }
   }
 
-  return SUPABASE_URL + '/storage/v1/object/public/' + SUPABASE_STORAGE_BUCKET + '/' + fileName;
+  throw new Error('Gagal mengunggah file ke cloud: ' + lastErr);
 }
 
 // ==============================================================================

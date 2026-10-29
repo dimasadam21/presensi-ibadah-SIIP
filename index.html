@@ -18,9 +18,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
     rel="stylesheet">
-  <script src="config.js"></script>
-  <script src="islamic_features.js"></script>
-  <script src="ramadhan_feature.js"></script>
+  <script src="config.js?v=2.1.2"></script>
+  <script src="islamic_features.js?v=2.1.2"></script>
+  <script src="ramadhan_feature.js?v=2.1.2"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
@@ -5294,7 +5294,7 @@
                   ✅ <b>Status: Database Supabase Mandiri (Data Terpisah 100%)</b><br>
                   Endpoint Aktif: <code id="dispSupabaseUrl">https://pkjnbuzfknbcakmtfkif.supabase.co</code><br>
                   Prefix Tabel Terpisah: <code id="dispSupabasePrefix" style="background:#dcfce7;color:#15803d;padding:2px 6px;border-radius:4px;font-weight:700;">kloning_</code> <span style="font-size:11.5px;color:#166534;">(Tabel: kloning_siswa, kloning_absen_sholat, kloning_pengaturan)</span><br>
-                  Storage Bucket: <code id="dispSupabaseBucket">foto_absen_kloning</code> (Publik)<br>
+                  Storage Bucket: <code id="dispSupabaseBucket">foto_absen</code> (Publik)<br>
                   Sumber Konfigurasi: <span id="dispSupabaseSource" style="font-weight:600;">Default / config.js</span>
                 </div>
               </div>
@@ -5312,7 +5312,7 @@
               </div>
               <div>
                 <label>Nama Storage Bucket Foto</label>
-                <input type="text" id="setSbBucket" placeholder="foto_absen_kloning">
+                <input type="text" id="setSbBucket" placeholder="foto_absen">
               </div>
             </div>
             <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
@@ -6024,7 +6024,7 @@
         </div>
         <div style="margin-bottom:14px;">
           <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#334155;">Storage Bucket Foto Presensi:</label>
-          <input type="text" id="modalSbBucket" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;" placeholder="foto_absen_kloning">
+          <input type="text" id="modalSbBucket" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:13px;" placeholder="foto_absen">
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button type="button" class="btn btn-primary" style="flex:1;" onclick="simpanKoneksiSupabaseDariModal()">💾 Simpan & Terapkan</button>
@@ -7267,7 +7267,7 @@
       var CFG = (window.APP_CONFIG || {});
       var DEFAULT_SUPABASE_URL = 'https://pkjnbuzfknbcakmtfkif.supabase.co';
       var DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBram5idXpma25iY2FrbXRma2lmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODI5OTAsImV4cCI6MjEwNjc1ODk5MH0.xdDDnoYJ05_Uq0m5IVz1H1rc-Fpon5ERXjUqrKfpmpY';
-      var DEFAULT_SUPABASE_STORAGE_BUCKET = 'foto_absen_kloning';
+      var DEFAULT_SUPABASE_STORAGE_BUCKET = 'foto_absen';
       var DEFAULT_TABLE_PREFIX = 'kloning_';
 
       function isSbPlaceholder(v) {
@@ -7277,8 +7277,13 @@
 
       var SUPABASE_URL = (klonStorage.getItem('sb_custom_url') || (!isSbPlaceholder(CFG.SUPABASE_URL) ? CFG.SUPABASE_URL : DEFAULT_SUPABASE_URL)).trim();
       var SUPABASE_ANON_KEY = (klonStorage.getItem('sb_custom_key') || (!isSbPlaceholder(CFG.SUPABASE_ANON_KEY) ? CFG.SUPABASE_ANON_KEY : DEFAULT_SUPABASE_ANON_KEY)).trim();
-      var SUPABASE_STORAGE_BUCKET = (klonStorage.getItem('sb_custom_bucket') || CFG.SUPABASE_STORAGE_BUCKET || DEFAULT_SUPABASE_STORAGE_BUCKET).trim();
       var TABLE_PREFIX = (klonStorage.getItem('sb_custom_prefix') !== null ? klonStorage.getItem('sb_custom_prefix') : (CFG.TABLE_PREFIX !== undefined ? CFG.TABLE_PREFIX : DEFAULT_TABLE_PREFIX)).trim();
+
+      // Auto-heal bucket jika sebelumnya tersimpan 'foto_absen_kloning' pada database yang hanya memiliki 'foto_absen'
+      if (klonStorage.getItem('sb_custom_bucket') === 'foto_absen_kloning' && !TABLE_PREFIX) {
+        try { klonStorage.removeItem('sb_custom_bucket'); } catch(e){}
+      }
+      var SUPABASE_STORAGE_BUCKET = (klonStorage.getItem('sb_custom_bucket') || CFG.SUPABASE_STORAGE_BUCKET || DEFAULT_SUPABASE_STORAGE_BUCKET).trim();
 
       function applyTablePrefix(path) {
         if (!path || path.startsWith('http')) return path;
@@ -7469,17 +7474,44 @@
         if (!match) throw new Error('Format gambar tidak valid.');
         var mime = match[1], b64 = match[2];
         var blob = base64ToBlobLocal(b64, mime);
-        var uploadUrl = SUPABASE_URL + '/storage/v1/object/' + SUPABASE_STORAGE_BUCKET + '/' + fileName;
-        var res = await fetch(uploadUrl, {
-          method: 'POST',
-          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': mime },
-          body: blob
-        });
-        if (!res.ok) {
-          var err = await res.text();
-          throw new Error('Gagal mengunggah foto: ' + err);
+
+        // List candidate bucket: bucket aktif saat ini, fallback ke 'foto_absen' atau 'foto_absen_kloning'
+        var candidateBuckets = [SUPABASE_STORAGE_BUCKET];
+        if (SUPABASE_STORAGE_BUCKET !== 'foto_absen') candidateBuckets.push('foto_absen');
+        if (SUPABASE_STORAGE_BUCKET !== 'foto_absen_kloning') candidateBuckets.push('foto_absen_kloning');
+        var tried = [];
+        var lastErr = '';
+
+        for (var bIdx = 0; bIdx < candidateBuckets.length; bIdx++) {
+          var curBucket = (candidateBuckets[bIdx] || '').trim();
+          if (!curBucket || tried.indexOf(curBucket) !== -1) continue;
+          tried.push(curBucket);
+
+          var uploadUrl = SUPABASE_URL + '/storage/v1/object/' + curBucket + '/' + fileName;
+          try {
+            var res = await fetch(uploadUrl, {
+              method: 'POST',
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': mime },
+              body: blob
+            });
+            if (res.ok) {
+              if (SUPABASE_STORAGE_BUCKET !== curBucket) {
+                console.log('Storage bucket dialihkan otomatis ke:', curBucket);
+                SUPABASE_STORAGE_BUCKET = curBucket;
+                try { klonStorage.setItem('sb_custom_bucket', curBucket); } catch(e){}
+              }
+              return SUPABASE_URL + '/storage/v1/object/public/' + curBucket + '/' + fileName;
+            }
+            var err = await res.text();
+            lastErr = err;
+            if (res.status !== 404 && err.indexOf('NoSuchBucket') === -1 && err.indexOf('Bucket not found') === -1) {
+              break;
+            }
+          } catch (fetchErr) {
+            lastErr = fetchErr.message;
+          }
         }
-        return SUPABASE_URL + '/storage/v1/object/public/' + SUPABASE_STORAGE_BUCKET + '/' + fileName;
+        throw new Error('Gagal mengunggah foto: ' + lastErr);
       }
 
       var SB_PENGATURAN_CACHE = null;
@@ -7696,7 +7728,10 @@
               var fileName = 'sholat_' + sholat + '_' + nis + '_' + Date.now() + '.jpg';
               fotoUrl = await uploadFotoToSupabaseLocal(payload.fotoBase64, fileName);
             } catch (eFoto) {
-              if (!isHalangan) return { success: false, message: 'Gagal mengunggah foto: ' + eFoto.message };
+              if (!isHalangan) {
+                var cleanMsg = (eFoto && eFoto.message) ? eFoto.message.replace(/^Gagal mengunggah foto:\s*/i, '') : 'Kendala pada penyimpanan cloud';
+                return { success: false, message: 'Gagal mengunggah foto: ' + cleanMsg };
+              }
             }
           } else if (!isHalangan) {
             return { success: false, message: 'Foto selfie wajib disertakan. Silakan ambil foto terlebih dahulu.' };
@@ -8453,7 +8488,7 @@
         var u = ($('setSbUrl') ? $('setSbUrl').value : '').trim();
         var k = ($('setSbKey') ? $('setSbKey').value : '').trim();
         var p = ($('setSbPrefix') ? $('setSbPrefix').value : '').trim();
-        var b = ($('setSbBucket') ? $('setSbBucket').value : '').trim() || 'foto_absen_kloning';
+        var b = ($('setSbBucket') ? $('setSbBucket').value : '').trim() || 'foto_absen';
 
         if (!u || !u.startsWith('http')) {
           alert('Mohon masukkan Supabase URL yang valid (diawali https://).');
@@ -8484,7 +8519,7 @@
         var u = ($('modalSbUrl') ? $('modalSbUrl').value : '').trim();
         var k = ($('modalSbKey') ? $('modalSbKey').value : '').trim();
         var p = ($('modalSbPrefix') ? $('modalSbPrefix').value : '').trim();
-        var b = ($('modalSbBucket') ? $('modalSbBucket').value : '').trim() || 'foto_absen_kloning';
+        var b = ($('modalSbBucket') ? $('modalSbBucket').value : '').trim() || 'foto_absen';
 
         if (!u || !u.startsWith('http')) {
           alert('Mohon masukkan Supabase URL yang valid (diawali https://).');

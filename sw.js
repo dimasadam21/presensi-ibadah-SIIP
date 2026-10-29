@@ -1,5 +1,5 @@
 // Service Worker untuk Presensi Sholat & Ibadah PWA / WebAPK Cache (Edisi Kloning)
-const CACHE_NAME = 'presensi-kloning-v18';
+const CACHE_NAME = 'presensi-kloning-v20';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -39,12 +39,13 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== location.origin) return;
 
-  // Network-First untuk dokumen HTML / navigasi utama agar pembaruan kode selalu instan
-  const isHtml = event.request.mode === 'navigate' ||
-                 url.pathname === '/' ||
-                 url.pathname.endsWith('.html');
+  // Network-First untuk dokumen HTML & file JS agar pembaruan konfigurasi selalu seketika (realtime)
+  const isNetworkFirst = event.request.mode === 'navigate' ||
+                         url.pathname === '/' ||
+                         url.pathname.endsWith('.html') ||
+                         url.pathname.endsWith('.js');
 
-  if (isHtml) {
+  if (isNetworkFirst) {
     event.respondWith(
       fetch(event.request)
         .then((networkResponse) => {
