@@ -80,15 +80,39 @@
     }
 
     .wrap {
+      width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 14px 14px 115px;
+      box-sizing: border-box;
+      transition: max-width 0.2s ease, padding 0.2s ease;
+    }
+
+    @media (min-width: 640px) {
+      .wrap {
+        max-width: 720px;
+        padding: 20px 20px 125px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .wrap {
+        max-width: 1080px;
+        padding: 26px 24px 130px;
+      }
+    }
+
+    #loginView .wrap {
+      max-width: 460px;
+      padding-bottom: 30px;
     }
 
     .wrap-lg {
-      max-width: 1000px;
+      max-width: 1080px;
       margin: 0 auto;
       padding: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .hidden {
@@ -1007,9 +1031,18 @@
     /* 5 Waktu Sholat Indikator Mini (Presisi & Available) */
     .daily-prog-indicators {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 6px;
       margin-top: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 768px) {
+      .daily-prog-indicators {
+        gap: 12px;
+        margin-top: 14px;
+      }
     }
 
     .prog-sholat-badge {
@@ -1244,6 +1277,9 @@
       margin-top: 14px;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .sholat-section-head {
@@ -1253,6 +1289,8 @@
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .sholat-head-left {
@@ -1293,13 +1331,23 @@
 
     .grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 11px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     @media (min-width: 600px) {
       .grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
       }
     }
 
@@ -1308,7 +1356,7 @@
       background: rgba(18, 29, 52, 0.65);
       border: 1.5px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
-      padding: 14px 10px 12px;
+      padding: 14px 8px 12px;
       text-align: center;
       cursor: pointer;
       transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1318,7 +1366,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      min-height: 146px;
+      min-height: 144px;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
       backdrop-filter: blur(14px);
     }
 
@@ -1426,18 +1478,23 @@
     /* Corner Badges */
     .card-corner-badge {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 8.5px;
+      top: 7px;
+      right: 7px;
+      font-size: 8px;
       font-weight: 800;
-      padding: 2.5px 7px;
+      padding: 2.5px 6.5px;
       border-radius: 99px;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
       display: inline-flex;
       align-items: center;
-      gap: 3.5px;
+      gap: 3px;
       backdrop-filter: blur(8px);
       line-height: 1.2;
+      max-width: calc(100% - 14px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      z-index: 2;
     }
 
     .card-corner-badge.badge-available {
@@ -1552,14 +1609,16 @@
     /* Status Pills */
     .st-pill {
       width: 100%;
-      font-size: 11px;
+      max-width: 100%;
+      box-sizing: border-box;
+      font-size: 10.5px;
       font-weight: 700;
-      padding: 5px 6px;
-      border-radius: 10px;
+      padding: 5px 4px;
+      border-radius: 9px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1875,7 +1934,7 @@
       right: 0;
       max-width: 520px;
       margin: 0 auto;
-      background: rgba(6, 12, 24, 0.92);
+      background: rgba(6, 12, 24, 0.94);
       backdrop-filter: blur(28px) saturate(210%);
       -webkit-backdrop-filter: blur(28px) saturate(210%);
       border-top: 1px solid rgba(52, 211, 153, 0.35);
@@ -1892,6 +1951,19 @@
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
+      transition: max-width 0.25s ease, border-radius 0.25s ease, bottom 0.25s ease;
+    }
+
+    @media (min-width: 768px) {
+      .bottom-nav {
+        max-width: 820px;
+        bottom: 16px;
+        border-radius: 26px;
+        padding: 8px 12px;
+        border: 1px solid rgba(52, 211, 153, 0.35);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(16, 185, 129, 0.2);
+      }
     }
 
     .bottom-nav::-webkit-scrollbar {
@@ -1921,6 +1993,17 @@
       border-radius: 13px;
       font-family: inherit;
       white-space: nowrap;
+    }
+
+    @media (min-width: 768px) {
+      .nav-item {
+        max-width: 85px;
+        font-size: 11px;
+        padding: 7px 4px;
+      }
+      .nav-item .ni {
+        font-size: 19px;
+      }
     }
 
     .nav-item .ni {
@@ -2150,6 +2233,21 @@
       border-radius: 24px;
       margin: 0 16px;
       box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
+    }
+
+    @media (min-width: 640px) {
+      .modal {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 24px !important;
+      }
+      .modal-box {
+        max-width: 520px !important;
+        border-radius: 24px !important;
+        max-height: 90vh !important;
+        margin: auto !important;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5) !important;
+      }
     }
 
     .modal-head {
@@ -2811,13 +2909,22 @@
     /* ============ FITUR ISLAMI TERPADU STYLES ============ */
     .islamic-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     @media (max-width: 380px) {
       .islamic-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .islamic-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
       }
     }
 
