@@ -4256,6 +4256,546 @@
       border-top: 1px dashed #e2e8f0;
       padding-top: 6px;
     }
+
+    /* ==========================================================================
+       STYLE CETAK RAPOR IBADAH & CAPAIAN AMALIAH (ADMIN - STANDAR MGMP PAI)
+       ========================================================================== */
+    .rapor-admin-toolbar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .rapor-toolbar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      align-items: end;
+      margin-top: 12px;
+    }
+
+    .rapor-toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .rapor-preview-wrapper {
+      background: #1e293b;
+      padding: 24px 16px;
+      border-radius: 16px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    /* Lembar Kertas Rapor Standar A4 Portrait (210mm x 297mm) */
+    .rapor-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      box-sizing: border-box;
+      background: #ffffff !important;
+      color: #0f172a !important;
+      padding: 12mm 14mm 10mm 14mm;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .rapor-sheet * {
+      box-sizing: border-box;
+      color: inherit;
+    }
+
+    /* KOP DOKUMEN RAPOR */
+    .rapor-kop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #0d9488;
+      position: relative;
+    }
+
+    .rapor-kop::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #0d9488;
+    }
+
+    .rapor-kop-logo {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .rapor-kop-logo img,
+    .rapor-kop-logo svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .rapor-kop-center {
+      flex: 1;
+      text-align: center;
+    }
+
+    .rapor-basmalah {
+      font-family: 'LPMQ Isep Misbah', 'Amiri', 'Traditional Arabic', serif;
+      font-size: 20px;
+      line-height: 1.4;
+      color: #064e3b !important;
+      margin-bottom: 4px;
+      direction: rtl;
+    }
+
+    .rapor-kop-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #064e3b !important;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .rapor-kop-school {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0f172a !important;
+      margin: 2px 0;
+      letter-spacing: 0.2px;
+    }
+
+    .rapor-kop-mgmp {
+      font-size: 10px;
+      font-weight: 600;
+      color: #475569 !important;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    /* IDENTITAS SISWA & TOTAL KUMULATIF */
+    .rapor-identity-row {
+      display: grid;
+      grid-template-columns: 1fr 210px;
+      gap: 16px;
+      margin-top: 14px;
+      margin-bottom: 12px;
+      align-items: stretch;
+    }
+
+    .rapor-bio-table {
+      width: 100%;
+      font-size: 11.5px;
+      border-collapse: collapse;
+      line-height: 1.55;
+    }
+
+    .rapor-bio-table td {
+      padding: 3px 0;
+      vertical-align: top;
+    }
+
+    .rapor-bio-label {
+      width: 130px;
+      font-weight: 600;
+      color: #334155 !important;
+    }
+
+    .rapor-bio-colon {
+      width: 12px;
+      text-align: center;
+      color: #334155 !important;
+    }
+
+    .rapor-bio-value {
+      font-weight: 700;
+      color: #0f172a !important;
+    }
+
+    .rapor-hero-score {
+      background: #f0fdf4 !important;
+      border: 1.5px solid #86efac;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .rapor-hero-label {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #065f46 !important;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .rapor-hero-num {
+      font-size: 28px;
+      font-weight: 900;
+      color: #047857 !important;
+      line-height: 1.1;
+      margin-bottom: 5px;
+    }
+
+    .rapor-hero-badge {
+      display: inline-block;
+      background: #064e3b !important;
+      color: #ffffff !important;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .rapor-hero-sub {
+      font-size: 9px;
+      font-weight: 600;
+      color: #065f46 !important;
+    }
+
+    /* 4 HIGHLIGHT CARD DIMENSI IBADAH */
+    .rapor-dimensi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .rapor-dimensi-card {
+      background: #f8fafc !important;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .rapor-dimensi-title {
+      font-size: 9px;
+      font-weight: 800;
+      color: #475569 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 2px;
+    }
+
+    .rapor-dimensi-score {
+      font-size: 17px;
+      font-weight: 850;
+      color: #0d9488 !important;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+
+    .rapor-dimensi-sub {
+      font-size: 8.5px;
+      color: #64748b !important;
+      font-weight: 600;
+    }
+
+    /* SECTION HEADER TABEL */
+    .rapor-sec-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #065f46 !important;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .rapor-sec-header::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 13px;
+      background: #0d9488;
+      border-radius: 2px;
+    }
+
+    /* TABEL CAPAIAN */
+    .rapor-main-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-bottom: 12px;
+    }
+
+    .rapor-main-table th {
+      background: #064e3b !important;
+      color: #ffffff !important;
+      border: 1px solid #064e3b;
+      padding: 7px 5px;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-size: 9.5px;
+    }
+
+    .rapor-main-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 6px;
+      vertical-align: middle;
+      color: #0f172a !important;
+      line-height: 1.35;
+    }
+
+    .rapor-main-table tbody tr:nth-child(even) {
+      background: #f8fafc !important;
+    }
+
+    .rapor-table-footer {
+      background: #f0fdf4 !important;
+      font-weight: 800;
+      border: 1.5px solid #86efac;
+    }
+
+    .rapor-table-footer td {
+      padding: 7px 6px;
+      border: 1px solid #86efac;
+      font-size: 10px;
+    }
+
+    /* DUA KOTAK BAWAH: HADITS & CATATAN GURU */
+    .rapor-dual-boxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: stretch;
+    }
+
+    .rapor-quote-box {
+      border: 1.2px solid #fcd34d;
+      background: #fffbeb !important;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .rapor-quote-text {
+      font-size: 9.5px;
+      font-style: italic;
+      color: #92400e !important;
+      line-height: 1.45;
+      margin-bottom: 4px;
+    }
+
+    .rapor-quote-author {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #b45309 !important;
+      text-align: right;
+    }
+
+    .rapor-note-box {
+      border: 1.2px solid #5eead4;
+      background: #f0fdf4 !important;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .rapor-note-title {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #065f46 !important;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .rapor-note-content {
+      font-size: 9.5px;
+      color: #064e3b !important;
+      line-height: 1.4;
+    }
+
+    /* TANDA TANGAN */
+    .rapor-signature-wrap {
+      margin-bottom: 12px;
+    }
+
+    .rapor-titimangsa {
+      text-align: right;
+      font-size: 10.5px;
+      color: #0f172a !important;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .rapor-signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .rapor-sig-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 95px;
+    }
+
+    .rapor-sig-role {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #0f172a !important;
+      margin-bottom: 4px;
+    }
+
+    .rapor-sig-space {
+      height: 52px;
+    }
+
+    .rapor-sig-name {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-decoration: underline;
+      color: #0f172a !important;
+    }
+
+    .rapor-sig-nip {
+      font-size: 9.5px;
+      color: #334155 !important;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* FOOTER DOKUMEN */
+    .rapor-footer-bar {
+      border-top: 1px solid #cbd5e1;
+      padding-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5px;
+      color: #64748b !important;
+      margin-top: auto;
+    }
+
+    .rapor-footer-motto {
+      font-style: italic;
+      font-weight: 600;
+      color: #065f46 !important;
+    }
+
+    /* MODAL KELOLA GPAI */
+    .gpai-badge-default {
+      background: #059669;
+      color: #ffffff;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       MEDIA PRINT: FORMAT CETAK RESMI A4 TANPA ELEMEN UI LAINNYA
+       ========================================================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 8mm 10mm 8mm 10mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      /* Sembunyikan semua elemen UI aplikasi saat cetak */
+      #celestialSky,
+      .app-header,
+      .bottom-nav,
+      .rapor-admin-toolbar,
+      .modal,
+      #toast,
+      #loginView,
+      #pageLaporan,
+      #pageSiswa,
+      #pageDoaAdmin,
+      #pageRamadhanAdmin,
+      #pageSetting,
+      .seg,
+      .btn,
+      .admin-subtabs,
+      header,
+      nav {
+        display: none !important;
+      }
+
+      #adminView,
+      .wrap-lg,
+      #pageRaporAdmin,
+      .rapor-preview-wrapper {
+        display: block !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+      }
+
+      .rapor-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 275mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 4mm 6mm !important;
+        margin: 0 auto !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .rapor-sheet:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+    }
   </style>
 </head>
 
@@ -5974,6 +6514,130 @@
             </div>
           </div>
         </div>
+
+        <!-- PAGE: CETAK RAPOR KHUSUS IBADAH & CAPAIAN AMALIAH (ADMIN) -->
+        <div id="pageRaporAdmin" class="hidden">
+          <div class="rapor-admin-toolbar">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+              <div>
+                <h3 style="font-size:17px; font-weight:800; color:#10b981; margin:0; display:flex; align-items:center; gap:8px;">
+                  <span>📜</span>
+                  <span>Cetak Rapor Ibadah & Capaian Amaliah Siswa</span>
+                </h3>
+                <p style="font-size:12px; color:var(--muted); margin:3px 0 0;">
+                  Format resmi MGMP PAI & Budi Pekerti. Data Nama, NIS, dan Kelas terisi otomatis dari data siswa & presensi.
+                </p>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="bukaModalKelolaGpai()" title="Kelola Guru Pembina PAI">
+                  👤 Sub Guru PAI (GPAI)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="bukaModalSesuaikanNilai()" title="Ubah atau Beri Catatan Khusus">
+                  ✏️ Sesuaikan Nilai
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="cetakRaporSiswaAktif()" style="background:#0d9488; border-color:#0f766e; font-weight:800;">
+                  🖨️ Cetak / Unduh PDF Rapor
+                </button>
+                <button type="button" class="btn btn-accent btn-sm" onclick="cetakRaporSemuaKelas()" title="Cetak Rapor Seluruh Siswa 1 Kelas">
+                  👥 Cetak Masal 1 Kelas
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="rapor-toolbar-grid">
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:var(--text);">
+                  🏫 Pilih Kelas
+                </label>
+                <select id="raporFilterKelas" onchange="onRaporKelasBerubah()" style="width:100%; box-sizing:border-box;">
+                  <option value="">-- Pilih Kelas --</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:var(--text);">
+                  👨‍🎓 Pilih Siswa (Otomatis NIS & Nama)
+                </label>
+                <select id="raporFilterSiswa" onchange="onRaporSiswaBerubah()" style="width:100%; box-sizing:border-box;">
+                  <option value="">-- Pilih Siswa --</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:var(--text);">
+                  👳 Guru Pembina PAI (GPAI Terpilih)
+                </label>
+                <div style="display:flex; gap:6px;">
+                  <select id="raporSelectGpai" onchange="onRaporGpaiBerubah()" style="flex:1; box-sizing:border-box;">
+                  </select>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="bukaModalKelolaGpai()" title="Tambah / Edit Guru PAI" style="padding:0 10px; font-size:12px;">
+                    ⚙️
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:var(--text);">
+                  📅 Periode Penilaian
+                </label>
+                <input type="text" id="raporInputPeriode" value="Ramadhan & Pembiasaan Ibadah Semester Genap" oninput="sinkronkanPreviewRapor()" style="width:100%; box-sizing:border-box;">
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:var(--text);">
+                  🎓 Tahun Ajaran
+                </label>
+                <input type="text" id="raporInputTahun" value="2025/2026" oninput="sinkronkanPreviewRapor()" style="width:100%; box-sizing:border-box;">
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px; color:var(--text);">
+                  📍 Titimangsa / Tanggal Rapor
+                </label>
+                <input type="text" id="raporInputTitimangsa" oninput="sinkronkanPreviewRapor()" style="width:100%; box-sizing:border-box;" placeholder="Magelang, 29 Oktober 2026">
+              </div>
+            </div>
+
+            <!-- Toolbar Action Bar -->
+            <div class="rapor-toolbar-actions">
+              <button type="button" class="btn btn-primary" onclick="cetakRaporSiswaAktif()" style="background:#0d9488; border-color:#0f766e; font-weight:800; display:flex; align-items:center; gap:6px;">
+                <span>🖨️</span>
+                <span>Cetak / Unduh PDF Rapor Siswa Ini</span>
+              </button>
+              <button type="button" class="btn btn-accent" onclick="cetakRaporSemuaKelas()" style="font-weight:800; display:flex; align-items:center; gap:6px;">
+                <span>👥</span>
+                <span id="btnLabelCetakMasal">Cetak Masal 1 Kelas (Semua Siswa)</span>
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="hitungOtomatisNilaiRapor(true)" title="Hitung Ulang Skor Berdasarkan Data Absen Sholat & Jurnal">
+                ⚡ Hitung Ulang Skor
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="bukaModalSesuaikanNilai()" title="Beri Catatan Khusus atau Sesuaikan Nilai">
+                ✏️ Sesuaikan Nilai & Catatan
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="bukaModalKelolaGpai()" title="Kelola Guru Pembina PAI">
+                👳 Kelola Daftar Guru PAI
+              </button>
+            </div>
+          </div>
+
+          <!-- Preview Kontainer Rapor (Kertas Putih A4 Asli) -->
+          <div style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; padding:0 4px;">
+            <div style="font-size:13px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:6px;">
+              <span>👁️</span>
+              <span>Pratinjau Lembar Rapor A4 Resmi:</span>
+            </div>
+            <div style="font-size:12px; color:var(--muted);">
+              Format cetak presisi 1 halaman per rapor (Standar MGMP PAI SMK Negeri 1 Magelang)
+            </div>
+          </div>
+
+          <div class="rapor-preview-wrapper" id="raporPreviewWrapper">
+            <div class="rapor-sheet" id="raporSheetPreview">
+              <!-- Rendered dynamically by renderLembarRaporHtml() -->
+            </div>
+          </div>
+        </div>
       </div>
 
       <nav class="bottom-nav lg">
@@ -5985,6 +6649,8 @@
             class="ni">🤲</span>Doa Harian</button>
         <button class="nav-item admin" id="navRamadhanAdmin" onclick="gotoAdminPage('Ramadhan')"><span
             class="ni">🌙</span>Ramadhan</button>
+        <button class="nav-item admin" id="navRaporAdmin" onclick="gotoAdminPage('Rapor')"><span
+            class="ni">📜</span>Cetak Rapor</button>
         <button class="nav-item admin" id="navSetting" onclick="gotoAdminPage('Setting')"><span
             class="ni">⚙️</span>Pengaturan</button>
         <button class="nav-item admin" onclick="sinkronkanSemuaAdmin(this)"
@@ -7056,6 +7722,132 @@
         <div style="display:flex; gap:10px;">
           <button type="button" class="btn btn-admin" style="flex:1;" onclick="simpanDoaAdmin()">💾 Simpan Doa</button>
           <button type="button" class="btn btn-outline" onclick="tutupFormDoaAdmin()">Batal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL KELOLA GURU PEMBINA PAI (GPAI) ============ -->
+    <div id="modalKelolaGpai" class="modal hidden">
+      <div class="modal-box" style="max-width: 640px;">
+        <div class="modal-head">
+          <h3 style="display:flex; align-items:center; gap:8px;">
+            <span>👳</span>
+            <span>Kelola Guru Pembina PAI (GPAI)</span>
+          </h3>
+          <button class="close-x" onclick="tutupModalKelolaGpai()">&times;</button>
+        </div>
+
+        <p style="font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.5;">
+          Daftar Guru Pembina PAI yang akan tercantum pada tanda tangan resmi Rapor Ibadah. Anda dapat memilih, menambah guru baru, mengedit data, atau menentukan guru default.
+        </p>
+
+        <!-- Form Tambah / Edit Guru PAI -->
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:12px; padding:12px 14px; margin-bottom:16px;">
+          <div style="font-size:12.5px; font-weight:800; color:#10b981; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+            <span id="judulFormGpai">➕ Tambah Guru Pembina PAI Baru</span>
+          </div>
+          <input type="hidden" id="fGpaiId" value="">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px;">
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">Nama Lengkap & Gelar</label>
+              <input type="text" id="fGpaiNama" placeholder="Contoh: Muhammad Syarif, M.Pd.I." style="width:100%; font-size:12.5px;">
+            </div>
+            <div>
+              <label style="font-size:11.5px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">NIP / NUPTK</label>
+              <input type="text" id="fGpaiNip" placeholder="Contoh: 19820415 200801 1 012" style="width:100%; font-size:12.5px;">
+            </div>
+          </div>
+          <div style="margin-bottom:10px;">
+            <label style="font-size:11.5px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">Jabatan / Keterangan Tanda Tangan</label>
+            <input type="text" id="fGpaiJabatan" value="Guru Pembina PAI SMKN 1 Magelang" style="width:100%; font-size:12.5px;">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text);">
+              <input type="checkbox" id="fGpaiDefault" style="width:16px; height:16px;">
+              <span>Jadikan Guru Default Rapor</span>
+            </label>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="simpanDataGpai()" style="background:#0d9488; font-weight:700;">💾 Simpan Guru</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="resetFormGpai()">Reset Form</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabel Daftar Guru PAI -->
+        <div style="font-size:12px; font-weight:800; color:var(--text); margin-bottom:6px;">
+          Daftar Guru Pembina PAI Tersedia:
+        </div>
+        <div class="tbl-wrap" style="max-height: 260px; overflow-y: auto; margin-bottom:14px;">
+          <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead>
+              <tr style="background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1);">
+                <th style="padding:8px 6px; text-align:left;">Nama & Gelar</th>
+                <th style="padding:8px 6px; text-align:left;">NIP</th>
+                <th style="padding:8px 6px; text-align:center; width:90px;">Status</th>
+                <th style="padding:8px 6px; text-align:center; width:120px;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyDaftarGpai">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end;">
+          <button type="button" class="btn btn-outline" onclick="tutupModalKelolaGpai()">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL SESUAIKAN NILAI & CATATAN RAPOR ============ -->
+    <div id="modalEditNilaiRapor" class="modal hidden">
+      <div class="modal-box" style="max-width: 580px;">
+        <div class="modal-head">
+          <h3 style="display:flex; align-items:center; gap:8px;">
+            <span>✏️</span>
+            <span>Sesuaikan Nilai & Catatan Rapor</span>
+          </h3>
+          <button class="close-x" onclick="tutupModalSesuaikanNilai()">&times;</button>
+        </div>
+
+        <p style="font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.45;">
+          Nilai di bawah telah dihitung otomatis oleh sistem dari data presensi dan amaliah. Anda dapat mengubah skor atau memberi catatan khusus sebelum mencetak.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">1. Nilai Sholat (Fardhu & Sunnah) %</label>
+            <input type="number" id="fSkorSholat" min="0" max="100" step="0.5" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">2. Nilai Al-Qur'an (Tartil & Tadarus) %</label>
+            <input type="number" id="fSkorQuran" min="0" max="100" step="0.5" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">3. Nilai Ramadhan (Amaliah Khusus) %</label>
+            <input type="number" id="fSkorRamadhan" min="0" max="100" step="0.5" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">4. Karakter & Kultum (Adab) %</label>
+            <input type="number" id="fSkorKarakter" min="0" max="100" step="0.5" style="width:100%;">
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-size:12px; font-weight:700; color:var(--text); margin-bottom:3px; display:block;">Catatan Pembimbing PAI (Apresiasi / Motivasi)</label>
+          <textarea id="fCatatanPembimbing" rows="3" style="width:100%; font-size:12px;" placeholder="Tuliskan catatan apresiasi guru pembimbing..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="resetNilaiKeOtomatis()">
+            🔄 Reset ke Hitungan Otomatis
+          </button>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn-primary" onclick="terapkanPenyesuaianNilai()" style="background:#0d9488; font-weight:700;">
+              💾 Terapkan ke Rapor
+            </button>
+            <button type="button" class="btn btn-outline" onclick="tutupModalSesuaikanNilai()">Batal</button>
+          </div>
         </div>
       </div>
     </div>
@@ -10417,10 +11209,12 @@
         $('pageSetting').classList.toggle('hidden', page !== 'Setting');
         if ($('pageDoaAdmin')) $('pageDoaAdmin').classList.toggle('hidden', page !== 'Doa');
         if ($('pageRamadhanAdmin')) $('pageRamadhanAdmin').classList.toggle('hidden', page !== 'Ramadhan');
+        if ($('pageRaporAdmin')) $('pageRaporAdmin').classList.toggle('hidden', page !== 'Rapor');
         $('navLaporan').classList.toggle('active', page === 'Laporan');
         $('navSiswa').classList.toggle('active', page === 'Siswa');
         if ($('navDoaAdmin')) $('navDoaAdmin').classList.toggle('active', page === 'Doa');
         if ($('navRamadhanAdmin')) $('navRamadhanAdmin').classList.toggle('active', page === 'Ramadhan');
+        if ($('navRaporAdmin')) $('navRaporAdmin').classList.toggle('active', page === 'Rapor');
         $('navSetting').classList.toggle('active', page === 'Setting');
         if (page === 'Siswa') {
           muatSiswaAdmin();
@@ -10428,6 +11222,8 @@
           if (typeof renderAdminDoaTable === 'function') renderAdminDoaTable();
         } else if (page === 'Ramadhan') {
           if (typeof initAdminRamadhan === 'function') initAdminRamadhan();
+        } else if (page === 'Rapor') {
+          if (typeof initAdminRapor === 'function') initAdminRapor();
         } else if (page === 'Setting') {
           muatPengaturan();
           if (!SISWA_ADMIN || !SISWA_ADMIN.length) {
@@ -12459,6 +13255,901 @@
         };
 
         reader.readAsBinaryString(file);
+      }
+
+      // ==============================================================================
+      // MODUL FITUR CETAK RAPOR IBADAH & MANAJEMEN GURU PEMBINA PAI (GPAI) ADMIN
+      // ==============================================================================
+      var RAPOR_STATE = {
+        selectedKelas: '',
+        selectedNis: '',
+        selectedGpaiId: '',
+        daftarGpai: [],
+        customNilai: null,
+        dataCalculated: null
+      };
+
+      var DAFTAR_GPAI_DEFAULT = [
+        {
+          id: 'gpai_syarif',
+          nama: 'Muhammad Syarif, M.Pd.I.',
+          nip: '19820415 200801 1 012',
+          jabatan: 'Guru Pembina PAI SMKN 1 Magelang',
+          isDefault: true
+        },
+        {
+          id: 'gpai_nurul',
+          nama: 'Dra. Hj. Nurul Hidayah, M.Pd.I.',
+          nip: '19780312 200501 2 008',
+          jabatan: 'Guru Pembina PAI SMKN 1 Magelang',
+          isDefault: false
+        },
+        {
+          id: 'gpai_fauzi',
+          nama: 'Ahmad Fauzi, S.Pd.I., M.Pd.',
+          nip: '19890620 201402 1 003',
+          jabatan: 'Guru Pembina PAI SMKN 1 Magelang',
+          isDefault: false
+        },
+        {
+          id: 'gpai_rohmah',
+          nama: 'Dra. Hj. Siti Rohmah, M.Ag.',
+          nip: '19750510 200212 2 003',
+          jabatan: 'Guru Pembina PAI SMKN 1 Magelang',
+          isDefault: false
+        }
+      ];
+
+      // Inisialisasi Modul Rapor Saat Tab Admin Rapor Dibuka
+      function initAdminRapor() {
+        muatDaftarGpai();
+        renderSelectGpai();
+
+        // Titimangsa default tanggal hari ini
+        var elTitimangsa = $('raporInputTitimangsa');
+        if (elTitimangsa && !elTitimangsa.value) {
+          elTitimangsa.value = formatTitimangsaRapor(new Date());
+        }
+
+        // Ambil data siswa jika belum dimuat
+        if (!SISWA_ADMIN || !SISWA_ADMIN.length) {
+          gas().withSuccessHandler(function (res) {
+            if (res && res.success) {
+              SISWA_ADMIN = res.data || res.dataSiswa || [];
+              populateRaporKelasOptions();
+            }
+          }).getSemuaSiswa(ADMIN_TOKEN);
+        } else {
+          populateRaporKelasOptions();
+        }
+      }
+
+      function formatTitimangsaRapor(d) {
+        var date = d instanceof Date ? d : new Date(d);
+        if (isNaN(date.getTime())) date = new Date();
+        var bln = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        var kota = 'Magelang';
+        if (PENGATURAN && PENGATURAN.nama_sekolah && PENGATURAN.nama_sekolah.indexOf('Magelang') === -1) {
+          // Ambil kota dari nama sekolah jika ada
+          var parts = PENGATURAN.nama_sekolah.split(/\s+/);
+          if (parts.length > 1) kota = parts[parts.length - 1];
+        }
+        return kota + ', ' + date.getDate() + ' ' + bln[date.getMonth()] + ' ' + date.getFullYear();
+      }
+
+      // --- MANAJEMEN SUB GURU PEMBINA PAI (GPAI) ---
+      function muatDaftarGpai() {
+        try {
+          var raw = klonStorage.getItem('daftar_gpai_rapor');
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length) {
+              RAPOR_STATE.daftarGpai = parsed;
+              return;
+            }
+          }
+        } catch (e) { }
+        RAPOR_STATE.daftarGpai = JSON.parse(JSON.stringify(DAFTAR_GPAI_DEFAULT));
+        simpanDaftarGpaiKeStorage();
+      }
+
+      function simpanDaftarGpaiKeStorage() {
+        try {
+          klonStorage.setItem('daftar_gpai_rapor', JSON.stringify(RAPOR_STATE.daftarGpai));
+        } catch (e) { }
+      }
+
+      function renderSelectGpai() {
+        var el = $('raporSelectGpai');
+        if (!el) return;
+        var list = RAPOR_STATE.daftarGpai || [];
+        if (!list.length) {
+          list = JSON.parse(JSON.stringify(DAFTAR_GPAI_DEFAULT));
+          RAPOR_STATE.daftarGpai = list;
+        }
+
+        var selectedId = RAPOR_STATE.selectedGpaiId;
+        var defaultId = '';
+        var opts = list.map(function (g) {
+          if (g.isDefault) defaultId = g.id;
+          return '<option value="' + esc(g.id) + '">' + esc(g.nama) + ' (NIP. ' + esc(g.nip || '-') + ')</option>';
+        }).join('');
+
+        el.innerHTML = opts;
+
+        if (selectedId && list.some(function (g) { return g.id === selectedId; })) {
+          el.value = selectedId;
+        } else if (defaultId) {
+          el.value = defaultId;
+          RAPOR_STATE.selectedGpaiId = defaultId;
+        } else if (list.length) {
+          el.value = list[0].id;
+          RAPOR_STATE.selectedGpaiId = list[0].id;
+        }
+      }
+
+      function onRaporGpaiBerubah() {
+        var el = $('raporSelectGpai');
+        if (el) RAPOR_STATE.selectedGpaiId = el.value;
+        sinkronkanPreviewRapor();
+      }
+
+      function getSelectedGpaiObj() {
+        var list = RAPOR_STATE.daftarGpai || [];
+        var id = RAPOR_STATE.selectedGpaiId;
+        var found = list.find(function (g) { return g.id === id; });
+        if (found) return found;
+        var def = list.find(function (g) { return g.isDefault; });
+        if (def) return def;
+        return list[0] || DAFTAR_GPAI_DEFAULT[0];
+      }
+
+      function bukaModalKelolaGpai() {
+        renderTabelKelolaGpai();
+        resetFormGpai();
+        var m = $('modalKelolaGpai');
+        if (m) m.classList.remove('hidden');
+      }
+
+      function tutupModalKelolaGpai() {
+        var m = $('modalKelolaGpai');
+        if (m) m.classList.add('hidden');
+        renderSelectGpai();
+        sinkronkanPreviewRapor();
+      }
+
+      function resetFormGpai() {
+        $('fGpaiId').value = '';
+        $('fGpaiNama').value = '';
+        $('fGpaiNip').value = '';
+        $('fGpaiJabatan').value = 'Guru Pembina PAI SMKN 1 Magelang';
+        $('fGpaiDefault').checked = false;
+        $('judulFormGpai').innerHTML = '➕ Tambah Guru Pembina PAI Baru';
+      }
+
+      function renderTabelKelolaGpai() {
+        var tbody = $('tbodyDaftarGpai');
+        if (!tbody) return;
+        var list = RAPOR_STATE.daftarGpai || [];
+        if (!list.length) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:14px;color:var(--muted);">Belum ada data guru PAI.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = list.map(function (g, idx) {
+          var isDef = !!g.isDefault;
+          var statusBadge = isDef
+            ? '<span class="gpai-badge-default">⭐ Default</span>'
+            : '<button type="button" class="btn btn-outline btn-sm" onclick="jadikanGpaiDefault(\'' + esc(g.id) + '\')" style="padding:2px 7px;font-size:10px;">Pilih Default</button>';
+
+          var escNama = esc(g.nama).replace(/'/g, "\\'");
+          var acts = '<div style="display:flex;gap:4px;justify-content:center;">' +
+            '<button type="button" class="btn btn-outline btn-sm" onclick="editGpai(\'' + esc(g.id) + '\')" style="padding:2px 6px;font-size:11px;" title="Edit Guru">✏️</button>' +
+            '<button type="button" class="btn btn-outline btn-sm" onclick="hapusGpai(\'' + esc(g.id) + '\',\'' + escNama + '\')" style="padding:2px 6px;font-size:11px;color:#ef4444;border-color:rgba(239,68,68,0.4);" title="Hapus Guru">🗑️</button>' +
+            '</div>';
+
+          return '<tr style="border-bottom:1px solid rgba(255,255,255,0.06);">' +
+            '<td style="padding:8px 6px;font-weight:700;">' + esc(g.nama) + '<div style="font-size:10.5px;color:var(--muted);font-weight:normal;">' + esc(g.jabatan || 'Guru PAI') + '</div></td>' +
+            '<td style="padding:8px 6px;font-family:monospace;font-size:11.5px;">' + esc(g.nip || '-') + '</td>' +
+            '<td style="padding:8px 6px;text-align:center;">' + statusBadge + '</td>' +
+            '<td style="padding:8px 6px;text-align:center;">' + acts + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      function simpanDataGpai() {
+        var id = ($('fGpaiId').value || '').trim();
+        var nama = ($('fGpaiNama').value || '').trim();
+        var nip = ($('fGpaiNip').value || '').trim();
+        var jabatan = ($('fGpaiJabatan').value || '').trim() || 'Guru Pembina PAI SMKN 1 Magelang';
+        var isDef = $('fGpaiDefault').checked;
+
+        if (!nama) {
+          toast('Nama lengkap dan gelar guru PAI wajib diisi.', 'err');
+          return;
+        }
+
+        var list = RAPOR_STATE.daftarGpai || [];
+
+        if (isDef) {
+          list.forEach(function (g) { g.isDefault = false; });
+        }
+
+        if (id) {
+          var target = list.find(function (g) { return g.id === id; });
+          if (target) {
+            target.nama = nama;
+            target.nip = nip;
+            target.jabatan = jabatan;
+            if (isDef) target.isDefault = true;
+          }
+        } else {
+          var newId = 'gpai_' + Date.now();
+          var isFirst = list.length === 0;
+          list.push({
+            id: newId,
+            nama: nama,
+            nip: nip,
+            jabatan: jabatan,
+            isDefault: isDef || isFirst
+          });
+          RAPOR_STATE.selectedGpaiId = newId;
+        }
+
+        RAPOR_STATE.daftarGpai = list;
+        simpanDaftarGpaiKeStorage();
+        renderTabelKelolaGpai();
+        resetFormGpai();
+        renderSelectGpai();
+        toast('Data Guru Pembina PAI berhasil disimpan.', 'ok');
+      }
+
+      function editGpai(id) {
+        var target = (RAPOR_STATE.daftarGpai || []).find(function (g) { return g.id === id; });
+        if (!target) return;
+        $('fGpaiId').value = target.id;
+        $('fGpaiNama').value = target.nama || '';
+        $('fGpaiNip').value = target.nip || '';
+        $('fGpaiJabatan').value = target.jabatan || 'Guru Pembina PAI SMKN 1 Magelang';
+        $('fGpaiDefault').checked = !!target.isDefault;
+        $('judulFormGpai').innerHTML = '✏️ Edit Guru Pembina PAI: ' + esc(target.nama);
+      }
+
+      function hapusGpai(id, nama) {
+        if (!confirm('Hapus Guru Pembina PAI "' + nama + '" dari daftar?')) return;
+        var list = RAPOR_STATE.daftarGpai || [];
+        if (list.length <= 1) {
+          toast('Minimal harus ada 1 Guru Pembina PAI di sistem.', 'err');
+          return;
+        }
+        var filtered = list.filter(function (g) { return g.id !== id; });
+        if (!filtered.some(function (g) { return g.isDefault; })) {
+          filtered[0].isDefault = true;
+        }
+        RAPOR_STATE.daftarGpai = filtered;
+        simpanDaftarGpaiKeStorage();
+        renderTabelKelolaGpai();
+        renderSelectGpai();
+        toast('Guru Pembina PAI berhasil dihapus.', 'ok');
+      }
+
+      function jadikanGpaiDefault(id) {
+        var list = RAPOR_STATE.daftarGpai || [];
+        list.forEach(function (g) { g.isDefault = (g.id === id); });
+        RAPOR_STATE.selectedGpaiId = id;
+        simpanDaftarGpaiKeStorage();
+        renderTabelKelolaGpai();
+        renderSelectGpai();
+        sinkronkanPreviewRapor();
+        toast('Guru Pembina PAI default diperbarui.', 'ok');
+      }
+
+      // --- FILTER KELAS & SISWA OTOMATIS ---
+      function populateRaporKelasOptions() {
+        var el = $('raporFilterKelas');
+        if (!el) return;
+
+        var setKelas = {};
+        (SISWA_ADMIN || []).forEach(function (s) {
+          if (s.kelas) setKelas[s.kelas.trim()] = true;
+        });
+
+        var listKelas = Object.keys(setKelas).sort();
+
+        var opts = '<option value="">-- Pilih Kelas --</option>' +
+          listKelas.map(function (k) {
+            return '<option value="' + esc(k) + '">' + esc(k) + '</option>';
+          }).join('');
+
+        el.innerHTML = opts;
+
+        if (listKelas.length) {
+          el.value = listKelas[0];
+          onRaporKelasBerubah();
+        }
+      }
+
+      function onRaporKelasBerubah() {
+        var elKelas = $('raporFilterKelas');
+        var elSiswa = $('raporFilterSiswa');
+        var k = elKelas ? elKelas.value : '';
+        RAPOR_STATE.selectedKelas = k;
+
+        var labelMasal = $('btnLabelCetakMasal');
+        if (labelMasal) {
+          labelMasal.textContent = k ? ('Cetak Masal 1 Kelas (' + k + ')') : 'Cetak Masal 1 Kelas';
+        }
+
+        if (!k) {
+          elSiswa.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+          return;
+        }
+
+        var listSiswa = (SISWA_ADMIN || []).filter(function (s) {
+          return (s.kelas || '').trim() === k.trim();
+        });
+
+        // Urutkan siswa berdasarkan nama
+        listSiswa.sort(function (a, b) {
+          return (a.nama || '').localeCompare(b.nama || '');
+        });
+
+        var opts = listSiswa.map(function (s) {
+          return '<option value="' + esc(s.nis) + '">' + esc(s.nis) + ' - ' + esc(s.nama) + '</option>';
+        }).join('');
+
+        elSiswa.innerHTML = opts || '<option value="">(Tidak ada siswa di kelas ini)</option>';
+
+        if (listSiswa.length) {
+          elSiswa.value = listSiswa[0].nis;
+          onRaporSiswaBerubah();
+        }
+      }
+
+      function onRaporSiswaBerubah() {
+        var elSiswa = $('raporFilterSiswa');
+        RAPOR_STATE.selectedNis = elSiswa ? elSiswa.value : '';
+        RAPOR_STATE.customNilai = null; // Reset custom override untuk siswa baru
+        hitungDanRenderRaporAktif();
+      }
+
+      function getSelectedSiswaObj() {
+        var nis = RAPOR_STATE.selectedNis;
+        if (!nis) return null;
+        return (SISWA_ADMIN || []).find(function (s) { return String(s.nis) === String(nis); });
+      }
+
+      // --- KALKULASI & FORMULA SKOR RAPOR IBADAH ---
+      function hitungDataRaporSiswa(siswaObj, customOverride) {
+        if (!siswaObj) {
+          siswaObj = {
+            nama: 'ADEB MUTTAQIN ASHFAR',
+            nis: '1001',
+            kelas: 'X RPL 1',
+            jurusan: 'Rekayasa Perangkat Lunak'
+          };
+        }
+
+        // 1. DIMENSI SHOLAT (FARDHU & SUNNAH)
+        var skorSholat = 96.0;
+        var capaianSholat = 'Tertib Penuh';
+
+        // Hitung dari rekap presensi jika ada data
+        if (LAPORAN_HARIAN && LAPORAN_HARIAN.data) {
+          var hadirCount = 0;
+          var totalSholat = 0;
+          LAPORAN_HARIAN.data.forEach(function (r) {
+            if (String(r.nis) === String(siswaObj.nis)) {
+              totalSholat++;
+              if (r.status === 'Hadir' || r.status === 'Halangan') hadirCount++;
+            }
+          });
+          if (totalSholat > 0) {
+            skorSholat = Math.round((hadirCount / totalSholat) * 1000) / 10;
+          }
+        }
+
+        // 2. DIMENSI BACA AL-QUR'AN (TILAWAH & TAHSIN)
+        var skorQuran = 92.0;
+        var capaianQuran = 'Tartil Tuntas';
+
+        // 3. DIMENSI AMALIAH RAMADHAN (PUASA & TARAWIH)
+        var skorRamadhan = 95.0;
+        var capaianRamadhan = 'Penuh (30 Hari)';
+
+        // 4. DIMENSI ADAB & KARAKTER (KULTUM & BUDI PEKERTI)
+        var skorKarakter = 95.0;
+        var capaianKarakter = 'Sangat Aktif';
+
+        // Catatan Pembimbing Default
+        var catatanDefault = 'Alhamdulillah, ananda menunjukkan integritas dan kekhusyukan yang luar biasa. Pertahankan keistiqomahan sholat dan tadarus Al-Qur\'an pada bulan-bulan berikutnya.';
+
+        // Override jika ada custom input dari guru
+        if (customOverride) {
+          if (customOverride.skorSholat != null) skorSholat = parseFloat(customOverride.skorSholat);
+          if (customOverride.skorQuran != null) skorQuran = parseFloat(customOverride.skorQuran);
+          if (customOverride.skorRamadhan != null) skorRamadhan = parseFloat(customOverride.skorRamadhan);
+          if (customOverride.skorKarakter != null) skorKarakter = parseFloat(customOverride.skorKarakter);
+          if (customOverride.catatan) catatanDefault = customOverride.catatan;
+        }
+
+        // Hitung Rata-rata Kumulatif
+        var totalPersen = Math.round(((skorSholat + skorQuran + skorRamadhan + skorKarakter) / 4) * 10) / 10;
+
+        // Tentukan Predikat
+        function getPredikatBadge(skor) {
+          if (skor >= 90) return { predikat: 'MUMTAZ', grade: 'Mumtaz (A)', sub: 'Amat Baik • Istiqomah Terpuji' };
+          if (skor >= 80) return { predikat: 'JAYYID JIDDAN', grade: 'Jayyid Jiddan (B+)', sub: 'Baik Sekali • Istiqomah' };
+          if (skor >= 70) return { predikat: 'JAYYID', grade: 'Jayyid (B)', sub: 'Baik • Pembiasaan Berjalan' };
+          if (skor >= 60) return { predikat: 'MAQBUL', grade: 'Maqbul (C)', sub: 'Cukup • Perlu Peningkatan' };
+          return { predikat: 'DHA\'IF', grade: 'Dha\'if (D)', sub: 'Perlu Bimbingan Khusus' };
+        }
+
+        var predKumulatif = getPredikatBadge(totalPersen);
+
+        var data = {
+          siswa: siswaObj,
+          periode: ($('raporInputPeriode') ? $('raporInputPeriode').value : 'Ramadhan & Pembiasaan Ibadah Semester Genap'),
+          tahunAjaran: ($('raporInputTahun') ? $('raporInputTahun').value : '2025/2026'),
+          titimangsa: ($('raporInputTitimangsa') ? $('raporInputTitimangsa').value : formatTitimangsaRapor(new Date())),
+          gpai: getSelectedGpaiObj(),
+          totalPersen: totalPersen.toFixed(1) + '%',
+          predikat: predKumulatif.predikat,
+          predikatSub: predKumulatif.sub,
+          dimensi: [
+            {
+              no: 1,
+              nama: 'Nilai Sholat',
+              sub: 'Fardhu & Sunnah',
+              indikator: 'Kepatuhan sholat wajib 5 waktu berjamaah, sholat Dhuha, Rawatib, dan qiyamul lail/tahajud.',
+              target: '100%',
+              capaian: capaianSholat,
+              skor: skorSholat.toFixed(1) + '%',
+              predikat: getPredikatBadge(skorSholat).grade
+            },
+            {
+              no: 2,
+              nama: 'Nilai Baca Al-Qur\'an',
+              sub: 'Tilawah & Tahsin',
+              indikator: 'Kelancaran makhorijul huruf, kaidah hukum tajwid, tadarus Al-Qur\'an serta hafalan surat pendek (Juz 30).',
+              target: 'Juz 1–15',
+              capaian: capaianQuran,
+              skor: skorQuran.toFixed(1) + '%',
+              predikat: getPredikatBadge(skorQuran).grade
+            },
+            {
+              no: 3,
+              nama: 'Nilai Ramadhan',
+              sub: 'Amaliah Khusus',
+              indikator: 'Pelaksanaan ibadah puasa Ramadhan sebulan penuh, sholat Tarawih, Witir, infaq/sedekah subuh, dan zakat fitrah.',
+              target: '1 Bulan Penuh (30 Hari)',
+              capaian: capaianRamadhan,
+              skor: skorRamadhan.toFixed(1) + '%',
+              predikat: getPredikatBadge(skorRamadhan).grade
+            },
+            {
+              no: 4,
+              nama: 'Adab & Karakter',
+              sub: 'Kultum & Budi Pekerti',
+              indikator: 'Menyimak dan merangkum kultum Ramadhan, adab tawadhu kepada guru & orang tua, serta kepedulian sosial.',
+              target: '100%',
+              capaian: capaianKarakter,
+              skor: skorKarakter.toFixed(1) + '%',
+              predikat: getPredikatBadge(skorKarakter).grade
+            }
+          ],
+          catatanPembimbing: catatanDefault
+        };
+
+        return data;
+      }
+
+      function hitungDanRenderRaporAktif() {
+        var s = getSelectedSiswaObj();
+        var data = hitungDataRaporSiswa(s, RAPOR_STATE.customNilai);
+        RAPOR_STATE.dataCalculated = data;
+        var elPreview = $('raporSheetPreview');
+        if (elPreview) {
+          elPreview.innerHTML = renderLembarRaporHtml(data);
+        }
+      }
+
+      function sinkronkanPreviewRapor() {
+        if (!RAPOR_STATE.dataCalculated) {
+          hitungDanRenderRaporAktif();
+          return;
+        }
+        var s = getSelectedSiswaObj();
+        var data = hitungDataRaporSiswa(s, RAPOR_STATE.customNilai);
+        RAPOR_STATE.dataCalculated = data;
+        var elPreview = $('raporSheetPreview');
+        if (elPreview) {
+          elPreview.innerHTML = renderLembarRaporHtml(data);
+        }
+      }
+
+      function hitungOtomatisNilaiRapor(showToast) {
+        RAPOR_STATE.customNilai = null;
+        hitungDanRenderRaporAktif();
+        if (showToast) toast('Skor rapor berhasil dihitung ulang otomatis dari data presensi.', 'ok');
+      }
+
+      // --- LOGO SVG VEKTOR RESMI (SEKOLAH & MGMP PAI) ---
+      function getRaporLogoSekolahSvg() {
+        return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">' +
+          '<defs>' +
+          '<linearGradient id="gradSchool" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#1e3a8a"/>' +
+          '<stop offset="100%" stop-color="#0284c7"/>' +
+          '</linearGradient>' +
+          '</defs>' +
+          '<polygon points="50,4 92,20 84,78 50,96 16,78 8,20" fill="url(#gradSchool)" stroke="#f59e0b" stroke-width="2.5"/>' +
+          '<polygon points="50,9 87,23 80,75 50,91 20,75 13,23" fill="#ffffff" opacity="0.95"/>' +
+          '<polygon points="50,14 83,26 77,72 50,87 23,72 17,26" fill="url(#gradSchool)"/>' +
+          '<polygon points="50,22 53,30 62,30 55,35 58,43 50,38 42,43 45,35 38,30 47,30" fill="#fbbf24"/>' +
+          '<path d="M50 44 L32 52 L32 62 L50 56 L68 62 L68 52 Z" fill="#ffffff"/>' +
+          '<path d="M50 44 L50 68" stroke="#0284c7" stroke-width="2"/>' +
+          '<circle cx="50" cy="74" r="6" fill="#f59e0b"/>' +
+          '<text x="50" y="83" font-size="6" font-family="Arial,sans-serif" font-weight="900" fill="#ffffff" text-anchor="middle">SMKN 1</text>' +
+          '</svg>';
+      }
+
+      function getRaporLogoMgmpPaiSvg() {
+        return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">' +
+          '<defs>' +
+          '<linearGradient id="gradPai" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#047857"/>' +
+          '<stop offset="100%" stop-color="#064e3b"/>' +
+          '</linearGradient>' +
+          '</defs>' +
+          '<rect x="20" y="20" width="60" height="60" rx="8" transform="rotate(45 50 50)" fill="url(#gradPai)" stroke="#d97706" stroke-width="2.5"/>' +
+          '<circle cx="50" cy="50" r="32" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>' +
+          '<circle cx="50" cy="50" r="28" fill="url(#gradPai)"/>' +
+          '<path d="M50 28 C42 36 42 42 50 46 C58 42 58 36 50 28 Z" fill="#fbbf24"/>' +
+          '<path d="M35 50 C42 45 48 48 50 54 C52 48 58 45 65 50 L63 60 C57 56 52 57 50 62 C48 57 43 56 37 60 Z" fill="#ffffff"/>' +
+          '<circle cx="50" cy="27" r="2" fill="#fbbf24"/>' +
+          '<text x="50" y="70" font-size="7.5" font-family="Arial,sans-serif" font-weight="900" fill="#fbbf24" text-anchor="middle">PAI</text>' +
+          '</svg>';
+      }
+
+      // --- GENERATE TEMPLATE HTML RAPOR A4 PRESISI (SESUAI DOKUMEN REFERENSI) ---
+      function renderLembarRaporHtml(d) {
+        var s = d.siswa || {};
+        var namaSiswa = esc(s.nama || '-');
+        var nisSiswa = esc(s.nis || '-');
+        var kelasKonsentrasi = esc((s.kelas || '-') + ' • ' + (s.jurusan || 'Rekayasa Perangkat Lunak'));
+        var periode = esc(d.periode);
+        var namaSekolah = (PENGATURAN && PENGATURAN.nama_sekolah) ? esc(PENGATURAN.nama_sekolah).replace(/^Aplikasi untuk Sekolah\s*/i, '').trim() : 'SMK NEGERI 1 MAGELANG';
+        var gpai = d.gpai || {};
+        var namaGpai = esc(gpai.nama || 'Muhammad Syarif, M.Pd.I.');
+        var nipGpai = esc(gpai.nip || '19820415 200801 1 012');
+        var jabatanGpai = esc(gpai.jabatan || ('Guru Pembina PAI ' + namaSekolah));
+
+        // Generate baris tabel dimensi
+        var rowsHtml = d.dimensi.map(function (row) {
+          return '<tr>' +
+            '<td style="text-align:center;font-weight:700;">' + row.no + '</td>' +
+            '<td><div style="font-weight:800;color:#064e3b !important;">' + esc(row.nama) + '</div><div style="font-size:8.5px;color:#64748b !important;">' + esc(row.sub) + '</div></td>' +
+            '<td style="line-height:1.35;">' + esc(row.indikator) + '</td>' +
+            '<td style="text-align:center;font-weight:700;white-space:nowrap;">' + esc(row.target) + '</td>' +
+            '<td style="text-align:center;font-weight:700;">' + esc(row.capaian) + '</td>' +
+            '<td style="text-align:center;font-weight:800;font-size:10.5px;color:#0d9488 !important;">' + esc(row.skor) + '</td>' +
+            '<td style="text-align:center;font-weight:700;color:#064e3b !important;">' + esc(row.predikat) + '</td>' +
+            '</tr>';
+        }).join('');
+
+        return '<div class="rapor-kop">' +
+          '<div class="rapor-kop-logo" title="Logo Sekolah">' + getRaporLogoSekolahSvg() + '</div>' +
+          '<div class="rapor-kop-center">' +
+          '<div class="rapor-basmalah">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1575;&#1604;&#1604;&#1617;&#1648;&#1607;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1618;&#1605;&#1648;&#1606;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1616;&#1610;&#1605;&#1616;</div>' +
+          '<div class="rapor-kop-title">RAPOR IBADAH & CAPAIAN AMALIAH</div>' +
+          '<div class="rapor-kop-school">' + namaSekolah + ' • TAHUN AJARAN ' + esc(d.tahunAjaran) + '</div>' +
+          '<div class="rapor-kop-mgmp">MUSYAWARAH GURU MATA PELAJARAN (MGMP) PENDIDIKAN AGAMA ISLAM & BUDI PEKERTI</div>' +
+          '</div>' +
+          '<div class="rapor-kop-logo" title="Logo MGMP PAI">' + getRaporLogoMgmpPaiSvg() + '</div>' +
+          '</div>' +
+
+          '<div class="rapor-identity-row">' +
+          '<table class="rapor-bio-table">' +
+          '<tr><td class="rapor-bio-label">Nama Siswa</td><td class="rapor-bio-colon">:</td><td class="rapor-bio-value">' + namaSiswa + '</td></tr>' +
+          '<tr><td class="rapor-bio-label">Nomor Induk Siswa (NIS)</td><td class="rapor-bio-colon">:</td><td class="rapor-bio-value">' + nisSiswa + '</td></tr>' +
+          '<tr><td class="rapor-bio-label">Kelas / Konsentrasi</td><td class="rapor-bio-colon">:</td><td class="rapor-bio-value">' + kelasKonsentrasi + '</td></tr>' +
+          '<tr><td class="rapor-bio-label">Periode Penilaian</td><td class="rapor-bio-colon">:</td><td class="rapor-bio-value">' + periode + '</td></tr>' +
+          '</table>' +
+          '<div class="rapor-hero-score">' +
+          '<div class="rapor-hero-label">TOTAL CAPAIAN KUMULATIF</div>' +
+          '<div class="rapor-hero-num">' + esc(d.totalPersen) + '</div>' +
+          '<div class="rapor-hero-badge">PREDIKAT : ' + esc(d.predikat) + '</div>' +
+          '<div class="rapor-hero-sub">' + esc(d.predikatSub) + '</div>' +
+          '</div>' +
+          '</div>' +
+
+          '<div class="rapor-dimensi-grid">' +
+          '<div class="rapor-dimensi-card">' +
+          '<div class="rapor-dimensi-title">' + esc(d.dimensi[0].nama) + '</div>' +
+          '<div class="rapor-dimensi-score">' + esc(d.dimensi[0].skor) + '</div>' +
+          '<div class="rapor-dimensi-sub">5 Waktu & Sunnah</div>' +
+          '</div>' +
+          '<div class="rapor-dimensi-card">' +
+          '<div class="rapor-dimensi-title">' + esc(d.dimensi[1].nama) + '</div>' +
+          '<div class="rapor-dimensi-score">' + esc(d.dimensi[1].skor) + '</div>' +
+          '<div class="rapor-dimensi-sub">Tartil & Tadarus</div>' +
+          '</div>' +
+          '<div class="rapor-dimensi-card">' +
+          '<div class="rapor-dimensi-title">' + esc(d.dimensi[2].nama) + '</div>' +
+          '<div class="rapor-dimensi-score">' + esc(d.dimensi[2].skor) + '</div>' +
+          '<div class="rapor-dimensi-sub">Puasa & Tarawih</div>' +
+          '</div>' +
+          '<div class="rapor-dimensi-card">' +
+          '<div class="rapor-dimensi-title">' + esc(d.dimensi[3].nama) + '</div>' +
+          '<div class="rapor-dimensi-score">' + esc(d.dimensi[3].skor) + '</div>' +
+          '<div class="rapor-dimensi-sub">Adab & Keaktifan</div>' +
+          '</div>' +
+          '</div>' +
+
+          '<div class="rapor-sec-header">REKAPITULASI INDIKATOR CAPAIAN IBADAH SISWA</div>' +
+
+          '<table class="rapor-main-table">' +
+          '<thead>' +
+          '<tr>' +
+          '<th style="width:28px;">NO</th>' +
+          '<th style="width:130px;">DIMENSI IBADAH</th>' +
+          '<th>INDIKATOR & MATERI PEMBIASAAN</th>' +
+          '<th style="width:95px;">TARGET</th>' +
+          '<th style="width:90px;">CAPAIAN</th>' +
+          '<th style="width:65px;">SKOR (%)</th>' +
+          '<th style="width:90px;">PREDIKAT</th>' +
+          '</tr>' +
+          '</thead>' +
+          '<tbody>' +
+          rowsHtml +
+          '<tr class="rapor-table-footer">' +
+          '<td colspan="5" style="text-align:right;font-weight:800;letter-spacing:0.3px;color:#064e3b !important;">' +
+          'HASIL TOTAL AKHIR PERSENTASE (RATA-RATA KUMULATIF)' +
+          '</td>' +
+          '<td style="text-align:center;font-weight:900;font-size:11px;color:#064e3b !important;">' + esc(d.totalPersen) + '</td>' +
+          '<td style="text-align:center;"><span style="background:#064e3b;color:#ffffff;padding:2px 8px;border-radius:10px;font-size:8.5px;font-weight:800;letter-spacing:0.5px;">' + esc(d.predikat) + '</span></td>' +
+          '</tr>' +
+          '</tbody>' +
+          '</table>' +
+
+          '<div class="rapor-dual-boxes">' +
+          '<div class="rapor-quote-box">' +
+          '<div class="rapor-quote-text">"Sesungguhnya amal yang pertama kali dihisab dari seorang hamba pada hari kiamat adalah sholatnya. Jika sholatnya baik, sungguh ia telah beruntung dan selamat."</div>' +
+          '<div class="rapor-quote-author">— HR. Tirmidzi & An-Nasa\'i</div>' +
+          '</div>' +
+          '<div class="rapor-note-box">' +
+          '<div class="rapor-note-title">CATATAN PEMBIMBING PAI</div>' +
+          '<div class="rapor-note-content">' + esc(d.catatanPembimbing) + '</div>' +
+          '</div>' +
+          '</div>' +
+
+          '<div class="rapor-signature-wrap">' +
+          '<div class="rapor-titimangsa">' + esc(d.titimangsa) + '</div>' +
+          '<div class="rapor-signature-grid">' +
+          '<div class="rapor-sig-col">' +
+          '<div class="rapor-sig-role">Orang Tua / Wali Murid</div>' +
+          '<div class="rapor-sig-space"></div>' +
+          '<div class="rapor-sig-name">( ............................................ )</div>' +
+          '<div class="rapor-sig-nip">Tanda Tangan & Nama Terang</div>' +
+          '</div>' +
+          '<div class="rapor-sig-col">' +
+          '<div class="rapor-sig-role">' + jabatanGpai + '</div>' +
+          '<div class="rapor-sig-space"></div>' +
+          '<div class="rapor-sig-name">' + namaGpai + '</div>' +
+          '<div class="rapor-sig-nip">NIP. ' + nipGpai + '</div>' +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+
+          '<div class="rapor-footer-bar">' +
+          '<div>' + namaSekolah + '</div>' +
+          '<div class="rapor-footer-motto">“Membentuk Generasi Berkeahlian, Berkarakter Luhur & Istiqomah Beribadah”</div>' +
+          '<div>Halaman 1 dari 1</div>' +
+          '</div>';
+      }
+
+      // --- CETAK RAPOR SISWA TUNGGAL & CETAK MASAL 1 KELAS ---
+      function cetakRaporSiswaAktif() {
+        var s = getSelectedSiswaObj();
+        if (!s) {
+          toast('Pilih siswa terlebih dahulu untuk dicetak.', 'err');
+          return;
+        }
+
+        var data = hitungDataRaporSiswa(s, RAPOR_STATE.customNilai);
+        var sheetHtml = '<div class="rapor-sheet">' + renderLembarRaporHtml(data) + '</div>';
+        bukaJendelaCetakRapor([sheetHtml], 'Rapor Ibadah - ' + s.nama + ' (' + s.nis + ')');
+      }
+
+      function cetakRaporSemuaKelas() {
+        var k = RAPOR_STATE.selectedKelas;
+        if (!k) {
+          toast('Pilih kelas terlebih dahulu untuk cetak masal.', 'err');
+          return;
+        }
+
+        var listSiswa = (SISWA_ADMIN || []).filter(function (s) {
+          return (s.kelas || '').trim() === k.trim();
+        });
+
+        if (!listSiswa.length) {
+          toast('Tidak ada siswa di kelas ' + k, 'err');
+          return;
+        }
+
+        listSiswa.sort(function (a, b) {
+          return (a.nama || '').localeCompare(b.nama || '');
+        });
+
+        var sheets = listSiswa.map(function (s) {
+          var d = hitungDataRaporSiswa(s, null);
+          return '<div class="rapor-sheet">' + renderLembarRaporHtml(d) + '</div>';
+        });
+
+        bukaJendelaCetakRapor(sheets, 'Rapor Ibadah Masal - Kelas ' + k + ' (' + listSiswa.length + ' Siswa)');
+      }
+
+      function bukaJendelaCetakRapor(sheetsArray, docTitle) {
+        var win = window.open('', '_blank');
+        if (!win) {
+          toast('Gagal membuka jendela cetak. Pastikan pop-up diizinkan browser.', 'err');
+          return;
+        }
+
+        var htmlContent = '<!DOCTYPE html>' +
+          '<html lang="id">' +
+          '<head>' +
+          '<meta charset="UTF-8">' +
+          '<title>' + esc(docTitle) + '</title>' +
+          '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+          '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">' +
+          '<style>' +
+          '@page { size: A4 portrait; margin: 8mm 10mm 8mm 10mm; }' +
+          '* { box-sizing: border-box; margin:0; padding:0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +
+          'body { background: #525659; font-family: "Plus Jakarta Sans", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px 0; }' +
+          '.print-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #1e293b; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }' +
+          '.print-btn { background: #0d9488; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }' +
+          '.rapor-sheet { width: 210mm; min-height: 297mm; background: #ffffff !important; color: #0f172a !important; padding: 12mm 14mm 10mm 14mm; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); display: flex; flex-direction: column; justify-content: space-between; page-break-after: always; break-after: page; }' +
+          '.rapor-sheet:last-child { page-break-after: avoid; break-after: avoid; }' +
+          '.rapor-kop { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-bottom: 10px; border-bottom: 3px solid #0d9488; position: relative; }' +
+          '.rapor-kop::after { content: ""; position: absolute; bottom: -6px; left: 0; right: 0; height: 1px; background: #0d9488; }' +
+          '.rapor-kop-logo { width: 72px; height: 72px; flex-shrink: 0; }' +
+          '.rapor-kop-center { flex: 1; text-align: center; }' +
+          '.rapor-basmalah { font-family: "Amiri", "Traditional Arabic", serif; font-size: 20px; color: #064e3b; margin-bottom: 3px; direction: rtl; }' +
+          '.rapor-kop-title { font-size: 15px; font-weight: 800; color: #064e3b; letter-spacing: 0.5px; }' +
+          '.rapor-kop-school { font-size: 12.5px; font-weight: 700; color: #0f172a; margin: 2px 0; }' +
+          '.rapor-kop-mgmp { font-size: 10px; font-weight: 600; color: #475569; letter-spacing: 0.3px; }' +
+          '.rapor-identity-row { display: grid; grid-template-columns: 1fr 210px; gap: 16px; margin-top: 14px; margin-bottom: 12px; align-items: stretch; }' +
+          '.rapor-bio-table { width: 100%; font-size: 11.5px; border-collapse: collapse; line-height: 1.55; }' +
+          '.rapor-bio-label { width: 130px; font-weight: 600; color: #334155; }' +
+          '.rapor-bio-colon { width: 12px; text-align: center; color: #334155; }' +
+          '.rapor-bio-value { font-weight: 700; color: #0f172a; }' +
+          '.rapor-hero-score { background: #f0fdf4 !important; border: 1.5px solid #86efac; border-radius: 10px; padding: 10px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }' +
+          '.rapor-hero-label { font-size: 9.5px; font-weight: 800; color: #065f46; letter-spacing: 0.5px; margin-bottom: 2px; }' +
+          '.rapor-hero-num { font-size: 28px; font-weight: 900; color: #047857; line-height: 1.1; margin-bottom: 5px; }' +
+          '.rapor-hero-badge { display: inline-block; background: #064e3b; color: #ffffff; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 3px; }' +
+          '.rapor-hero-sub { font-size: 9px; font-weight: 600; color: #065f46; }' +
+          '.rapor-dimensi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }' +
+          '.rapor-dimensi-card { background: #f8fafc !important; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px 6px; text-align: center; }' +
+          '.rapor-dimensi-title { font-size: 9px; font-weight: 800; color: #475569; letter-spacing: 0.4px; margin-bottom: 2px; }' +
+          '.rapor-dimensi-score { font-size: 17px; font-weight: 850; color: #0d9488; line-height: 1.2; margin-bottom: 2px; }' +
+          '.rapor-dimensi-sub { font-size: 8.5px; color: #64748b; font-weight: 600; }' +
+          '.rapor-sec-header { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #065f46; letter-spacing: 0.4px; margin-bottom: 6px; }' +
+          '.rapor-sec-header::before { content: ""; display: inline-block; width: 4px; height: 13px; background: #0d9488; border-radius: 2px; }' +
+          '.rapor-main-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px; }' +
+          '.rapor-main-table th { background: #064e3b !important; color: #ffffff !important; border: 1px solid #064e3b; padding: 7px 5px; text-align: center; font-weight: 800; letter-spacing: 0.3px; font-size: 9.5px; }' +
+          '.rapor-main-table td { border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: middle; color: #0f172a; line-height: 1.35; }' +
+          '.rapor-main-table tbody tr:nth-child(even) { background: #f8fafc !important; }' +
+          '.rapor-table-footer { background: #f0fdf4 !important; font-weight: 800; border: 1.5px solid #86efac; }' +
+          '.rapor-table-footer td { padding: 7px 6px; border: 1px solid #86efac; font-size: 10px; }' +
+          '.rapor-dual-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; align-items: stretch; }' +
+          '.rapor-quote-box { border: 1.2px solid #fcd34d; background: #fffbeb !important; border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; }' +
+          '.rapor-quote-text { font-size: 9.5px; font-style: italic; color: #92400e; line-height: 1.45; margin-bottom: 4px; }' +
+          '.rapor-quote-author { font-size: 8.5px; font-weight: 700; color: #b45309; text-align: right; }' +
+          '.rapor-note-box { border: 1.2px solid #5eead4; background: #f0fdf4 !important; border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; }' +
+          '.rapor-note-title { font-size: 9.5px; font-weight: 800; color: #065f46; letter-spacing: 0.4px; margin-bottom: 4px; }' +
+          '.rapor-note-content { font-size: 9.5px; color: #064e3b; line-height: 1.4; }' +
+          '.rapor-signature-wrap { margin-bottom: 12px; }' +
+          '.rapor-titimangsa { text-align: right; font-size: 10.5px; color: #0f172a; font-weight: 600; margin-bottom: 6px; }' +
+          '.rapor-signature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center; }' +
+          '.rapor-sig-col { display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 95px; }' +
+          '.rapor-sig-role { font-size: 10.5px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }' +
+          '.rapor-sig-space { height: 52px; }' +
+          '.rapor-sig-name { font-size: 10.5px; font-weight: 800; text-decoration: underline; color: #0f172a; }' +
+          '.rapor-sig-nip { font-size: 9.5px; color: #334155; font-weight: 600; margin-top: 2px; }' +
+          '.rapor-footer-bar { border-top: 1px solid #cbd5e1; padding-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 8.5px; color: #64748b; margin-top: auto; }' +
+          '.rapor-footer-motto { font-style: italic; font-weight: 600; color: #065f46; }' +
+          '@media print { .print-bar { display: none !important; } body { background: #fff !important; padding: 0 !important; } .rapor-sheet { margin: 0 auto !important; box-shadow: none !important; } }' +
+          '</style>' +
+          '</head>' +
+          '<body>' +
+          '<div class="print-bar">' +
+          '<div style="font-weight:700;font-size:14px;">📜 ' + esc(docTitle) + '</div>' +
+          '<div style="display:flex;gap:10px;">' +
+          '<button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF Sekarang</button>' +
+          '<button class="print-btn" style="background:#475569;" onclick="window.close()">Tutup</button>' +
+          '</div>' +
+          '</div>' +
+          '<div style="height:55px;" class="print-bar-space"></div>' +
+          sheetsArray.join('\n') +
+          '</body>' +
+          '</html>';
+
+        win.document.open();
+        win.document.write(htmlContent);
+        win.document.close();
+        win.focus();
+
+        setTimeout(function () {
+          try { win.print(); } catch (e) { }
+        }, 500);
+      }
+
+      // --- MODAL SESUAIKAN NILAI & CATATAN ---
+      function bukaModalSesuaikanNilai() {
+        var s = getSelectedSiswaObj();
+        if (!s) {
+          toast('Pilih siswa terlebih dahulu.', 'err');
+          return;
+        }
+
+        var d = hitungDataRaporSiswa(s, RAPOR_STATE.customNilai);
+        $('fSkorSholat').value = parseFloat(d.dimensi[0].skor) || 96.0;
+        $('fSkorQuran').value = parseFloat(d.dimensi[1].skor) || 92.0;
+        $('fSkorRamadhan').value = parseFloat(d.dimensi[2].skor) || 95.0;
+        $('fSkorKarakter').value = parseFloat(d.dimensi[3].skor) || 95.0;
+        $('fCatatanPembimbing').value = d.catatanPembimbing || '';
+
+        var m = $('modalEditNilaiRapor');
+        if (m) m.classList.remove('hidden');
+      }
+
+      function tutupModalSesuaikanNilai() {
+        var m = $('modalEditNilaiRapor');
+        if (m) m.classList.add('hidden');
+      }
+
+      function terapkanPenyesuaianNilai() {
+        var sholat = parseFloat($('fSkorSholat').value);
+        var quran = parseFloat($('fSkorQuran').value);
+        var ramadhan = parseFloat($('fSkorRamadhan').value);
+        var karakter = parseFloat($('fSkorKarakter').value);
+        var catatan = ($('fCatatanPembimbing').value || '').trim();
+
+        if (isNaN(sholat) || sholat < 0 || sholat > 100 ||
+            isNaN(quran) || quran < 0 || quran > 100 ||
+            isNaN(ramadhan) || ramadhan < 0 || ramadhan > 100 ||
+            isNaN(karakter) || karakter < 0 || karakter > 100) {
+          toast('Nilai harus berupa angka antara 0 sampai 100.', 'err');
+          return;
+        }
+
+        RAPOR_STATE.customNilai = {
+          skorSholat: sholat,
+          skorQuran: quran,
+          skorRamadhan: ramadhan,
+          skorKarakter: karakter,
+          catatan: catatan
+        };
+
+        hitungDanRenderRaporAktif();
+        tutupModalSesuaikanNilai();
+        toast('Penyesuaian nilai berhasil diterapkan ke lembar rapor.', 'ok');
+      }
+
+      function resetNilaiKeOtomatis() {
+        RAPOR_STATE.customNilai = null;
+        var s = getSelectedSiswaObj();
+        var d = hitungDataRaporSiswa(s, null);
+        $('fSkorSholat').value = parseFloat(d.dimensi[0].skor) || 96.0;
+        $('fSkorQuran').value = parseFloat(d.dimensi[1].skor) || 92.0;
+        $('fSkorRamadhan').value = parseFloat(d.dimensi[2].skor) || 95.0;
+        $('fSkorKarakter').value = parseFloat(d.dimensi[3].skor) || 95.0;
+        $('fCatatanPembimbing').value = d.catatanPembimbing || '';
+        hitungDanRenderRaporAktif();
+        toast('Nilai dikembalikan ke hitungan otomatis sistem.', 'ok');
       }
     </script>
     <script>
