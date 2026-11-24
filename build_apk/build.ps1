@@ -40,13 +40,16 @@ $webFiles = @(
     "index.html", "config.js", "islamic_features.js", "ramadhan_feature.js",
     "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png",
     "apple-touch-icon.png", "logo-siip.png", "favicon.png", "logo-smkn1.png", "logo-gpai.png", "logo-banner.png",
-    "mascot-ipin.png", "suara-si-ipin.mp3"
+    "mascot-ipin.png", "suara-si-ipin.mp3", "tahsin_games.js", "tahsin_feature.js", "tahsin.css"
 )
 foreach ($f in $webFiles) {
     $src = Join-Path $Root $f
     if (Test-Path $src) {
         Copy-Item -Path $src -Destination "$BuildDir\assets\$f" -Force
     }
+}
+if (Test-Path "$Root\assets") {
+    Copy-Item -Path "$Root\assets" -Destination "$BuildDir\assets" -Recurse -Force
 }
 
 Write-Host "=== GENERATING MIPMAP ICONS ==="

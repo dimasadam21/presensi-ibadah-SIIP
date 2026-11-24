@@ -1,11 +1,14 @@
 // Service Worker untuk S I I P - Sistem Informasi Ibadah Pelajar (PWA / WebAPK)
-const CACHE_NAME = 'siip-pwa-v27';
+const CACHE_NAME = 'siip-pwa-v28';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './config.js',
   './islamic_features.js',
   './ramadhan_feature.js',
+  './tahsin_games.js',
+  './tahsin_feature.js',
+  './tahsin.css',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',

@@ -30,6 +30,9 @@
   <script src="config.js?v=2.1.2"></script>
   <script src="islamic_features.js?v=2.1.2"></script>
   <script src="ramadhan_feature.js?v=2.1.2"></script>
+  <script src="tahsin_games.js?v=2.2.0"></script>
+  <script src="tahsin_feature.js?v=2.2.0"></script>
+  <link rel="stylesheet" href="tahsin.css?v=2.2.0">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
@@ -6126,6 +6129,17 @@
                 <div class="ic-desc">Bangun Tidur s/d Tidur Lagi</div>
               </div>
               <div class="ic-badge" id="badgeTotalDoa" style="background:#fae8ff; color:#86198f;">20+ Doa</div>
+
+            <!-- 6. Tahsin Al-Qur'an (SIUNTA) -->
+            <div class="islamic-card" onclick="bukaModalTahsin()"
+              style="border:1.5px solid #10b981; background:linear-gradient(135deg, #f0fdf4, #ecfdf5); cursor:pointer;">
+              <div class="ic-icon" style="background:#d1fae5; color:#047857;">🐪</div>
+              <div class="ic-body">
+                <div class="ic-title" style="color:#064e3b; font-weight:700;">Tahsin Al-Qur'an</div>
+                <div class="ic-desc" style="color:#065f46;">Belajar Tajwid, Video & 5 Game Edukasi SIUNTA</div>
+              </div>
+              <div class="ic-badge" style="background:#a7f3d0; color:#064e3b; font-weight:700;">SIUNTA 15 Materi</div>
+            </div>
             </div>
           </div>
         </div>
@@ -6222,6 +6236,10 @@
       <button class="nav-item active" id="navAbsen" onclick="gotoTab('Absen')" title="Absen Sholat">
         <span class="ni">🕌</span>
         <span class="lbl">Absen</span>
+      </button>
+      <button class="nav-item nav-ibadah-btn" id="navTahsin" onclick="bukaModalTahsin()" title="Tahsin Al-Qur'an & Game SIUNTA">
+        <span class="ni">🐪</span>
+        <span class="lbl">Tahsin</span>
       </button>
       <button class="nav-item nav-ibadah-btn" id="navRamadhan" onclick="bukaModalRamadhan()" title="Bulan Ramadhan">
         <span class="ni">🌙</span>
@@ -7624,6 +7642,15 @@
         </div>
       </div>
 
+      <!-- PAGE: KELOLA TAHSIN & GAME SIUNTA (ADMIN) -->
+      <div id="pageTahsinAdmin" class="hidden">
+        <div class="sec-title" style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <span>🐪 Kelola Kurikulum Tahsin & Game Interaktif (SIUNTA)</span>
+          <span style="font-size:12px;color:var(--muted);font-weight:normal;">Terintegrasi dari https://www.siunta.my.id/</span>
+        </div>
+        <div id="tahsinAdminContainer"></div>
+      </div>
+
       <!-- PAGE: CETAK RAPOR KHUSUS IBADAH & CAPAIAN AMALIAH (ADMIN) -->
       <div id="pageRaporAdmin" class="hidden">
         <div class="rapor-admin-toolbar">
@@ -7770,6 +7797,8 @@
           class="ni">📊</span>Laporan</button>
       <button class="nav-item admin" id="navSiswa" onclick="gotoAdminPage('Siswa')"><span class="ni">👥</span>Data
         Siswa</button>
+      <button class="nav-item admin" id="navTahsinAdmin" onclick="gotoAdminPage('Tahsin')"><span
+          class="ni">🐪</span>Tahsin SIUNTA</button>
       <button class="nav-item admin" id="navDoaAdmin" onclick="gotoAdminPage('Doa')"><span class="ni">🤲</span>Doa
         Harian</button>
       <button class="nav-item admin" id="navRamadhanAdmin" onclick="gotoAdminPage('Ramadhan')"><span
@@ -12768,15 +12797,19 @@
       $('pageSetting').classList.toggle('hidden', page !== 'Setting');
       if ($('pageDoaAdmin')) $('pageDoaAdmin').classList.toggle('hidden', page !== 'Doa');
       if ($('pageRamadhanAdmin')) $('pageRamadhanAdmin').classList.toggle('hidden', page !== 'Ramadhan');
+      if ($('pageTahsinAdmin')) $('pageTahsinAdmin').classList.toggle('hidden', page !== 'Tahsin');
       if ($('pageRaporAdmin')) $('pageRaporAdmin').classList.toggle('hidden', page !== 'Rapor');
       $('navLaporan').classList.toggle('active', page === 'Laporan');
       $('navSiswa').classList.toggle('active', page === 'Siswa');
       if ($('navDoaAdmin')) $('navDoaAdmin').classList.toggle('active', page === 'Doa');
       if ($('navRamadhanAdmin')) $('navRamadhanAdmin').classList.toggle('active', page === 'Ramadhan');
+      if ($('navTahsinAdmin')) $('navTahsinAdmin').classList.toggle('active', page === 'Tahsin');
       if ($('navRaporAdmin')) $('navRaporAdmin').classList.toggle('active', page === 'Rapor');
       $('navSetting').classList.toggle('active', page === 'Setting');
       if (page === 'Siswa') {
         muatSiswaAdmin();
+      } else if (page === 'Tahsin') {
+        if (typeof renderAdminTahsin === 'function') renderAdminTahsin();
       } else if (page === 'Doa') {
         if (typeof renderAdminDoaTable === 'function') renderAdminDoaTable();
       } else if (page === 'Ramadhan') {

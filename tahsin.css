@@ -1,0 +1,725 @@
+/* ==========================================================================
+   TAHSIN & TILAWAH AL-QUR'AN (SIUNTA) STYLESHEET
+   Sistem Inovasi untuk Ngaji Tahsin Al-Qur'an
+   ========================================================================== */
+
+/* --- 1. MODAL CONTAINER & BACKDROP --- */
+.tahsin-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99995 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.tahsin-modal.hidden {
+  display: none !important;
+}
+
+.tahsin-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.tahsin-modal-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(6, 78, 59, 0.35);
+  overflow: hidden;
+  z-index: 2;
+}
+
+@media (min-width: 768px) {
+  .tahsin-modal-box {
+    height: 94vh;
+    max-height: 920px;
+    border-radius: 24px;
+    border: 2px solid rgba(16, 185, 129, 0.3);
+  }
+}
+
+/* --- 2. TOP APP BAR --- */
+.tahsin-appbar {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #0d9488 100%);
+  color: #ffffff;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(6, 78, 59, 0.2);
+  flex-shrink: 0;
+}
+
+.tahsin-appbar-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tahsin-appbar-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tahsin-appbar-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+}
+
+.tahsin-appbar-sub {
+  margin: 2px 0 0 0;
+  font-size: 11.5px;
+  color: #a7f3d0;
+  font-weight: 500;
+}
+
+.tahsin-close-btn {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tahsin-close-btn:hover {
+  background: rgba(239, 68, 68, 0.85);
+  transform: rotate(90deg);
+}
+
+/* --- 3. PROGRESS & LEVEL BANNER --- */
+.tahsin-banner-progress {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-bottom: 1.5px solid #a7f3d0;
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+
+.tahsin-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tahsin-level-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tahsin-level-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.tahsin-badge-level {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.badge-dasar {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.badge-menengah {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.badge-lanjutan {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.tahsin-percent-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tahsin-percent-label {
+  font-size: 11.5px;
+  color: #047857;
+  font-weight: 500;
+}
+
+.tahsin-percent-value {
+  font-size: 15px;
+  color: #064e3b;
+  font-weight: 800;
+}
+
+.tahsin-progress-track {
+  width: 100%;
+  height: 9px;
+  background: #d1fae5;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.tahsin-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  border-radius: 10px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tahsin-progress-hint {
+  margin: 6px 0 0 0;
+  font-size: 11px;
+  color: #059669;
+  line-height: 1.4;
+}
+
+/* --- 4. TAB NAVIGATION --- */
+.tahsin-tab-nav {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+
+.tahsin-tab-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tahsin-tab-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 8px 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+  color: #4b5563;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.tahsin-tab-btn:hover {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #047857;
+}
+
+.tahsin-tab-btn.active {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: #047857;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+}
+
+/* --- 5. CONTENT SCROLL AREA --- */
+.tahsin-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #f8fafc;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- 6. MATERI CARDS --- */
+.tahsin-materi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tahsin-materi-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.tahsin-materi-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);
+}
+
+.tahsin-materi-card.materi-done {
+  border-color: #a7f3d0;
+  background: #fcfdfd;
+}
+
+.materi-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.materi-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.materi-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.materi-title {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.35;
+}
+
+.materi-type-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.tag-video {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.tag-img {
+  background: #e0e7ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.tag-text {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.materi-body {
+  margin-bottom: 12px;
+}
+
+.materi-desc {
+  margin: 0 0 10px 0;
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* Video Responsive Container */
+.tahsin-video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 8px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tahsin-video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.tahsin-video-native {
+  width: 100%;
+  max-height: 380px;
+  border-radius: 12px;
+  background: #000;
+  margin: 8px 0;
+}
+
+/* Image Zoomable Container */
+.tahsin-img-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  margin: 8px 0;
+  text-align: center;
+}
+
+.tahsin-img-wrapper img {
+  max-width: 100%;
+  max-height: 360px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.tahsin-img-wrapper:hover img {
+  transform: scale(1.02);
+}
+
+.img-zoom-tip {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+/* Materi Footer & Action Button */
+.materi-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-tahsin-status {
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-pending {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  color: #475569;
+}
+
+.status-pending:hover {
+  background: #ecfdf5;
+  border-color: #86efac;
+  color: #047857;
+}
+
+.status-done {
+  background: #dcfce7;
+  border: 1.5px solid #86efac;
+  color: #15803d;
+  font-weight: 700;
+}
+
+/* --- 7. GAME EDUKASI GRID & CARDS --- */
+.tahsin-game-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 600px) {
+  .tahsin-game-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tahsin-game-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+  border: 1.5px solid #a7f3d0;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 6px 12px -2px rgba(6, 78, 59, 0.08);
+  transition: all 0.2s ease;
+}
+
+.tahsin-game-card:hover {
+  transform: translateY(-2px);
+  border-color: #059669;
+  box-shadow: 0 12px 20px -3px rgba(6, 78, 59, 0.15);
+}
+
+.game-card-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.game-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.game-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #064e3b;
+}
+
+.game-level-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: #d1fae5;
+  color: #047857;
+}
+
+.game-card-desc {
+  margin: 0 0 14px 0;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.btn-play-game {
+  width: 100%;
+  padding: 9px 16px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
+  transition: all 0.15s ease;
+}
+
+.btn-play-game:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 6px 12px rgba(5, 150, 105, 0.4);
+}
+
+.btn-play-game:active {
+  transform: scale(0.98);
+}
+
+/* --- 8. GAME SANDBOX FULL-SCREEN MODAL --- */
+.game-tahsin-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: #000000 !important;
+  z-index: 100000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.game-tahsin-modal.hidden {
+  display: none !important;
+}
+
+.game-modal-header {
+  background: linear-gradient(135deg, #064e3b, #047857);
+  color: #ffffff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.game-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-header-icon {
+  font-size: 20px;
+}
+
+.game-header-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.btn-close-game {
+  background: #dc2626;
+  border: 1px solid #ef4444;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close-game:hover {
+  background: #b91c1c;
+}
+
+.game-iframe-wrapper {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.game-iframe-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* --- 9. LIGHTBOX IMAGE MODAL --- */
+.tahsin-lightbox-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 100005 !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.tahsin-lightbox-modal.active {
+  display: flex !important;
+}
+
+.lightbox-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 92vw;
+  max-height: 92vh;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.lightbox-bar {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.lightbox-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.lightbox-img-wrap {
+  overflow: auto;
+  padding: 12px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img-wrap img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.tahsin-empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13.5px;
+}
