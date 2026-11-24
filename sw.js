@@ -1,5 +1,5 @@
 // Service Worker untuk S I I P - Sistem Informasi Ibadah Pelajar (PWA / WebAPK)
-const CACHE_NAME = 'siip-pwa-v28';
+const CACHE_NAME = 'siip-pwa-v29';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -20,6 +20,7 @@ const ASSETS_TO_CACHE = [
   './logo-gpai.png',
   './logo-banner.png',
   './mascot-ipin.png',
+  './logo-si-ipin.png',
   './suara-si-ipin.mp3'
 ];
 

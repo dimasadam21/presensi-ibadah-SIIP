@@ -40,7 +40,7 @@ $webFiles = @(
     "index.html", "config.js", "islamic_features.js", "ramadhan_feature.js",
     "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png",
     "apple-touch-icon.png", "logo-siip.png", "favicon.png", "logo-smkn1.png", "logo-gpai.png", "logo-banner.png",
-    "mascot-ipin.png", "suara-si-ipin.mp3", "tahsin_games.js", "tahsin_feature.js", "tahsin.css"
+    "mascot-ipin.png", "logo-si-ipin.png", "suara-si-ipin.mp3", "tahsin_games.js", "tahsin_feature.js", "tahsin.css"
 )
 foreach ($f in $webFiles) {
     $src = Join-Path $Root $f
