@@ -1,114 +1,114 @@
 /**
- * TAHSIN & TILAWAH AL-QUR'AN MODULE (SIUNTA INTEGRATION)
- * Sistem Inovasi untuk Ngaji Tahsin Al-Qur'an
- * Terintegrasi penuh dengan Presensi Ibadah Pelajar (SIIP)
+ * TAHSIN & TILAWAH Al-Qur\'an MODULE - SI IPIN
+ * Sistem Informasi Ibadah Pelajar (SIIP)
+ * Terintegrasi penuh dengan Presensi Ibadah Pelajar
  */
 
 (function () {
   'use strict';
 
-  // 1. DATA MATERI ASLI DARI SIUNTA (15 MATERI + MATERI TINGKAT LANJUT LENGKAP)
+  // 1. DATA MATERI TAHSIN RESMI SI IPIN (15 MATERI LENGKAP & MANDIRI)
   var DEFAULT_TAHSIN_MATERI = [
     // --- LEVEL DASAR ---
     {
       id: 'mvgt4kms91qf',
       level: 'Dasar',
-      judul: 'Mulai Belajar Huruf Hijaiyyah',
-      kategori: "Al-Qur'an",
-      tipe: 'Video',
-      url: 'https://youtu.be/VZHb7yCTz-Y',
+      judul: 'Mulai Belajar Huruf Hijaiyyah Bersambung',
+      kategori: "Al-Qur\'an",
+      tipe: 'Teks',
+      url: '',
       localImg: '',
-      isi: 'Sebelum ke materi berikutnya, coba perhatikan video ini. Ketahui cara mengidentifikasi huruf hijaiyyah bersambung serta bacaan dan pelafalan huruf hijaiyyah yang fasih dan benar.'
+      isi: 'Panduan Praktis Mengenal Huruf Hijaiyyah:\n• Huruf Hijaiyyah berjumlah 28 huruf utama.\n• Terdapat 6 huruf yang TIDAK BISA disambung dengan huruf setelahnya: Alif (ا), Dal (د), Dzal (ذ), Ra (ر), Zai (ز), dan Wawu (و).\n• Huruf lainnya memiliki bentuk di awal, di tengah, dan di akhir kata.\n• Perhatikan letak titik dan lengkungan agar tidak tertukar antara Ba (ب), Ta (ت), Tsa (ث), Nun (ن), dan Ya (ي).'
     },
     {
       id: 'mvt1brm9qjda',
       level: 'Dasar',
       judul: 'Huruf Hijaiyyah Berbaris Atas (Fathah)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1793247609353_images__7_.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvt1brm9qjda.jpg',
-      isi: 'Harakat Fathah melambangkan vokal "A". Pelajari bagaimana bunyi setiap huruf hijaiyyah saat diberi baris fathah dengan membuka mulut secukupnya.'
+      isi: 'Harakat Fathah (ـَ) melambangkan vokal "A". Pelajari bagaimana bunyi setiap huruf hijaiyyah saat diberi baris fathah dengan membuka rongga mulut secukupnya secara fasih dan jelas.'
     },
     {
       id: 'mvt1qhkl0dr7',
       level: 'Dasar',
       judul: 'Huruf Hijaiyyah Berbaris Bawah (Kasroh)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1794916540433_Gemini_Generated_Image_jiexbojiexbojiex.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvt1qhkl0dr7.jpg',
-      isi: 'Harakat Kasrah melambangkan vokal "I". Perhatikan posisi bibir yang ditarik ke bawah saat melafalkan huruf hijaiyyah berbaris kasrah agar makhrajnya tepat.'
+      isi: 'Harakat Kasrah (ـِ) melambangkan vokal "I". Perhatikan posisi bibir yang ditarik ke bawah saat melafalkan huruf hijaiyyah berbaris kasrah agar makhraj dan suaranya tepat tidak miring.'
     },
     {
       id: 'mvt23v38uqba',
       level: 'Dasar',
       judul: 'Huruf Hijaiyyah Berbaris Depan (Dhamma)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1794916615401_Gemini_Generated_Image_bbt268bbt268bbt2.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvt23v38uqba.jpg',
-      isi: 'Harakat Dhammah melambangkan vokal "U". Perhatikan posisi kedua bibir yang dimonyongkan (membuat bulatan) saat melafalkan huruf berbaris dhammah.'
+      isi: 'Harakat Dhammah (ـُ) melambangkan vokal "U". Perhatikan posisi kedua bibir yang dimonyongkan (membuat bulatan sempurna) saat melafalkan huruf berbaris dhammah.'
     },
     {
       id: 'mvtpelt91w5d',
       level: 'Dasar',
-      judul: 'FAHAM DALAM 30 DETIK',
-      kategori: "Al-Qur'an",
-      tipe: 'Video',
-      url: 'https://youtu.be/eppvwnVpbHc',
+      judul: 'Rumus Kilat Memahami Harakat Dasar',
+      kategori: "Al-Qur\'an",
+      tipe: 'Teks',
+      url: '',
       localImg: '',
-      isi: 'Video kilat rangkuman cara mudah dan cepat menguasai harakat dan pengucapan huruf hijaiyyah hanya dalam 30 detik.'
+      isi: 'Rumus Kilat 3 Harakat Pokok:\n1. Fathah (ـَ): Garis miring di atas huruf, berbunyi vokal "A" dengan membuka mulut wajar (contoh: دَ = Da).\n2. Kasrah (ـِ): Garis miring di bawah huruf, berbunyi vokal "I" dengan menurunkan bibir bawah (contoh: دِ = Di).\n3. Dhammah (ـُ): Tanda seperti koma/wawu kecil di atas huruf, berbunyi vokal "U" dengan membulatkan kedua bibir (contoh: دُ = Du).'
     },
     {
       id: 'mvtqgexijn94',
       level: 'Dasar',
       judul: 'Huruf Hijaiyyah Berbaris Tanwin (Bagian 1)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1794917172200_Gemini_Generated_Image_djur8adjur8adjur.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvtqgexijn94.jpg',
       isi: 'Mengenal tanda baca Tanwin: Fathatain (-an), Kasratain (-in), dan Dhammatain (-un) serta cara pelafalannya dengan nun sukun di akhir bunyi kata.'
     },
     {
       id: 'mvtqsc06hmj2',
       level: 'Dasar',
-      judul: 'Huruf Hijaiyyah Berbaris Tanwin (Bagian 2 - Praktik)',
-      kategori: "Al-Qur'an",
-      tipe: 'Video',
-      url: 'https://youtu.be/HDvy8BkpiBc',
+      judul: 'Praktik Membaca Baris Tanwin & Kaidah Waqaf',
+      kategori: "Al-Qur\'an",
+      tipe: 'Teks',
+      url: '',
       localImg: '',
-      isi: 'Simak panduan video interaktif pelafalan tanwin pada kalimat Al-Qur\'an agar tidak tertukar antara baris tunggal dan tanwin ganda.'
+      isi: 'Kaidah Baris Tanwin (Bunyi "N" di akhir kata):\n• Fathatain (ـً): Menghasilkan bunyi "AN" (contoh: كِتَابًا = Kitāban). Biasanya didampingi huruf alif di akhir.\n• Kasratain (ـٍ): Menghasilkan bunyi "IN" (contoh: كِتَابٍ = Kitābin).\n• Dhammatain (ـٌ): Menghasilkan bunyi "UN" (contoh: كِتَابٌ = Kitābun).\n• PENTING: Jika berhenti (waqaf) pada fathatain, bunyinya berubah menjadi mad 2 harakat (Kitābā), bukan "an".'
     },
     {
       id: 'mvtriiymnjlh',
       level: 'Dasar',
       judul: 'Huruf Hijaiyyah Berbaris Sukun dan Tasydid',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1793291594657_Gemini_Generated_Image_3l984o3l984o3l98.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvtriiymnjlh.jpg',
-      isi: 'Panduan lengkap membaca huruf mati (Sukun) dan huruf bertekanan ganda (Tasydid/Syaddah) beserta contoh penerapannya dalam ayat suci Al-Qur\'an.'
+      isi: 'Panduan lengkap membaca huruf mati (Sukun ـْ) dan huruf bertekanan ganda (Tasydid/Syaddah ـّ) beserta contoh penerapannya dalam ayat suci Al-Qur\'an.'
     },
 
     // --- LEVEL MENENGAH ---
     {
       id: 'mvj8anwjk3p9',
       level: 'Menengah',
-      judul: 'Cara Membaca Huruf Hijaiyyah dibaca Panjang (Mad Thabi\'i)',
-      kategori: "Al-Qur'an",
-      tipe: 'Video',
-      url: 'https://youtu.be/s-OciQQzkFg?si=kpBw9MEEeGoVhqCf',
+      judul: 'Hukum Mad Thabi\'i (Mad Asli 2 Harakat)',
+      kategori: "Al-Qur\'an",
+      tipe: 'Teks',
+      url: '',
       localImg: '',
-      isi: 'Penjelasan dasar hukum Mad: memanjangkan suara sepanjang 2 harakat (satu alif) ketika huruf fathah bertemu alif, kasrah bertemu ya sukun, dan dhammah bertemu wawu sukun.'
+      isi: 'Kaidah Membaca Mad Thabi\'i (Panjang 2 Harakat / 1 Alif):\n1. Huruf Alif (ا) didahului harakat Fathah (ـَ). Contoh: قَالَ (Qōla).\n2. Huruf Ya Sukun (يْ) didahului harakat Kasrah (ـِ). Contoh: قِيْلَ (Qīla).\n3. Huruf Wawu Sukun (وْ) didahului harakat Dhammah (ـُ). Contoh: يَقُوْلُ (Yaqūlu).\n\nKetukan mad harus stabil: tepat 2 hitungan, tidak boleh kurang (terbaca pendek) dan tidak boleh berlebih.'
     },
     {
       id: 'mvi4imdg783v',
       level: 'Menengah',
       judul: 'Bacaan Huruf Hijaiyyah dibaca panjang / Mad (Alif Mad)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1792587916601_images__3_.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvi4imdg783v.jpg',
       isi: 'Bagan dan contoh pelafalan Alif Mad setelah harakat fathah. Pastikan durasi pemanjangan stabil tepat 2 ketukan.'
     },
@@ -116,9 +116,9 @@
       id: 'mvi4pgbvbmfi',
       level: 'Menengah',
       judul: 'Bacaan Huruf Hijaiyyah dibaca panjang / Mad (Ya Mad)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1792588158891_images__4_.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvi4pgbvbmfi.jpg',
       isi: 'Bagan dan contoh pelafalan Ya Mad (يْ) sesudah harakat kasrah. Pelajari posisi rongga mulut agar suara mad terdengar jernih dan fasih.'
     },
@@ -126,39 +126,39 @@
       id: 'mvi4rgfag5b2',
       level: 'Menengah',
       judul: 'Bacaan Huruf Hijaiyyah dibaca panjang / Mad (Waw Mad)',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1792588252443_images__5_.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvi4rgfag5b2.jpg',
       isi: 'Bagan dan contoh pelafalan Waw Mad (وْ) sesudah harakat dhammah. Perhatikan posisi bibir saat memanjangkan suara.'
     },
     {
       id: 'mvj8epo1hj51',
       level: 'Menengah',
-      judul: 'Praktik Bacaan Mad dalam Penggalan Kata',
-      kategori: "Al-Qur'an",
-      tipe: 'Video',
-      url: 'https://youtu.be/JzAH8LuHYCo?si=scBT4Wdd0-9dcgFN',
+      judul: 'Praktik Mad Thabi\'i dalam Kata Al-Qur\'an',
+      kategori: "Al-Qur\'an",
+      tipe: 'Teks',
+      url: '',
       localImg: '',
-      isi: 'Latihan membaca mad thabi\'i yang dirangkai dalam kata dan kalimat pendek Al-Qur\'an bersama guru tahsin.'
+      isi: 'Contoh Praktik Pemanjangan Suara 2 Harakat:\n• نوحيها (Nū-hī-hā): Menggabungkan ketiga huruf mad sekaligus (Waw mad, Ya mad, dan Alif mad).\n• الرحيم (Ar-Rahīm): Ya sukun setelah kasrah.\n• الصابرين (Ash-Shōbirīn): Alif setelah shad dan Ya sukun setelah ra.\n\nTips SI IPIN: Latih ayunan suara dengan ketukan jari yang rata dan teratur.'
     },
     {
       id: 'mvj8gxgahdnb',
       level: 'Menengah',
-      judul: 'Latihan Menjaga Irama & Durasi Mad 2 Harakat',
-      kategori: "Al-Qur'an",
-      tipe: 'Video',
-      url: 'https://youtu.be/aY-seaOoE2I?si=DSnehL6W64HyvKTS',
+      judul: 'Kaidah Menjaga Konsistensi Panjang Mad',
+      kategori: "Al-Qur\'an",
+      tipe: 'Teks',
+      url: '',
       localImg: '',
-      isi: 'Simak video ini untuk melatih konsistensi ketukan mad agar tidak terlalu cepat (kurang dari 2 harakat) dan tidak berlebihan.'
+      isi: 'Cara Menjaga Ketukan Mad:\n• Hindari membaca terlalu terburu-buru yang menyebabkan huruf mad terpotong.\n• Hindari menyeret suara mad melebihi 2 harakat pada mad thabi\'i.\n• Pastikan aliran nafas lembut dan rongga mulut terbuka secara proporsional sesuai makhraj huruf.'
     },
     {
       id: 'mvj8i55dx35x',
       level: 'Menengah',
       judul: 'Hukum Nun Sukun dan Tanwin Lengkap',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Gambar',
-      url: 'https://wzvyfatvitqzykpssrpm.supabase.co/storage/v1/object/sign/siunta-materi/1792655002464_magic_edit_TUFIWXQxZll6U2sjMSM1YWEzMWYwNWVjZWNkN2YyMDJlNDhkZmM1NTA5ZmQ2MiM1MTYjI1RSQU5TRk9STUFUSU9OX1JFUVVFU1Q.jpg',
+      url: '',
       localImg: 'assets/tahsin/tahsin_mvj8i55dx35x.jpg',
       isi: 'Infografis master tajwid: 1. Izhar Halqi (jelas), 2. Idgham Bighunnah (dengung), 3. Idgham Bilaghunnah (tanpa dengung), 4. Iqlab (menukar jadi mim), 5. Ikhfa Haqiqi (samar dengung).'
     },
@@ -168,7 +168,7 @@
       id: 'lanjutan_makharij_1',
       level: 'Lanjutan',
       judul: 'Makharijul Huruf: 5 Tempat Utama Keluarnya Huruf',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Teks',
       url: '',
       localImg: '',
@@ -178,7 +178,7 @@
       id: 'lanjutan_sifat_huruf',
       level: 'Lanjutan',
       judul: 'Sifat-Sifat Huruf Hijaiyyah yang Berlawanan & Tunggal',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Teks',
       url: '',
       localImg: '',
@@ -188,7 +188,7 @@
       id: 'lanjutan_mim_sukun',
       level: 'Lanjutan',
       judul: 'Hukum Mim Sukun (مْ) & Lam Ta\'rif',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Teks',
       url: '',
       localImg: '',
@@ -198,7 +198,7 @@
       id: 'lanjutan_waqaf_ibtida',
       level: 'Lanjutan',
       judul: 'Waqaf, Ibtida\' & Tanda Baca Perhentian Al-Qur\'an',
-      kategori: "Al-Qur'an",
+      kategori: "Al-Qur\'an",
       tipe: 'Teks',
       url: '',
       localImg: '',
@@ -206,14 +206,14 @@
     }
   ];
 
-  // 2. DAFTAR 5 GAME EDUKASI SIUNTA
+  // 2. DAFTAR 5 GAME EDUKASI SI IPIN
   var TAHSIN_GAMES_INFO = [
     {
       id: 'mv9mjw4l6x6f',
-      judul: 'Petualangan SIUNTA',
-      ikon: '🐪',
+      judul: 'Petualangan SI IPIN',
+      ikon: '🤖',
       level: 'Semua',
-      deskripsi: 'Uji kemampuan baca tulis Al-Qur\'an dan tajwid bersama maskot Si Unta interaktif.'
+      deskripsi: 'Uji kemampuan baca tulis Al-Qur\'an dan tajwid bersama maskot SI IPIN interaktif.'
     },
     {
       id: 'mvby0olsh0ha',
@@ -227,7 +227,7 @@
       judul: 'LABIRIN TAJWID',
       ikon: '🌀',
       level: 'Semua',
-      deskripsi: 'Jelajahi labirin teka-teki tajwid, hindari jalan buntu dan kumpulkan bintang pemahaman.'
+      deskripsi: 'Jelajahi labirin teka-teki tajwid bersama SI IPIN, hindari jalan buntu dan kumpulkan bintang pemahaman.'
     },
     {
       id: 'mvgtzmwv03ic',
@@ -246,7 +246,7 @@
   ];
 
   // 3. STORAGE KEY & STATE
-  var STORAGE_KEY_TAHSIN = 'SIIP_TAHSIN_DATA_V1';
+  var STORAGE_KEY_TAHSIN = 'SIIP_TAHSIN_DATA_V2';
   var TAHSIN_STATE = {
     activeTab: 'Dasar',
     materi: DEFAULT_TAHSIN_MATERI,
@@ -264,7 +264,6 @@
         if (parsed.completedIds) TAHSIN_STATE.completedIds = parsed.completedIds;
         if (parsed.studentLevel) TAHSIN_STATE.studentLevel = parsed.studentLevel;
         if (Array.isArray(parsed.customMateri) && parsed.customMateri.length > 0) {
-          // Merge custom items with default
           var map = {};
           DEFAULT_TAHSIN_MATERI.forEach(function (m) { map[m.id] = m; });
           parsed.customMateri.forEach(function (m) { map[m.id] = m; });
@@ -303,7 +302,6 @@
     if (!TAHSIN_STATE.completedIds[nis]) {
       TAHSIN_STATE.completedIds[nis] = [];
     }
-    // Sync level if student has one
     if (window.SISWA && window.SISWA.tahsin_level) {
       TAHSIN_STATE.studentLevel = window.SISWA.tahsin_level;
     }
@@ -325,7 +323,6 @@
     var pct = Math.round((doneCount / totalMateri) * 100);
     TAHSIN_STATE.studentProgres = Math.min(100, Math.max(0, pct));
 
-    // Auto level upgrade logic
     var dasarTotal = TAHSIN_STATE.materi.filter(function (m) { return m.level === 'Dasar'; }).length;
     var dasarDone = TAHSIN_STATE.materi.filter(function (m) { return m.level === 'Dasar' && list.indexOf(m.id) !== -1; }).length;
     var menengahTotal = TAHSIN_STATE.materi.filter(function (m) { return m.level === 'Menengah'; }).length;
@@ -401,7 +398,6 @@
       );
     }
 
-    // Update active tab buttons
     var tabs = ['Dasar', 'Menengah', 'Lanjutan', 'Game'];
     tabs.forEach(function (t) {
       var btn = document.getElementById('tahsinTabBtn_' + t);
@@ -420,7 +416,6 @@
     var doneList = TAHSIN_STATE.completedIds[nis] || [];
 
     if (TAHSIN_STATE.activeTab === 'Game') {
-      // Render Game Edukasi SIUNTA
       var gHtml = '<div class="tahsin-game-grid">';
       TAHSIN_GAMES_INFO.forEach(function (g) {
         gHtml += '<div class="tahsin-game-card">' +
@@ -442,7 +437,6 @@
       return;
     }
 
-    // Render Materi Belajar sesuai Level
     var currentLevel = TAHSIN_STATE.activeTab;
     var listMateri = TAHSIN_STATE.materi.filter(function (m) {
       return m.level === currentLevel;
@@ -462,8 +456,8 @@
             '<span class="materi-number">' + (idx + 1) + '</span>' +
             '<h4 class="materi-title">' + escapeHtml(m.judul) + '</h4>' +
           '</div>' +
-          '<span class="materi-type-tag ' + (m.tipe === 'Video' ? 'tag-video' : m.tipe === 'Gambar' ? 'tag-img' : 'tag-text') + '">' +
-            (m.tipe === 'Video' ? '🎬 Video' : m.tipe === 'Gambar' ? '🖼️ Bagan' : '📄 Panduan') +
+          '<span class="materi-type-tag ' + (m.tipe === 'Gambar' ? 'tag-img' : 'tag-text') + '">' +
+            (m.tipe === 'Gambar' ? '🖼️ Bagan Tajwid' : '📄 Panduan Tajwid') +
           '</span>' +
         '</div>' +
 
@@ -484,25 +478,13 @@
   }
 
   function renderMateriMedia(m) {
-    if (m.tipe === 'Video' && m.url) {
-      var ytMatch = m.url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
-      if (ytMatch) {
-        return '<div class="tahsin-video-wrapper">' +
-          '<iframe src="https://www.youtube.com/embed/' + ytMatch[1] + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
-        '</div>';
-      }
-      return '<video controls src="' + escapeHtml(m.url) + '" class="tahsin-video-native"></video>';
-    }
-
-    if (m.tipe === 'Gambar') {
-      var imgSrc = m.localImg || m.url;
-      var fallbackUrl = m.url || '';
-      return '<div class="tahsin-img-wrapper" onclick="bukaLightboxTahsin(\'' + escapeHtml(imgSrc) + '\', \'' + escapeHtml(fallbackUrl) + '\', \'' + escapeHtml(m.judul) + '\')">' +
-        '<img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(m.judul) + '" onerror="if(this.src!=\'' + escapeHtml(fallbackUrl) + '\'){this.src=\'' + escapeHtml(fallbackUrl) + '\';}" loading="lazy" />' +
+    if (m.tipe === 'Gambar' && m.localImg) {
+      var imgSrc = m.localImg;
+      return '<div class="tahsin-img-wrapper" onclick="bukaLightboxTahsin(\'' + escapeHtml(imgSrc) + '\', \'\', \'' + escapeHtml(m.judul) + '\')">' +
+        '<img src="' + escapeHtml(imgSrc) + '" alt="' + escapeHtml(m.judul) + '" loading="lazy" />' +
         '<div class="img-zoom-tip">🔍 Ketuk untuk memperbesar bagan</div>' +
       '</div>';
     }
-
     return '';
   }
 
@@ -527,13 +509,8 @@
     }
     var imgEl = document.getElementById('lightboxImg');
     var titleEl = document.getElementById('lightboxTitle');
-    if (imgEl) {
-      imgEl.src = src;
-      imgEl.onerror = function () {
-        if (fallback && this.src !== fallback) this.src = fallback;
-      };
-    }
-    if (titleEl) titleEl.textContent = title || 'Bagan Tahsin';
+    if (imgEl) imgEl.src = src;
+    if (titleEl) titleEl.textContent = title || 'Bagan Tajwid';
     lb.classList.add('active');
   }
 
@@ -545,7 +522,7 @@
   // 8. GAME SANDBOX RUNNER
   function mainkanGameTahsin(gameId) {
     var gameCode = (window.TAHSIN_GAMES_CODE && window.TAHSIN_GAMES_CODE[gameId]) || null;
-    var gameInfo = TAHSIN_GAMES_INFO.filter(function (g) { return g.id === gameId; })[0] || { judul: 'Game Edukasi' };
+    var gameInfo = TAHSIN_GAMES_INFO.filter(function (g) { return g.id === gameId; })[0] || { judul: 'Game Edukasi SI IPIN' };
 
     var modal = document.getElementById('modalGameTahsin');
     if (!modal) {
@@ -554,8 +531,8 @@
       modal.className = 'game-tahsin-modal hidden';
       modal.innerHTML = '<div class="game-modal-header">' +
         '<div class="game-header-left">' +
-          '<span class="game-header-icon">🎮</span>' +
-          '<h3 id="gameModalTitle" class="game-header-title">Game Edukasi</h3>' +
+          '<span class="game-header-icon">🤖</span>' +
+          '<h3 id="gameModalTitle" class="game-header-title">Game Edukasi SI IPIN</h3>' +
         '</div>' +
         '<button type="button" class="btn-close-game" onclick="tutupGameTahsin()">✕ Tutup Game</button>' +
       '</div>' +
@@ -573,7 +550,7 @@
       if (gameCode) {
         frameEl.srcdoc = gameCode;
       } else {
-        frameEl.srcdoc = '<!DOCTYPE html><html><body style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#333;"><h3>Memuat file game edukasi... Pastikan tahsin_games.js tersedia.</h3></body></html>';
+        frameEl.srcdoc = '<!DOCTYPE html><html><body style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#333;"><h3>Memuat file game edukasi SI IPIN...</h3></body></html>';
       }
     }
 
@@ -601,10 +578,10 @@
         '<!-- TOP APP BAR -->' +
         '<div class="tahsin-appbar">' +
           '<div class="tahsin-appbar-info">' +
-            '<div class="tahsin-appbar-icon">🐪</div>' +
+            '<div class="tahsin-appbar-icon">🤖</div>' +
             '<div>' +
               '<h3 class="tahsin-appbar-title">Tahsin Al-Qur\'an</h3>' +
-              '<p class="tahsin-appbar-sub">Sistem Inovasi Ngaji Tahsin (SIUNTA)</p>' +
+              '<p class="tahsin-appbar-sub">Sistem Informasi Ibadah Pelajar (SIIP)</p>' +
             '</div>' +
           '</div>' +
           '<button type="button" class="tahsin-close-btn" onclick="tutupModalTahsin()" title="Tutup">✕</button>' +
@@ -625,7 +602,7 @@
           '<div class="tahsin-progress-track">' +
             '<div id="tahsinProgressBar" class="tahsin-progress-fill" style="width:0%"></div>' +
           '</div>' +
-          '<p class="tahsin-progress-hint">💡 Selesaikan materi & game pada tiap level untuk membuka pemahaman tajwid secara bertahap.</p>' +
+          '<p class="tahsin-progress-hint">💡 Selesaikan materi & game pada tiap level untuk menguasai kaidah tajwid secara fasih dan bertahap.</p>' +
         '</div>' +
 
         '<!-- TAB NAVIGATION -->' +
@@ -644,20 +621,7 @@
     document.body.appendChild(el);
   }
 
-  // 10. UTILITIES
-  function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  // 11. EXPOSE GLOBAL APIS
-  
-  // 12. FITUR ADMIN TAHSIN & GAME SIUNTA
+  // 10. FITUR ADMIN TAHSIN & GAME SI IPIN
   var ADMIN_TAHSIN_TAB = 'materi';
   var ADMIN_TAHSIN_LEVEL_FILTER = 'Semua';
 
@@ -695,11 +659,11 @@
           '<div class="tahsin-stat-info">' +
             '<span class="tahsin-stat-label">Game Edukasi</span>' +
             '<b class="tahsin-stat-val">' + TAHSIN_GAMES_INFO.length + '</b>' +
-            '<span class="tahsin-stat-sub">SIUNTA Interactive Games</span>' +
+            '<span class="tahsin-stat-sub">SI IPIN Interactive Games</span>' +
           '</div>' +
         '</div>' +
         '<div class="tahsin-stat-card">' +
-          '<div class="tahsin-stat-icon" style="background:#fef3c7;color:#b45309;">🐪</div>' +
+          '<div class="tahsin-stat-icon" style="background:#fef3c7;color:#b45309;">🤖</div>' +
           '<div class="tahsin-stat-info">' +
             '<span class="tahsin-stat-label">Kurikulum</span>' +
             '<b class="tahsin-stat-val">3 Level</b>' +
@@ -719,7 +683,7 @@
       '<!-- ADMIN SUB-TABS -->' +
       '<div class="tahsin-admin-tabs">' +
         '<button type="button" class="tahsin-admin-tab-btn ' + (ADMIN_TAHSIN_TAB === 'materi' ? 'active' : '') + '" onclick="setAdminTahsinTab(\'materi\')">📖 Kelola Materi Belajar (' + totalMateri + ')</button>' +
-        '<button type="button" class="tahsin-admin-tab-btn ' + (ADMIN_TAHSIN_TAB === 'game' ? 'active' : '') + '" onclick="setAdminTahsinTab(\'game\')">🎮 Game Edukasi SIUNTA (' + TAHSIN_GAMES_INFO.length + ')</button>' +
+        '<button type="button" class="tahsin-admin-tab-btn ' + (ADMIN_TAHSIN_TAB === 'game' ? 'active' : '') + '" onclick="setAdminTahsinTab(\'game\')">🎮 Game Edukasi SI IPIN (' + TAHSIN_GAMES_INFO.length + ')</button>' +
         '<button type="button" class="tahsin-admin-tab-btn ' + (ADMIN_TAHSIN_TAB === 'siswa' ? 'active' : '') + '" onclick="setAdminTahsinTab(\'siswa\')">👥 Progres & Level Siswa</button>' +
       '</div>';
 
@@ -773,8 +737,8 @@
             '<th style="padding:10px 14px;width:40px;">No</th>' +
             '<th style="padding:10px 14px;">Judul Materi</th>' +
             '<th style="padding:10px 14px;width:100px;">Level</th>' +
-            '<th style="padding:10px 14px;width:90px;">Tipe</th>' +
-            '<th style="padding:10px 14px;width:160px;">Aksi</th>' +
+            '<th style="padding:10px 14px;width:120px;">Tipe</th>' +
+            '<th style="padding:10px 14px;width:110px;">Aksi</th>' +
           '</tr>' +
         '</thead>' +
         '<tbody>';
@@ -793,13 +757,10 @@
             '<span class="tahsin-badge-level ' + (m.level === 'Dasar' ? 'badge-dasar' : m.level === 'Menengah' ? 'badge-menengah' : 'badge-lanjutan') + '">' + escapeHtml(m.level) + '</span>' +
           '</td>' +
           '<td style="padding:10px 14px;">' +
-            '<span class="materi-type-tag ' + (m.tipe === 'Video' ? 'tag-video' : m.tipe === 'Gambar' ? 'tag-img' : 'tag-text') + '">' + escapeHtml(m.tipe) + '</span>' +
+            '<span class="materi-type-tag ' + (m.tipe === 'Gambar' ? 'tag-img' : 'tag-text') + '">' + (m.tipe === 'Gambar' ? '🖼️ Bagan' : '📄 Panduan') + '</span>' +
           '</td>' +
           '<td style="padding:10px 14px;">' +
-            '<div style="display:flex;gap:6px;">' +
-              (m.url ? '<a href="' + escapeHtml(m.url) + '" target="_blank" class="btn sm ghost" style="padding:4px 8px;font-size:11px;border-radius:6px;text-decoration:none;">🔗 Buka Media</a>' : '') +
-              '<button type="button" class="btn sm" onclick="bukaModalTahsin(\'' + m.level + '\')" style="padding:4px 8px;font-size:11px;border-radius:6px;background:#f0fdf4;color:#047857;border:1px solid #86efac;">Preview</button>' +
-            '</div>' +
+            '<button type="button" class="btn sm" onclick="bukaModalTahsin(\'' + m.level + '\')" style="padding:4px 8px;font-size:11px;border-radius:6px;background:#f0fdf4;color:#047857;border:1px solid #86efac;">Preview</button>' +
           '</td>' +
         '</tr>';
       });
@@ -889,7 +850,6 @@
       alert('Level tidak valid. Harus salah satu dari: Dasar, Menengah, atau Lanjutan.');
       return;
     }
-    // Update student level
     if (Array.isArray(window.DATA_SISWA)) {
       var s = window.DATA_SISWA.filter(function (x) { return String(x.nis || x.id) === String(nis); })[0];
       if (s) {
@@ -901,11 +861,18 @@
     if (typeof window.toast === 'function') window.toast('Level Tahsin siswa berhasil diubah ke ' + p, 'ok');
   }
 
-  window.renderAdminTahsin = renderAdminTahsin;
-  window.setAdminTahsinTab = setAdminTahsinTab;
-  window.setAdminTahsinLevelFilter = setAdminTahsinLevelFilter;
-  window.adminUbahLevelSiswa = adminUbahLevelSiswa;
+  // 11. UTILITIES
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
+  // 12. EXPOSE GLOBAL APIS
   window.bukaModalTahsin = bukaModalTahsin;
   window.tutupModalTahsin = tutupModalTahsin;
   window.setTahsinTab = setTahsinTab;
@@ -914,11 +881,14 @@
   window.tutupLightboxTahsin = tutupLightboxTahsin;
   window.mainkanGameTahsin = mainkanGameTahsin;
   window.tutupGameTahsin = tutupGameTahsin;
+  window.renderAdminTahsin = renderAdminTahsin;
+  window.setAdminTahsinTab = setAdminTahsinTab;
+  window.setAdminTahsinLevelFilter = setAdminTahsinLevelFilter;
+  window.adminUbahLevelSiswa = adminUbahLevelSiswa;
   window.DEFAULT_TAHSIN_MATERI = DEFAULT_TAHSIN_MATERI;
   window.TAHSIN_GAMES_INFO = TAHSIN_GAMES_INFO;
   window.TAHSIN_STATE = TAHSIN_STATE;
 
-  // Auto initialize on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadTahsinState);
   } else {
