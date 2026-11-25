@@ -33,8 +33,18 @@
   <script src="tahsin_games.js?v=2.2.0"></script>
   <script src="tahsin_feature.js?v=2.2.0"></script>
   <link rel="stylesheet" href="tahsin.css?v=2.2.0">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="./xlsx.full.min.js"></script>
+  <script>
+    if (typeof XLSX === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+    }
+  </script>
+  <script src="./jszip.min.js"></script>
+  <script>
+    if (typeof JSZip === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"><\/script>');
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
   <style>
     /* Khot Naskhi Standar Kemenag RI (Font LPMQ Isep Misbah) - Rujukan Utama: https://quran.kemenag.go.id/ */
@@ -8489,6 +8499,41 @@
     </div>
   </div>
 
+  
+  <!-- ============ MODAL HASIL DOWNLOAD EXCEL / FILE ============ -->
+  <div id="modalHasilDownload" class="modal center hidden" style="z-index: 99999;"
+    onclick="if(event.target===this) tutupModalHasilDownload()">
+    <div class="modal-box" style="max-width: 440px; width: 92%; text-align: center; padding: 22px 18px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.45); background: var(--card); border: 1.5px solid var(--border);">
+      <div style="width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 16px; background: rgba(16,185,129,0.15); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 1.5px solid rgba(16,185,129,0.3);">
+        📥
+      </div>
+      <h3 style="margin: 0 0 6px; font-size: 17.5px; font-weight: 800; color: var(--text);">File Siap Diunduh!</h3>
+      <p style="margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #10b981; word-break: break-all;" id="dlModalFileName">Laporan_Presensi.xlsx</p>
+      <p style="margin: 0 0 16px; font-size: 11.5px; color: var(--muted);" id="dlModalFileSize">Ukuran: ~ KB</p>
+
+      <div style="display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px;">
+        <a id="dlModalDirectBtn" href="#" download="" class="btn btn-admin btn-sm"
+          style="padding: 11px 16px; font-weight: 700; font-size: 13.5px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
+          <span>⬇️</span><span>Klik di Sini untuk Unduh Langsung</span>
+        </a>
+
+        <button type="button" id="dlModalShareBtn" class="btn btn-outline btn-sm" onclick="bagikanFileExport()"
+          style="padding: 10px 14px; font-weight: 600; font-size: 12.5px; display: none; align-items: center; justify-content: center; gap: 8px; border-radius: 10px; border-color: #3b82f6; color: #2563eb;">
+          <span>📤</span><span>Buka / Bagikan (WhatsApp / Drive / File)</span>
+        </button>
+      </div>
+
+      <div style="font-size: 11px; color: var(--muted); margin-bottom: 14px; line-height: 1.4;">
+        💡 Browser biasanya mulai mengunduh otomatis. Jika file belum terunduh, silakan ketuk tombol hijau di atas.
+      </div>
+
+      <button type="button" class="btn btn-outline btn-sm" onclick="tutupModalHasilDownload()"
+        style="width: 100%; padding: 8px; font-size: 12.5px; border-radius: 8px;">
+        Tutup
+      </button>
+    </div>
+  </div>
+
   <!-- ============ MODAL PREVIEW FOTO SELFIE ============ -->
   <div id="modalPreviewFoto" class="modal center hidden" style="z-index: 99998;"
     onclick="if(event.target===this) tutupPreviewFoto()">
@@ -13357,7 +13402,177 @@
       return finalName;
     }
 
+    
+    // ================= SISTEM UNDUH UNIVERSAL (DESKTOP, HP, PWA & ANDROID APK) =================
+    var LAST_DOWNLOADED_FILE = { blob: null, filename: '', mimeType: '', url: '', sizeStr: '' };
+
+    function unduhFileUniversal(content, filename, mimeType) {
+      mimeType = mimeType || 'application/octet-stream';
+      var blob;
+      if (content instanceof Blob) {
+        blob = content;
+      } else if (content instanceof ArrayBuffer || ArrayBuffer.isView(content)) {
+        blob = new Blob([content], { type: mimeType });
+      } else if (typeof content === 'string') {
+        blob = new Blob([content], { type: mimeType });
+      } else if (typeof content === 'object' && content && content.SheetNames && typeof XLSX !== 'undefined') {
+        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        var wbout = XLSX.write(content, { bookType: 'xlsx', type: 'array' });
+        blob = new Blob([wbout], { type: mimeType });
+      } else {
+        try {
+          blob = new Blob([content], { type: mimeType });
+        } catch (e) {
+          console.error('Gagal membuat Blob:', e);
+          toast('Gagal memproses file unduhan.', 'err');
+          return;
+        }
+      }
+
+      var sizeBytes = blob.size || 0;
+      var sizeStr = sizeBytes >= 1048576 ? (sizeBytes / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(sizeBytes / 1024)) + ' KB';
+
+      // 1. Bersihkan blob URL lama jika ada
+      if (LAST_DOWNLOADED_FILE.url) {
+        try { URL.revokeObjectURL(LAST_DOWNLOADED_FILE.url); } catch (e) {}
+      }
+
+      // 2. Buat Blob URL baru
+      var blobUrl = URL.createObjectURL(blob);
+      LAST_DOWNLOADED_FILE = {
+        blob: blob,
+        filename: filename,
+        mimeType: mimeType,
+        url: blobUrl,
+        sizeStr: sizeStr
+      };
+
+      // 3. Jika berjalan di Android APK dengan AndroidBridge
+      if (window.AndroidBridge && typeof window.AndroidBridge.downloadBase64File === 'function') {
+        try {
+          var reader = new FileReader();
+          reader.onloadend = function () {
+            var res = reader.result || '';
+            var base64Data = res.indexOf(',') > -1 ? res.split(',')[1] : res;
+            if (base64Data) {
+              window.AndroidBridge.downloadBase64File(base64Data, filename, mimeType);
+            }
+          };
+          reader.readAsDataURL(blob);
+        } catch (errBridge) {
+          console.warn('AndroidBridge error:', errBridge);
+        }
+      }
+
+      // 4. Trigger download otomatis via elemen <a>
+      try {
+        var a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          if (document.body.contains(a)) document.body.removeChild(a);
+        }, 1500);
+      } catch (errClick) {
+        console.warn('Auto a.click download failed or blocked:', errClick);
+      }
+
+      // 5. Tampilkan Modal Hasil Download
+      tampilkanModalHasilDownload(filename, sizeStr, blobUrl);
+    }
+
+    function tampilkanModalHasilDownload(filename, sizeStr, blobUrl) {
+      var modal = $('modalHasilDownload');
+      if (!modal) return;
+      var titleEl = $('dlModalFileName');
+      var sizeEl = $('dlModalFileSize');
+      var directBtn = $('dlModalDirectBtn');
+      var shareBtn = $('dlModalShareBtn');
+
+      if (titleEl) titleEl.textContent = filename;
+      if (sizeEl) sizeEl.textContent = 'Ukuran: ' + sizeStr;
+      if (directBtn) {
+        directBtn.href = blobUrl;
+        directBtn.download = filename;
+      }
+
+      // Tampilkan tombol share jika browser mendukung Web Share API file
+      if (shareBtn) {
+        if (navigator.share && navigator.canShare) {
+          try {
+            var testFile = new File([new Blob([''])], 'test.txt');
+            if (navigator.canShare({ files: [testFile] })) {
+              shareBtn.style.display = 'flex';
+            } else {
+              shareBtn.style.display = 'none';
+            }
+          } catch (e) {
+            shareBtn.style.display = 'none';
+          }
+        } else {
+          shareBtn.style.display = 'none';
+        }
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function tutupModalHasilDownload() {
+      var modal = $('modalHasilDownload');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function bagikanFileExport() {
+      if (!LAST_DOWNLOADED_FILE.blob) {
+        toast('File tidak tersedia untuk dibagikan.', 'err');
+        return;
+      }
+      try {
+        var file = new File([LAST_DOWNLOADED_FILE.blob], LAST_DOWNLOADED_FILE.filename, {
+          type: LAST_DOWNLOADED_FILE.mimeType
+        });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: LAST_DOWNLOADED_FILE.filename,
+            text: 'Laporan Presensi Ibadah - ' + LAST_DOWNLOADED_FILE.filename,
+            files: [file]
+          });
+          toast('✅ File berhasil dibagikan!', 'ok');
+        } else {
+          toast('Perangkat tidak mendukung berbagi file langsung. Silakan gunakan tombol Unduh.', 'warn');
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.warn('Share error:', err);
+          toast('Batal atau gagal membagikan file.', 'warn');
+        }
+      }
+    }
+
+    // Auto-patch global XLSX.writeFile agar otomatis memanfaatkan unduhFileUniversal
+    function pasangPencegatXLSX() {
+      if (typeof XLSX !== 'undefined' && !XLSX._universalPatched) {
+        XLSX._universalPatched = true;
+        var _nativeWriteFile = XLSX.writeFile;
+        XLSX.writeFile = function (wb, filename, opts) {
+          try {
+            var wbout = XLSX.write(wb, Object.assign({ bookType: 'xlsx', type: 'array' }, opts));
+            unduhFileUniversal(wbout, filename, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          } catch (err) {
+            console.warn('XLSX.write array gagal, fallback ke native writeFile:', err);
+            _nativeWriteFile.call(XLSX, wb, filename, opts);
+          }
+        };
+      }
+    }
+    pasangPencegatXLSX();
+
     function downloadBlob(blob, filename) {
+      unduhFileUniversal(blob, filename, (blob && blob.type) || "application/zip");
+    }
+    function _old_downloadBlob_unused(blob, filename) {
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
@@ -13451,7 +13666,7 @@
           var wsDet = buatSheetLogDetail(records, 'LOG RIWAYAT PRESENSI SHOLAT', isSpecificClass ? kelasTarget : 'Semua Kelas', tglMulai, tglSelesai);
           XLSX.utils.book_append_sheet(wbDet, wsDet, 'Log Absen');
           var fnDetail = filePrefix + '_' + (isSpecificClass ? ('Kelas_' + kelasTarget.replace(/[^a-zA-Z0-9_-]/g, '_') + '_') : 'Semua_Kelas_') + periodeLabel + '.xlsx';
-          XLSX.writeFile(wbDet, fnDetail);
+          unduhFileUniversal(wbDet, fnDetail, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
           tutupModalExportExcel();
           toast('✅ Log detail ' + records.length + ' transaksi berhasil diunduh.', 'ok');
           if (btn) { btn.disabled = false; btn.innerHTML = oldBtnHtml; }
@@ -13485,7 +13700,7 @@
           }
 
           var fnSingle = filePrefix + '_Kelas_' + targetK.replace(/[^a-zA-Z0-9_-]/g, '_') + '_' + periodeLabel + '.xlsx';
-          XLSX.writeFile(wbSingle, fnSingle);
+          unduhFileUniversal(wbSingle, fnSingle, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
           tutupModalExportExcel();
           toast('✅ Laporan ' + (jenis === 'dhuha' ? 'Dhuha ' : '') + 'Kelas ' + targetK + ' (' + periodeLabel + ') berhasil diunduh.', 'ok');
           if (btn) { btn.disabled = false; btn.innerHTML = oldBtnHtml; }
@@ -13506,7 +13721,7 @@
           }
 
           var fnGab = filePrefix + '_Semua_Kelas_' + periodeLabel + '.xlsx';
-          XLSX.writeFile(wbGabungan, fnGab);
+          unduhFileUniversal(wbGabungan, fnGab, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
           tutupModalExportExcel();
           toast('✅ Laporan gabungan seluruh kelas (' + allStudents.length + ' siswa) berhasil diunduh.', 'ok');
           if (btn) { btn.disabled = false; btn.innerHTML = oldBtnHtml; }
@@ -13578,7 +13793,7 @@
         }
 
         var fnMulti = filePrefix + '_Semua_Kelas_' + periodeLabel + '.xlsx';
-        XLSX.writeFile(wbMulti, fnMulti);
+        unduhFileUniversal(wbMulti, fnMulti, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         tutupModalExportExcel();
         toast('✅ Berhasil mengekspor ' + listKelas.length + ' kelas ke Excel (' + periodeLabel + ')!', 'ok');
 

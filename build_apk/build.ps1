@@ -40,7 +40,7 @@ $webFiles = @(
     "index.html", "config.js", "islamic_features.js", "ramadhan_feature.js",
     "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png",
     "apple-touch-icon.png", "logo-siip.png", "favicon.png", "logo-smkn1.png", "logo-gpai.png", "logo-banner.png",
-    "mascot-ipin.png", "logo-si-ipin.png", "suara-si-ipin.mp3", "tahsin_games.js", "tahsin_feature.js", "tahsin.css"
+    "mascot-ipin.png", "logo-si-ipin.png", "suara-si-ipin.mp3", "tahsin_games.js", "tahsin_feature.js", "tahsin.css", "xlsx.full.min.js", "jszip.min.js"
 )
 foreach ($f in $webFiles) {
     $src = Join-Path $Root $f
@@ -119,6 +119,8 @@ Write-Utf8NoBom -path "$BuildDir\AndroidManifest.xml" -content @"
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.front" android:required="false" />
@@ -261,7 +263,69 @@ public class MainActivity extends Activity {
             }
         });
 
+        
+        webView.setDownloadListener(new android.webkit.DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    android.widget.Toast.makeText(MainActivity.this, "Download: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        webView.addJavascriptInterface(new AndroidBridge(), "AndroidBridge");
+
         webView.loadUrl(APP_URL);
+    }
+
+    
+    public class AndroidBridge {
+        @android.webkit.JavascriptInterface
+        public void downloadBase64File(final String base64Data, final String filename, final String mimeType) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        byte[] data = android.util.Base64.decode(base64Data, android.util.Base64.DEFAULT);
+                        java.io.File downloadDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS);
+                        if (!downloadDir.exists()) downloadDir.mkdirs();
+                        java.io.File file = new java.io.File(downloadDir, filename);
+                        java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
+                        fos.write(data);
+                        fos.flush();
+                        fos.close();
+
+                        android.media.MediaScannerConnection.scanFile(MainActivity.this, new String[]{file.getAbsolutePath()}, new String[]{mimeType}, null);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                android.widget.Toast.makeText(MainActivity.this, "✅ File tersimpan di folder Download: " + filename, android.widget.Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                        try {
+                            android.net.Uri fileUri = android.net.Uri.fromFile(file);
+                            android.content.Intent openIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
+                            openIntent.setDataAndType(fileUri, mimeType);
+                            openIntent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(openIntent);
+                        } catch (Exception ignored) {}
+                    } catch (final Exception e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                android.widget.Toast.makeText(MainActivity.this, "Gagal mengunduh file: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            }).start();
+        }
     }
 
     private void requestAppPermissions() {
