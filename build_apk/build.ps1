@@ -1,5 +1,5 @@
 param(
-    [string]$AppUrl = "https://presensi-ibadah-kloning.vercel.app",
+    [string]$AppUrl = "https://siip-skanisa.vercel.app",
     [string]$PackageName = "com.siip.presensiibadah",
     [string]$AppName = "S I I P",
     [string]$OutputApkName = "SIIP_Presensi_Ibadah.apk"
